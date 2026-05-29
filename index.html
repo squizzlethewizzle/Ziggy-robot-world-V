@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silicon Frontier: Blood & Rust v7.0</title>
+    <title>Silicon Frontier: Blood & Rust v8.0</title>
     <style>
+        /* COLOR PALETTES CONFIGURATION ROOT */
         :root {
             --bg-dark: #060403;
             --panel-deep: #120c09;
@@ -17,53 +18,53 @@
             --text-light: #f7ede2;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* PALETTE THEME OVERRIDES */
+        body.theme-cyber {
+            --bg-dark: #03001e; --panel-deep: #7303c0; --panel-brighter: #ec38bc;
+            --neon-amber: #ec38bc; --neon-cyan: #00f5d4; --neon-gold: #fde24f;
+        }
+        body.theme-toxic {
+            --bg-dark: #0b0f07; --panel-deep: #1b2412; --panel-brighter: #384e24;
+            --neon-amber: #70e000; --neon-cyan: #ccff33; --neon-gold: #38b000;
+        }
+        body.theme-obsidian {
+            --bg-dark: #000000; --panel-deep: #111111; --panel-brighter: #222222;
+            --neon-amber: #ffffff; --neon-cyan: #888888; --neon-gold: #aaaaaa;
+        }
+        body.theme-crimson {
+            --bg-dark: #1a0000; --panel-deep: #330000; --panel-brighter: #660000;
+            --neon-amber: #ff3333; --neon-cyan: #ff6666; --neon-gold: #ffcc00;
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            background-color: var(--bg-dark); color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden;
         }
 
         .app-window {
-            width: 100%;
-            max-width: 480px;
-            height: calc(100vh - 60px);
-            background-color: var(--panel-deep);
-            border: 2px solid var(--neon-amber);
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
-            padding: 14px;
-            overflow-y: auto;
-            position: relative;
+            width: 100%; max-width: 480px; height: calc(100vh - 60px);
+            background-color: var(--panel-deep); border: 2px solid var(--neon-amber);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.2); padding: 14px; overflow-y: auto; position: relative;
         }
 
         .screen-view { display: none; width: 100%; animation: fadeIn 0.25s ease-out; }
         .screen-view.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 15px var(--neon-amber); } 100% { opacity: 0.7; } }
 
-        h1 { font-size: 18px; color: var(--neon-amber); text-align: center; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 2px; }
-        h3 { font-size: 14px; text-align: center; margin: 12px 0; color: #fff; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--panel-brighter); padding-bottom: 4px;}
+        h1 { font-size: 16px; color: var(--neon-amber); text-align: center; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { font-size: 13px; text-align: center; margin: 12px 0; color: #fff; text-transform: uppercase; border-bottom: 1px solid var(--panel-brighter); padding-bottom: 4px;}
         h4 { font-size: 13px; margin: 4px 0; color: var(--neon-cyan); }
-        p { font-size: 11px; line-height: 1.5; margin: 6px 0; color: #d0c4bc; }
+        p { font-size: 11px; line-height: 1.4; margin: 4px 0; color: #d0c4bc; }
 
         /* THEMED HIGH-CONTRAST BUTTONS */
         .btn {
             background-color: var(--neon-amber); color: #000; border: none; padding: 12px 10px;
-            font-weight: bold; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 4px;
+            font-weight: bold; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 20px;
             margin: 6px 0; width: 100%; display: block; text-transform: uppercase; letter-spacing: 1px;
-            transition: all 0.15s ease; border-bottom: 3px solid rgba(0,0,0,0.3);
+            border-bottom: 3px solid rgba(0,0,0,0.3); text-align: center;
         }
         .btn:active { transform: translateY(2px); border-bottom-width: 1px; background-color: #fff; }
         .btn-danger { background-color: var(--neon-red); color: white; }
@@ -71,23 +72,15 @@
         .btn-gold { background-color: var(--neon-gold); color: black; }
         .btn-outline { background-color: transparent; color: var(--neon-amber); border: 1px solid var(--neon-amber); }
 
-        /* TOP STATUS BAR HUD */
+        /* GLOBAL TOP HUD */
         .top-hud {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-            background: #000;
-            padding: 8px;
-            border-radius: 6px;
-            margin-bottom: 14px;
-            font-size: 9px;
-            border: 1px solid var(--neon-amber);
-            box-shadow: inset 0 0 8px rgba(255, 107, 53, 0.1);
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #000;
+            padding: 8px; border-radius: 20px; margin-bottom: 14px; font-size: 9px;
+            border: 1px solid var(--neon-amber); text-align: center;
         }
-        .top-hud div { text-align: center; font-weight: bold; }
         .top-hud div:not(:last-child) { border-right: 1px solid var(--panel-brighter); }
 
-        /* BOTTOM SCREEN PERSISTENT NAV TABS */
+        /* PERSISTENT BOTTOM NAVIGATION TABS */
         .tab-nav-bar {
             position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 60px;
             background: #000; border-top: 2px solid var(--neon-amber); display: grid;
@@ -95,241 +88,237 @@
         }
         .nav-tab {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #665; font-size: 9px; font-weight: bold; cursor: pointer; transition: background 0.2s;
+            color: #665; font-size: 9px; font-weight: bold; cursor: pointer;
         }
-        .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); text-shadow: 0 0 5px var(--neon-cyan); }
-        .nav-tab span { font-size: 18px; margin-bottom: 2px; }
+        .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); }
 
-        /* RETRO MAIN MENU TITLE SCREEN */
-        .title-screen-logo {
-            text-align: center; margin: 40px 0 20px 0; animation: pulse 3s infinite;
-            font-size: 24px; font-weight: bold; color: var(--neon-amber); letter-spacing: 2px;
-        }
-        .title-backdrop {
-            background: linear-gradient(180deg, #000 0%, var(--panel-deep) 100%);
-            border: 1px dashed var(--neon-amber); padding: 20px; border-radius: 8px; text-align: center;
-        }
+        /* START SCREEN CONTROLS */
+        .title-screen-logo { text-align: center; margin: 30px 0 15px 0; font-size: 24px; font-weight: bold; color: var(--neon-amber); letter-spacing: 2px; }
+        .title-backdrop { background: #000; border: 2px solid var(--neon-amber); padding: 20px; border-radius: 16px; text-align: center; }
 
-        /* DYNAMIC FORKING MAP NODES */
-        .region-banner {
-            background: linear-gradient(90deg, transparent, var(--panel-brighter), transparent);
-            padding: 8px; text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 14px;
-            border-bottom: 1px dashed var(--neon-amber); color: var(--neon-gold); text-shadow: 0 0 4px #000;
-        }
-        .map-timeline {
-            display: flex; flex-direction: column; gap: 20px; background: #020101; padding: 20px 10px; border-radius: 8px; border: 1px solid var(--panel-brighter);
-        }
+        /* CHARACTER SELECTOR SHEET ROW */
+        .chassis-row { border: 1px solid var(--panel-brighter); background: #0d0806; padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.1s; }
+        .chassis-row:active { border-color: var(--neon-cyan); background: var(--panel-brighter); }
+
+        /* MAP SYSTEMS */
+        .region-banner { background: #000; padding: 8px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 14px; border-radius: 8px; color: var(--neon-gold); }
+        .map-timeline { display: flex; flex-direction: column; gap: 16px; background: #020101; padding: 16px 10px; border-radius: 16px; }
         .map-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
         .map-node {
-            width: 58px; height: 58px; border-radius: 50%; background: #130a06;
+            width: 52px; height: 52px; border-radius: 50%; background: #130a06;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 18px; border: 2px solid var(--panel-brighter); cursor: pointer; position: relative; transition: all 0.2s;
+            font-size: 16px; border: 2px solid var(--panel-brighter); cursor: pointer; position: relative;
         }
-        .map-node.active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: 0 0 12px var(--neon-cyan); transform: scale(1.05); }
-        .map-node.cleared { opacity: 0.3; border-color: #444; background: #000; }
-        .map-node.locked { opacity: 0.1; cursor: not-allowed; pointer-events: none; }
-        .node-tag { position: absolute; bottom: -16px; font-size: 7.5px; color: #ccc; white-space: nowrap; font-weight: bold; text-shadow: 2px 2px #000; }
+        .map-node.active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: 0 0 10px var(--neon-cyan); }
+        .map-node.cleared { opacity: 0.3; }
+        .map-node.locked { opacity: 0.1; pointer-events: none; }
+        .node-tag { position: absolute; bottom: -14px; font-size: 8px; color: #ccc; font-weight: bold; }
 
-        /* HIGH PIZAZZ COMBAT CARD MODULES */
-        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
-        .combat-hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+        /* INTERFACE BOXLESS COMBAT MODULES */
+        .combat-arena { display: flex; flex-direction: column; gap: 14px; }
+        .combatant-capsule { background: transparent; padding: 4px; position: relative; }
+        
+        .meter { background: #000; height: 10px; border-radius: 20px; overflow: hidden; margin: 4px 0; border: 1px solid var(--panel-brighter); }
+        .meter-fill-hp { background: linear-gradient(90deg, var(--neon-red), #ff0054); height: 100%; width: 100%; transition: width 0.15s; }
+        .meter-fill-en { background: linear-gradient(90deg, var(--neon-cyan), #00b4d8); height: 100%; width: 100%; transition: width 0.15s; }
+        
+        .combat-log { background: #000; height: 70px; overflow-y: auto; padding: 8px; font-size: 9px; color: var(--neon-cyan); border-radius: 12px; margin: 6px 0; }
+        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+        /* ARCED PLAYING HAND DESIGN SYSTEM */
+        .combat-hand-fan-container {
+            position: relative; height: 150px; margin-top: 20px; margin-bottom: 10px;
+            display: flex; justify-content: center; width: 100%; overflow: visible;
+        }
         
         .card-item {
-            background: #000; border: 2px solid #555; border-radius: 6px; padding: 6px; 
-            min-height: 125px; display: flex; flex-direction: column; justify-content: space-between; 
-            position: relative; font-size: 8.5px; text-align: left; transition: transform 0.1s; cursor: pointer;
+            background: #000; border: 2px solid #555; border-radius: 10px; padding: 8px; 
+            width: 90px; height: 130px; display: flex; flex-direction: column; justify-content: space-between; 
+            position: absolute; font-size: 8px; text-align: left; transition: transform 0.2s, top 0.2s; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); transform-origin: bottom center;
         }
-        .card-item:active { transform: scale(0.95); }
-        .card-item.card-attack { border-color: var(--neon-red); box-shadow: inset 0 0 6px rgba(255,0,84,0.2); }
-        .card-item.card-defense { border-color: var(--neon-cyan); box-shadow: inset 0 0 6px rgba(0,245,212,0.2); }
-        .card-item.card-utility { border-color: var(--neon-gold); box-shadow: inset 0 0 6px rgba(254,228,64,0.2); }
-        .card-item.card-rare { border-color: var(--neon-purple) !important; box-shadow: 0 0 8px var(--neon-purple) !important; }
+        .card-item.card-attack { border-color: var(--neon-red); }
+        .card-item.card-defense { border-color: var(--neon-cyan); }
+        .card-item.card-utility { border-color: var(--neon-gold); }
+        .card-item.card-rare { border-color: var(--neon-purple); box-shadow: 0 0 8px var(--neon-purple); }
+        .card-item:hover { top: -15px; z-index: 100 !important; }
         
-        .card-item .badge { position: absolute; top: 3px; right: 3px; background: #fff; color: #000; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; border: 1px solid #000; }
-        .card-item .title { font-weight: bold; color: #fff; font-size: 9px; border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 3px; margin-bottom: 4px; max-width: 80%; }
-        .card-item .body-text { font-size: 8px; color: #e0d5ce; line-height: 1.3; flex-grow: 1; }
+        .card-item .badge { position: absolute; top: 4px; right: 4px; background: #fff; color: #000; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+        .card-item .title { font-weight: bold; color: #fff; font-size: 8.5px; border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 2px; }
+        .card-item .body-text { font-size: 7.5px; color: #e0d5ce; line-height: 1.2; flex-grow: 1; margin-top: 4px; }
 
-        /* HP & ENERGY METERS */
-        .combatant-block { background: #0b0705; border: 1px solid var(--panel-brighter); border-radius: 6px; padding: 10px; margin-bottom: 10px; }
-        .meter { background: #1a110d; height: 14px; border-radius: 4px; overflow: hidden; margin: 5px 0; border: 1px solid #33221a; position: relative; }
-        .meter-fill-hp { background: linear-gradient(90deg, #b7094c, var(--neon-red)); height: 100%; width: 100%; transition: width 0.2s; }
-        .meter-fill-en { background: linear-gradient(90deg, #00b4d8, var(--neon-cyan)); height: 100%; width: 100%; transition: width 0.2s; }
-        
-        .combat-log { background: #000; border: 1px solid var(--panel-brighter); height: 85px; overflow-y: auto; padding: 8px; font-size: 9.5px; color: var(--neon-cyan); border-radius: 6px; text-align: left; margin-bottom: 10px; line-height: 1.4; }
-        .encounter-overlay { background: #000; border: 2px solid var(--neon-gold); padding: 14px; border-radius: 6px; margin-top: 12px; box-shadow: 0 0 15px rgba(254, 228, 64, 0.15); }
-        .dialogue-text { font-style: italic; font-size: 10.5px; color: #ebdcd0; padding: 10px; background: var(--panel-deep); border-left: 3px solid var(--neon-gold); margin-bottom: 12px; text-align: left; }
-
-        .chassis-row { border: 1px solid var(--panel-brighter); background: #0d0806; padding: 12px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s; }
-        .chassis-row:hover, .chassis-row:active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: inset 0 0 8px rgba(0,245,212,0.1); }
-        .hidden { display: none !important; }
+        .theme-select-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px; }
+        .theme-dot { font-size: 8px; padding: 6px; text-align: center; background: #000; border: 1px solid #444; border-radius: 6px; cursor: pointer; color: #fff; }
+        .encounter-overlay { background: #000; border: 2px solid var(--neon-gold); padding: 12px; border-radius: 12px; margin-top: 8px; }
+        .dialogue-text { font-style: italic; font-size: 10px; color: #ebdcd0; padding: 8px; background: var(--panel-deep); border-left: 2px solid var(--neon-gold); margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
     <div class="app-window">
-        <!-- GLOBAL SAVED REALTIME HUD -->
+        <!-- TOP NAVIGATION HUD -->
         <div id="central-hud" class="top-hud hidden">
-            <div>POSSE: <b id="hud-char-name" style="color:var(--neon-cyan);">---</b></div>
-            <div>GOLD: <b id="hud-gold-val" style="color:var(--neon-gold);">0g</b></div>
-            <div>TRAIL: <b id="hud-stage-val" style="color:var(--neon-amber);">Row 1</b></div>
-            <div>STAGE: <b id="hud-level-val" style="color:var(--neon-purple);">LV1</b></div>
+            <div>POSSE:<br><b id="hud-char-name" style="color:var(--neon-cyan);">---</b></div>
+            <div>GOLD:<br><b id="hud-gold-val" style="color:var(--neon-gold);">0g</b></div>
+            <div>TRAIL:<br><b id="hud-stage-val" style="color:var(--neon-amber);">Row 1</b></div>
+            <div>STAGE:<br><b id="hud-level-val" style="color:var(--neon-purple);">LV1</b></div>
         </div>
 
-        <!-- NEW ARCADE-STYLE GAME TITLE / START SCREEN -->
+        <!-- ARCADE TITLE MENU SCREEN -->
         <div id="screen-main-menu" class="screen-view active">
-            <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:14px; color:#fff; letter-spacing:4px;">BLOOD & RUST</span></div>
+            <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:13px; color:#fff; letter-spacing:4px;">BLOOD & RUST</span></div>
             <div class="title-backdrop">
-                <p style="font-size:10px; margin-bottom: 20px; color:#aaa;">A tactical card-driven cyber-western matrix engine build v7.0</p>
-                <button class="btn" style="padding:15px; font-size:13px;" onclick="initiateNewGameSetup()">⚡ ENGAGE BACKPLANE MOTORS ⚡</button>
-                <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE EXISTING EXTRACTION</button>
+                <p style="font-size:9px; margin-bottom: 14px; color:#aaa;">System Command Initialization Build v8.0</p>
+                <button class="btn" onclick="initiateNewGameSetup()">⚡ ENGAGE MOTORS ⚡</button>
+                <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE RUN CHANNEL</button>
+                
+                <h4 style="margin-top:20px; font-size:10px;">🎨 ENGINE GRAPHICS ROUTINE</h4>
+                <div class="theme-select-panel">
+                    <div class="theme-dot" onclick="setMatrixTheme('rust')">Solar Rust</div>
+                    <div class="theme-dot" onclick="setMatrixTheme('cyber')">Cyber Neon</div>
+                    <div class="theme-dot" onclick="setMatrixTheme('toxic')">Toxic Waste</div>
+                    <div class="theme-dot" onclick="setMatrixTheme('obsidian')">Obsidian</div>
+                    <div class="theme-dot" onclick="setMatrixTheme('crimson')">Crimson</div>
+                </div>
             </div>
         </div>
 
-        <!-- DYNAMIC CHARACTER SELECTOR (FIXED OVERHEAD BOUNDS) -->
+        <!-- FULL UNTRUNCATED OUTLAW CHASSIS SELECTOR RECONSTRUCTION -->
         <div id="screen-setup" class="screen-view">
-            <h1>🌵 SELECT OUTLAW CORE ARCHETYPE 🌾</h1>
-            <p style="text-align: center; font-size: 10px; margin-bottom: 14px;">Mount your divine core mechanics engine inside an extraction framework chassis.</p>
-            <div id="chassis-selection-list"></div>
-            <button class="btn btn-outline" onclick="returnToMainMenu()">⬅️ RETURN TO TITLE MAIN MENU</button>
+            <h1>🌵 MOUNT OUTLAW SYSTEM CORE 🌾</h1>
+            <p style="text-align: center; font-size: 9px; margin-bottom: 10px;">Select from your complete authorized asset array registry:</p>
+            <div id="chassis-selection-list" style="max-height: 320px; overflow-y: auto; padding-right: 4px;"></div>
+            <button class="btn btn-outline" style="margin-top:10px;" onclick="returnToMainMenu()">⬅️ REVERT BACK TO START</button>
         </div>
 
-        <!-- HIGH-WAYPOINT PATH BRANCHING MAP -->
+        <!-- CAMPAIGN WAYPOINT TRAIL MAP -->
         <div id="screen-world-map" class="screen-view">
-            <div class="region-banner" id="current-region-title">REGION INDEX</div>
+            <div class="region-banner" id="current-region-title">REGION FRAME INDEX</div>
             <div class="map-timeline" id="generated-map-nodes"></div>
             <div id="encounter-notification" class="encounter-overlay hidden"></div>
         </div>
 
-        <!-- DECK & INVENTORY TAB + GLOBAL MENU RESET ACCESS -->
+        <!-- ASSET MATRIX EXPANSION INVENTORY -->
         <div id="screen-inventory-deck" class="screen-view">
-            <h3>🤠 CURRENT TRAIL MODULE LOGS</h3>
-            <div style="background:#000; padding:10px; border-radius:6px; font-size:10.5px; border:1px solid var(--panel-brighter); line-height: 1.6;">
-                • Chassis Core: <span id="deck-stats-name" style="color:var(--neon-cyan); font-weight:bold;">---</span><br>
-                • Frontier Tier Level: <span id="deck-stats-level" style="color:var(--neon-purple); font-weight:bold;">1</span> (XP: <span id="deck-stats-xp">0/100</span>)<br>
-                • Chassis Integrity/HP: <span id="deck-stats-hp" style="color:var(--neon-red);">0/0</span><br>
-                • Action Clock Supply: <span id="deck-stats-energy" style="color:var(--neon-gold);">0</span> Energy per turn loop
+            <h3>🤠 CORE OUTLAW SYSTEM HARDWARE</h3>
+            <div style="background:#000; padding:10px; border-radius:12px; font-size:10px; border:1px solid var(--panel-brighter); line-height: 1.5;">
+                • Core Name: <span id="deck-stats-name" style="color:var(--neon-cyan); font-weight:bold;">---</span><br>
+                • Level Tier: <span id="deck-stats-level" style="color:var(--neon-purple); font-weight:bold;">1</span> (XP: <span id="deck-stats-xp">0/100</span>)<br>
+                • Frame Stability: <span id="deck-stats-hp" style="color:var(--neon-red);">0/0</span><br>
+                • Loop Capacity: <span id="deck-stats-energy" style="color:var(--neon-gold);">0</span> Energy Base
             </div>
             
-            <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr; gap: 6px;">
-                <button class="btn btn-outline" onclick="returnToMainMenu()">🛑 PAUSE & EXIT TO MAIN MENU</button>
-                <button class="btn btn-danger" style="padding: 6px; font-size: 9px;" onclick="hardResetActiveRun()">⚠️ ABANDON RUN & WIPE SAVE</button>
+            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                <button class="btn btn-outline" style="margin:0;" onclick="returnToMainMenu()">🛑 PAUSE RUN</button>
+                <button class="btn btn-danger" style="margin:0;" onclick="hardResetActiveRun()">⚠️ WIPE PROFILE</button>
             </div>
 
-            <h3 style="margin-top:20px;">📜 INSTALLED FIREARM ARSENAL MODULES (<span id="deck-count-num">0</span>)</h3>
+            <h3 style="margin-top:16px;">📜 INSTALLED ARSENAL MODULES (<span id="deck-count-num">0</span>)</h3>
             <div class="deck-view-grid" id="deck-display-scroll-area"></div>
         </div>
 
-        <!-- MAIN FRONTIER COMBAT SIMULATION MODULE -->
+        <!-- HIGH-CONTRAST INVERTED COMBAT SIMULATION SCENE -->
         <div id="screen-battle-engine" class="screen-view">
-            <div class="combatant-block">
-                <h4 id="combat-player-title">Outlaw</h4>
-                <div style="font-size:9.5px; display:flex; justify-content:space-between; margin-bottom:2px;">
-                    <span>Chassis Integrity: <b id="combat-player-hp-text">0/0</b></span>
-                    <span style="color:var(--neon-cyan);" id="combat-player-shield-text">Defensive Shield: 0</span>
+            <div class="combat-arena">
+                
+                <!-- 1. HOSTILE THREAT HOUSING (NOW AT THE TOP) -->
+                <div class="combatant-capsule" style="border-bottom: 1px dotted var(--neon-red); padding-bottom: 10px;">
+                    <h4 style="color:var(--neon-red);" id="combat-enemy-title">Hostile Entity</h4>
+                    <div style="font-size:9px; display:flex; justify-content:between; width:100%;">
+                        <span>Frame Lines: <b id="combat-enemy-hp-text">0/0</b></span>
+                        <span style="margin-left:auto; color:var(--neon-amber);" id="combat-enemy-bleed-text">Bleed: 0</span>
+                    </div>
+                    <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
+                    <div style="font-size:9px; background:#000; padding:6px; border-radius:8px; border:1px dashed var(--neon-red); margin-top:4px;">
+                        <span id="combat-enemy-intent-text" style="color:#fff;">Calculating ballistic projection...</span>
+                    </div>
                 </div>
-                <div class="meter"><div class="meter-fill-hp" id="combat-player-hp-bar"></div></div>
-                <div style="font-size:9.5px; margin-bottom:2px;">Recharge Grid Clock: <b id="combat-player-en-text" style="color:var(--neon-cyan);">0/0</b></div>
-                <div class="meter"><div class="meter-fill-en" id="combat-player-en-bar"></div></div>
-                <button class="btn btn-gold" style="padding:6px; font-size:9.5px; margin-top:4px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE ARTIFACT POWER</button>
-            </div>
 
-            <div class="combatant-block">
-                <h4 style="color:var(--neon-red);" id="combat-enemy-title">Hostile Entity</h4>
-                <div style="font-size:9.5px; display:flex; justify-content:space-between; margin-bottom:2px;">
-                    <span>Frame Line: <b id="combat-enemy-hp-text">0/0</b></span>
-                    <span style="color:var(--neon-amber);" id="combat-enemy-bleed-text">Bleed Leak: 0</span>
-                </div>
-                <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
-                <div style="font-size:10px; background:#000; padding:6px; border-radius:4px; border:1px solid var(--neon-red); min-height:32px;">
-                    <b style="color:var(--neon-red);">DANGER MATRIX INTEL:</b> <span id="combat-enemy-intent-text" style="color:#fff;">Scanning targets...</span>
-                </div>
-            </div>
+                <!-- 2. SYSTEM DATA TRANSACTION LOG -->
+                <div class="combat-log" id="combat-event-logger">COOLING CYLINDER READY...</div>
 
-            <div class="combat-log" id="combat-event-logger">FUSES DRY... READY TO FIRE.</div>
-            <div class="combat-hand" id="combat-current-hand-slots"></div>
-            <button class="btn btn-danger" style="margin-top:14px;" onclick="processHostileTurnSequence()">CONCEDE ACTION TURN STEP</button>
+                <!-- 3. LOCAL PLAYER INJECTOR FRAME (NOW POSITIONED LOWER) -->
+                <div class="combatant-capsule" style="border-top: 1px dotted var(--neon-cyan); padding-top: 4px;">
+                    <h4 id="combat-player-title">Outlaw Core</h4>
+                    <div style="font-size:9px; display:flex; justify-content:space-between;">
+                        <span>Integrity: <b id="combat-player-hp-text">0/0</b></span>
+                        <span style="color:var(--neon-cyan);" id="combat-player-shield-text">Plating: 0</span>
+                    </div>
+                    <div class="meter"><div class="meter-fill-hp" id="combat-player-hp-bar"></div></div>
+                    <div style="font-size:9px;">Action Clock Charge: <b id="combat-player-en-text" style="color:var(--neon-cyan);">0/0</b></div>
+                    <div class="meter"><div class="meter-fill-en" id="combat-player-en-bar"></div></div>
+                    <button class="btn btn-gold" style="padding:6px; font-size:9px; border-radius:8px; margin-top:4px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE CORE ARTIFACT</button>
+                </div>
+
+                <!-- 4. ORGANIC ARC DISTRIBUTED CHARACTER CARDS DECK HAND -->
+                <div class="combat-hand-fan-container" id="combat-current-hand-slots"></div>
+
+                <button class="btn btn-danger" style="margin-top:4px;" onclick="processHostileTurnSequence()">CONCEDE ACTION TURN STEP</button>
+            </div>
         </div>
     </div>
 
-    <!-- BOTTOM TAB NAVIGATION -->
+    <!-- BOTTOM TAB CONTROLLER PLATFORM -->
     <div class="tab-nav-bar hidden" id="persistent-app-navigation">
-        <div class="nav-tab active" id="tab-btn-map" onclick="switchActiveTab('world-map')"><span>🗺️</span>TRAIL MAP</div>
-        <div class="nav-tab" id="tab-btn-deck" onclick="switchActiveTab('inventory-deck')"><span>🎴</span>SADDLEBAG</div>
-        <div class="nav-tab" id="tab-btn-battle" onclick="switchActiveTab('battle-engine')"><span>⚔️</span>SHOOTOUT</div>
+        <div class="nav-tab active" id="tab-btn-map" onclick="switchActiveTab('world-map')">TRAIL MAP</div>
+        <div class="nav-tab" id="tab-btn-deck" onclick="switchActiveTab('inventory-deck')">SADDLEBAG</div>
+        <div class="nav-tab" id="tab-btn-battle" onclick="switchActiveTab('battle-engine')">SHOOTOUT</div>
     </div>
 
     <script>
-        // GLOBAL DATA CARD MATRIX DICTIONARY
+        // MASTER COMPILATION ARCHEN-CARD DICTIONARY
         const CARD_DICTIONARY = [
             { id: 101, title: "Rusty Six-Shooter", type: "Attack", cost: 1, rare: false, desc: "Deal 6 gun damage.", run: () => damageHostileTarget(6) },
-            { id: 102, title: "Deadeye Carbine", type: "Attack", cost: 2, rare: false, desc: "Deal 15 aimed precision damage.", run: () => damageHostileTarget(15) },
-            { id: 103, title: "Fan the Hammer", type: "Attack", cost: 3, rare: true, desc: "Unload chambers for 25 massive kinetic damage.", run: () => damageHostileTarget(25) },
-            { id: 104, title: "Quickdraw Snap", type: "Attack", cost: 0, rare: false, desc: "Deal 4 damage. Instantly loops into your next card slot.", run: () => { damageHostileTarget(4); dealCombatActionHand(); } },
-            { id: 105, title: "Serrated Bowie Knife", type: "Attack", cost: 1, rare: false, desc: "Deal 4 damage and apply +3 Bleed stacks.", run: () => { damageHostileTarget(4); activeCombatState.enemyBleed += 3; } },
-            { id: 106, title: "Dead Man's Hand", type: "Attack", cost: 2, rare: true, desc: "If missing health frame lines, deal 22 heavy retribution damage.", run: () => { let d = (userState.maxHp - userState.hp > 0) ? 22 : 8; damageHostileTarget(d); } },
-            { id: 107, title: "Staccato Shot", type: "Attack", cost: 1, rare: false, desc: "Deal 7 damage. Deals 14 instead if it's the first card played.", run: () => { let d = activeCombatState.cardsPlayedThisTurn === 0 ? 14 : 7; damageHostileTarget(d); } },
-            { id: 108, title: "The Crescendo Blast", type: "Attack", cost: 2, rare: true, desc: "Deals 5 damage per card played this entire round cycle.", run: () => { damageHostileTarget(activeCombatState.cardsPlayedThisTurn * 5); } },
-            
-            { id: 201, title: "Saloon Cover Pile", type: "Defense", cost: 1, rare: false, desc: "Duck behind ironwood for +6 Armor protection.", run: () => shieldPlayerTarget(6) },
-            { id: 202, title: "Vigilante Iron Plating", type: "Defense", cost: 2, rare: false, desc: "Weld +14 high-grade armor buffers.", run: () => shieldPlayerTarget(14) },
-            { id: 203, title: "Spur Scrap Trap", type: "Defense", cost: 1, rare: false, desc: "Gain 4 Armor. Ricochet 4 feedback damage upon hit.", run: () => { shieldPlayerTarget(4); userState.thorns += 4; } },
-            
-            { id: 301, title: "Cactus Tonic Flask", type: "Utility", cost: 1, rare: false, desc: "Flush system pumps to patch up 9 health points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 9); logCombat('Swigged toxic bitter cactus tonic.'); } },
-            { id: 302, title: "Stick of Dynamite", type: "Attack", cost: 2, rare: true, desc: "Deals 12 damage now, 12 damage next cycle.", run: () => { damageHostileTarget(12); activeCombatState.delayedDamage += 12; } },
-            { id: 303, title: "Syncopated Rhythm", type: "Utility", cost: 1, rare: false, desc: "Draw 3 fresh action cards into your current hand instantly.", run: () => { dealCombatActionHand(); dealCombatActionHand(); } }
+            { id: 102, title: "Deadeye Carbine", type: "Attack", cost: 2, rare: false, desc: "Deal 15 precision damage.", run: () => damageHostileTarget(15) },
+            { id: 103, title: "Fan the Hammer", type: "Attack", cost: 3, rare: true, desc: "Unload cells for 25 burst damage.", run: () => damageHostileTarget(25) },
+            { id: 104, title: "Quickdraw Snap", type: "Attack", cost: 0, rare: false, desc: "Deal 4 quick kinetic damage.", run: () => damageHostileTarget(4) },
+            { id: 105, title: "Serrated Bowie Knife", type: "Attack", cost: 1, rare: false, desc: "Deal 4 damage and add +3 Bleed.", run: () => { damageHostileTarget(4); activeCombatState.enemyBleed += 3; } },
+            { id: 106, title: "Dead Man's Hand", type: "Attack", cost: 2, rare: true, desc: "Deals 22 points damage if frame is cracked.", run: () => { let d = (userState.maxHp - userState.hp > 0) ? 22 : 8; damageHostileTarget(d); } },
+            { id: 107, title: "Staccato Shot", type: "Attack", cost: 1, rare: false, desc: "Deals 14 damage if first card played.", run: () => { let d = activeCombatState.cardsPlayedThisTurn === 0 ? 14 : 7; damageHostileTarget(d); } },
+            { id: 108, title: "Crescendo Blast", type: "Attack", cost: 2, rare: true, desc: "Deals 6 damage per card expended.", run: () => { damageHostileTarget(activeCombatState.cardsPlayedThisTurn * 6); } },
+            { id: 201, title: "Saloon Cover Pile", type: "Defense", cost: 1, rare: false, desc: "Gain +6 defensive plate lines.", run: () => shieldPlayerTarget(6) },
+            { id: 202, title: "Iron Plating", type: "Defense", cost: 2, rare: false, desc: "Gain +14 heavy hull plating.", run: () => shieldPlayerTarget(14) },
+            { id: 203, title: "Spur Scrap Trap", type: "Defense", cost: 1, rare: false, desc: "Gain 4 armor and reflect feedback.", run: () => { shieldPlayerTarget(4); userState.thorns += 4; } },
+            { id: 301, title: "Cactus Tonic Flask", type: "Utility", cost: 1, rare: false, desc: "Patch up 10 raw damage points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 10); } },
+            { id: 303, title: "Syncopated Rhythm", type: "Utility", cost: 1, rare: false, desc: "Draw additional operational directives.", run: () => { fillHandArray(); } }
         ];
 
-        // FULL EXPANDED CORE CHASSIS REGISTRY (NO DISPLAY BLOCKERS)
+        // FULL roster of 10 primary archetypes (FIXED)
         const OUTLAW_CHASSIS_REGISTRY = [
-            { name: "The Gambler", hp: 80, energy: 3, ability: "Cheater's Draw", desc: "Rolls through towns with loose coins. Active: Free instant access to high-tier firepower configurations.", baseDeck: [101, 101, 104, 201, 201, 106] },
-            { name: "The Iron Monarch", hp: 115, energy: 3, ability: "Crown Core Blast", desc: "Protected behind heavy ancient plating. Active: Discharges an absolute relic ray dealing 15 shield-piercing damage.", baseDeck: [101, 102, 201, 202, 203, 301] },
-            { name: "The Sheriff", hp: 95, energy: 3, ability: "Iron Gallows Warrant", desc: "Brings strict order to lawless trail systems. Active: Suppress hostile active output levels by 6 safely.", baseDeck: [101, 101, 102, 105, 201, 201] },
-            { name: "The Bank Robber", hp: 85, energy: 4, ability: "Gatling Overdrive", desc: "Fast hands, rapid venting systems. Active: Instantly secure +2 extra action energy capacity during your loop.", baseDeck: [101, 101, 104, 201, 302, 105] }
+            { name: "The Gambler", hp: 80, energy: 3, desc: "High critical potential. Uses luck-based execution loops.", baseDeck: [101, 101, 104, 201, 106] },
+            { name: "The Iron Monarch", hp: 120, energy: 3, desc: "Heavy mechanical plate array with an ancient anchor artifact.", baseDeck: [101, 102, 201, 202, 203] },
+            { name: "The Sheriff", hp: 95, energy: 3, desc: "Suppresses criminal engine blocks, targeting enemy arrays directly.", baseDeck: [101, 101, 102, 105, 201] },
+            { name: "The Bank Robber", hp: 85, energy: 4, desc: "Highly dynamic power cycles designed around rapid firing matrixes.", baseDeck: [101, 104, 201, 201, 107] },
+            { name: "The Arcane", hp: 75, energy: 3, desc: "Manipulates raw raw data matrices to project synthetic tracking currents.", baseDeck: [101, 201, 303, 108] },
+            { name: "The Warlock", hp: 90, energy: 3, desc: "Draws extraction output via high-risk Titan/Primordial pact conduits.", baseDeck: [101, 105, 201, 106] },
+            { name: "The Brawler", hp: 110, energy: 3, desc: "Melee framework optimized for hardened and sumo impact maneuvers.", baseDeck: [101, 101, 201, 203] },
+            { name: "The Nomad", hp: 85, energy: 3, desc: "Scavenger chassis specializing in dynamic displacement and evasive trail steps.", baseDeck: [101, 104, 201, 301] },
+            { name: "The Artificer", hp: 90, energy: 3, desc: "Deploys companion automatic turrets and builds scrap micro traps.", baseDeck: [101, 201, 202, 203] },
+            { name: "The Medic", hp: 100, energy: 3, desc: "Recharges operating frame lines dynamically through high-potency nanite tonics.", baseDeck: [101, 201, 301, 301] }
         ];
 
-        // PROGRESSIVE REGION TRAILS
         const FRONTIER_CAMPAIGN_MAPS = [
             {
-                name: "STAGE I: THE RUSTWOOD PATHS",
-                boss: { name: "BOUNTY HUNTER VANCE", hp: 70, dmg: 9, intent: "Tracking your cooling vents with a long-barrel rifle" },
+                name: "STAGE I: THE RUSTWOOD SECTOR",
+                boss: { name: "BOUNTY HUNTER VANCE", hp: 70, dmg: 8, intent: "Targeting your processing vents with a high-velocity frame piercer" },
                 rows: [
-                    [{ type: "Combat", label: "🤠 Gulch Scout", icon: "⚔️" }],
-                    [{ type: "Bartender", label: "🥃 Dust Saloon", icon: "🥃" }, { type: "Ragtime", label: "🎹 Piano Unit", icon: "🎹" }],
-                    [{ type: "Combat", label: "🤠 Cattle Thief", icon: "⚔️" }, { type: "SnakeOil", label: "🧪 Huckster Wagon", icon: "🧪" }],
-                    [{ type: "Preacher", label: "⛪ Scrap Chapel", icon: "⛪" }, { type: "Prospector", label: "⛏️ Clay Claim", icon: "⛏️" }],
+                    [{ type: "Combat", label: "🤠 Gulch Sentry", icon: "⚔️" }],
+                    [{ type: "Bartender", label: "🥃 Blackwood Saloon", icon: "🥃" }, { type: "Ragtime", label: "🎹 Junk Piano", icon: "🎹" }],
+                    [{ type: "Combat", label: "🤠 Scrap Raider", icon: "⚔️" }],
                     [{ type: "Boss", label: "💀 Target: Vance", icon: "👹" }]
-                ]
-            },
-            {
-                name: "STAGE II: BRIMSTONE SALOON TERRITORIES",
-                boss: { name: "THE RENEGADE SHERIFF", hp: 115, dmg: 14, intent: "Cocking custom high-impact slug scattergun" },
-                rows: [
-                    [{ type: "Combat", label: "🤠 Deputy Defector", icon: "⚔️" }],
-                    [{ type: "Gambler", label: "🎲 Card Table", icon: "🎲" }, { type: "Ragtime", label: "🎹 Saloon Keys", icon: "🎹" }],
-                    [{ type: "Combat", label: "🤠 Caravan Raider", icon: "⚔️" }, { type: "SnakeOil", label: "🧪 Tonic Vendor", icon: "🧪" }],
-                    [{ type: "BankRobber", label: "💰 Transit Vault", icon: "💰" }, { type: "Undertaker", label: "⚰️ Boot Hill", icon: "⚰️" }],
-                    [{ type: "Boss", label: "💀 Target: Renegade", icon: "👹" }]
                 ]
             }
         ];
 
-        // ENGINE RUNTIME STATE RUNNABLES
         let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, thorns: 0, level: 1, xp: 0, deck: [] };
-        let activeRegionIndex = 0;
-        let activeRowIndex = 0;
-        let activeChoiceColumn = 0; 
-        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, delayedDamage: 0, enemyBleed: 0, cardsPlayedThisTurn: 0 };
+        let activeRegionIndex = 0; let activeRowIndex = 0; let activeChoiceColumn = 0; 
+        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, delayedDamage: 0, enemyBleed: 0, cardsPlayedThisTurn: 0, liveHand: [] };
 
-        window.addEventListener("DOMContentLoaded", () => {
-            checkForExistingSaveFile();
-        });
+        window.addEventListener("DOMContentLoaded", () => { if(localStorage.getItem("frontier_save_v8")) document.getElementById("main-menu-continue-btn").classList.remove("hidden"); });
 
-        function checkForExistingSaveFile() {
-            if (localStorage.getItem("frontier_save_v7")) {
-                document.getElementById("main-menu-continue-btn").classList.remove("hidden");
-            } else {
-                document.getElementById("main-menu-continue-btn").classList.add("hidden");
-            }
+        function setMatrixTheme(theme) {
+            document.body.className = "";
+            if(theme !== 'rust') document.body.classList.add(`theme-${theme}`);
         }
 
         function returnToMainMenu() {
@@ -337,7 +326,6 @@
             document.getElementById("screen-main-menu").classList.add("active");
             document.getElementById("central-hud").classList.add("hidden");
             document.getElementById("persistent-app-navigation").classList.add("hidden");
-            checkForExistingSaveFile();
         }
 
         function initiateNewGameSetup() {
@@ -346,448 +334,183 @@
             renderOutlawSelectionList();
         }
 
-        // CORRECTED LOOP TO DYNAMICALLY POPULATE EVERY REGISTERED OPTION
         function renderOutlawSelectionList() {
             const listContainer = document.getElementById("chassis-selection-list");
             listContainer.innerHTML = "";
-            
             OUTLAW_CHASSIS_REGISTRY.forEach((ch, idx) => {
                 const row = document.createElement("div");
                 row.className = "chassis-row";
                 row.onclick = () => instantiateSelectedChassis(idx);
                 row.innerHTML = `<h4>${ch.name} <span style="font-size:9px; color:var(--neon-gold); float:right;">HP: ${ch.hp} | EN: ${ch.energy}</span></h4>
-                                 <p style="margin: 4px 0 0 0; font-size:10px;">${ch.desc}</p>`;
+                                 <p>${ch.desc}</p>`;
                 listContainer.appendChild(row);
             });
         }
 
         function instantiateSelectedChassis(index) {
             const chosen = OUTLAW_CHASSIS_REGISTRY[index];
-            userState.name = chosen.name;
-            userState.maxHp = userState.hp = chosen.hp;
-            userState.maxEnergy = chosen.energy;
-            userState.deck = [...chosen.baseDeck];
-            userState.gold = 60;
-            userState.level = 1;
-            userState.xp = 0;
-            
-            activeRegionIndex = 0;
-            activeRowIndex = 0;
-            activeChoiceColumn = 0;
-
-            saveActiveRunData();
-            enterTheFrontierWorld();
+            userState.name = chosen.name; userState.maxHp = userState.hp = chosen.hp; userState.maxEnergy = chosen.energy;
+            userState.deck = [...chosen.baseDeck]; userState.gold = 60; userState.level = 1; userState.xp = 0;
+            activeRegionIndex = 0; activeRowIndex = 0; saveActiveRunData(); enterTheFrontierWorld();
         }
 
         function enterTheFrontierWorld() {
-            document.getElementById("screen-main-menu").classList.remove("active");
             document.getElementById("screen-setup").classList.add("hidden");
+            document.getElementById("screen-main-menu").classList.remove("active");
             document.getElementById("central-hud").classList.remove("hidden");
             document.getElementById("persistent-app-navigation").classList.remove("hidden");
-            
-            switchActiveTab("world-map");
-            syncGlobalHUD();
-            buildFrontierMapUi();
+            switchActiveTab("world-map"); syncGlobalHUD(); buildFrontierMapUi();
         }
 
-        function saveActiveRunData() {
-            const dataDump = { userState, activeRegionIndex, activeRowIndex, activeChoiceColumn };
-            localStorage.setItem("frontier_save_v7", JSON.stringify(dataDump));
-        }
-
-        function loadActiveRunData() {
-            const cache = JSON.parse(localStorage.getItem("frontier_save_v7"));
-            userState = cache.userState;
-            activeRegionIndex = cache.activeRegionIndex;
-            activeRowIndex = cache.activeRowIndex;
-            activeChoiceColumn = cache.activeChoiceColumn;
-            enterTheFrontierWorld();
-        }
-
-        function hardResetActiveRun() {
-            if(confirm("Completely wipe this outlaw profile and wipe save logs?")) {
-                localStorage.removeItem("frontier_save_v7");
-                location.reload();
-            }
-        }
+        function saveActiveRunData() { localStorage.setItem("frontier_save_v8", JSON.stringify({ userState, activeRegionIndex, activeRowIndex, activeChoiceColumn })); }
+        function loadActiveRunData() { const cache = JSON.parse(localStorage.getItem("frontier_save_v8")); userState = cache.userState; activeRegionIndex = cache.activeRegionIndex; activeRowIndex = cache.activeRowIndex; enterTheFrontierWorld(); }
+        function hardResetActiveRun() { if(confirm("Discard core data matrix?")) { localStorage.removeItem("frontier_save_v8"); location.reload(); } }
 
         function switchActiveTab(targetTabId) {
             document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
             document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
-            
-            if(targetTabId === 'world-map') {
-                document.getElementById("screen-world-map").classList.add("active");
-                document.getElementById("tab-btn-map").classList.add("active");
-            } else if(targetTabId === 'inventory-deck') {
-                document.getElementById("screen-inventory-deck").classList.add("active");
-                document.getElementById("tab-btn-deck").classList.add("active");
-                refreshDeckInspectorTab();
-            } else if(targetTabId === 'battle-engine') {
-                document.getElementById("screen-battle-engine").classList.add("active");
-                document.getElementById("tab-btn-battle").classList.add("active");
-            }
+            if(targetTabId === 'world-map') { document.getElementById("screen-world-map").classList.add("active"); document.getElementById("tab-btn-map").classList.add("active"); }
+            if(targetTabId === 'inventory-deck') { document.getElementById("screen-inventory-deck").classList.add("active"); document.getElementById("tab-btn-deck").classList.add("active"); refreshDeckInspectorTab(); }
+            if(targetTabId === 'battle-engine') { document.getElementById("screen-battle-engine").classList.add("active"); document.getElementById("tab-btn-battle").classList.add("active"); }
         }
 
         function syncGlobalHUD() {
-            document.getElementById("hud-char-name").innerText = userState.name;
-            document.getElementById("hud-gold-val").innerText = userState.gold + "g";
-            document.getElementById("hud-stage-val").innerText = `Row ${activeRowIndex + 1}`;
-            document.getElementById("hud-level-val").innerText = `LV ${userState.level}`;
-        }
-
-        function awardExperiencePoints(amount) {
-            userState.xp += amount;
-            if(userState.xp >= 100) {
-                userState.level += 1;
-                userState.xp -= 100;
-                userState.maxHp += 15;
-                userState.hp = userState.maxHp;
-                alert(`📈 STAGE ADVANCEMENT! Reached Frontier Level ${userState.level}! Max chassis capacity expanded.`);
-            }
-            saveActiveRunData();
-            syncGlobalHUD();
-        }
-
-        function refreshDeckInspectorTab() {
-            document.getElementById("deck-stats-name").innerText = userState.name;
-            document.getElementById("deck-stats-hp").innerText = `${userState.hp}/${userState.maxHp}`;
-            document.getElementById("deck-stats-energy").innerText = userState.maxEnergy;
-            document.getElementById("deck-stats-level").innerText = userState.level;
-            document.getElementById("deck-stats-xp").innerText = `${userState.xp}/100`;
-            document.getElementById("deck-count-num").innerText = userState.deck.length;
-
-            const grid = document.getElementById("deck-display-scroll-area");
-            grid.innerHTML = "";
-            userState.deck.forEach(cardId => {
-                const data = CARD_DICTIONARY.find(c => c.id === cardId);
-                if(!data) return;
-                const item = document.createElement("div");
-                
-                let typeClass = "card-attack";
-                if(data.type === "Defense") typeClass = "card-defense";
-                if(data.type === "Utility") typeClass = "card-utility";
-                
-                item.className = `card-item ${typeClass} ${data.rare ? 'card-rare' : ''}`;
-                item.innerHTML = `<div class="badge">${data.cost}</div><div class="title">${data.title}</div><div class="body-text">${data.desc}</div>`;
-                grid.appendChild(item);
-            });
+            document.getElementById("hud-char-name").innerText = userState.name; document.getElementById("hud-gold-val").innerText = userState.gold + "g";
+            document.getElementById("hud-stage-val").innerText = `Row ${activeRowIndex + 1}`; document.getElementById("hud-level-val").innerText = `LV ${userState.level}`;
         }
 
         function buildFrontierMapUi() {
             const currentMapData = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex];
             document.getElementById("current-region-title").innerText = currentMapData.name;
-            
-            const timeline = document.getElementById("generated-map-nodes");
-            timeline.innerHTML = "";
+            const timeline = document.getElementById("generated-map-nodes"); timeline.innerHTML = "";
 
             currentMapData.rows.forEach((rowNodes, rowIndex) => {
-                const rowEl = document.createElement("div");
-                rowEl.className = "map-row";
-                
+                const rowEl = document.createElement("div"); rowEl.className = "map-row";
                 rowNodes.forEach((node, colIndex) => {
-                    let nodeState = "locked";
-                    if(rowIndex === activeRowIndex) nodeState = "active";
-                    if(rowIndex < activeRowIndex) nodeState = "cleared";
-
-                    const nodeBtn = document.createElement("div");
-                    nodeBtn.className = `map-node ${nodeState}`;
-                    nodeBtn.innerHTML = `${node.icon} <div class="node-tag">${node.label}</div>`;
-                    
-                    if(rowIndex === activeRowIndex) {
-                        nodeBtn.onclick = () => {
-                            activeChoiceColumn = colIndex;
-                            triggerEncounterDialogue(node);
-                        };
-                    }
-                    rowEl.appendChild(nodeBtn);
+                    let s = "locked"; if(rowIndex === activeRowIndex) s = "active"; if(rowIndex < activeRowIndex) s = "cleared";
+                    const btn = document.createElement("div"); btn.className = `map-node ${s}`; btn.innerHTML = `${node.icon} <div class="node-tag">${node.label}</div>`;
+                    if(rowIndex === activeRowIndex) btn.onclick = () => { activeChoiceColumn = colIndex; triggerEncounterDialogue(node); };
+                    rowEl.appendChild(btn);
                 });
                 timeline.appendChild(rowEl);
             });
         }
 
         function triggerEncounterDialogue(node) {
-            const overlay = document.getElementById("encounter-notification");
-            overlay.classList.remove("hidden");
-
-            if(node.type === "Combat" || node.type === "Boss") {
-                let enemyBlueprint = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].boss;
-                if(node.type === "Combat") {
-                    enemyBlueprint = { name: node.label, hp: 45 + (activeRegionIndex * 20), dmg: 7 + (activeRegionIndex * 2), intent: "Unlocking gun chambers right at you." };
-                }
-                overlay.innerHTML = `<h4>⚠️ SHOWDOWN: ${node.label}</h4>
-                                     <div class="dialogue-text">"Draw your weapon, stranger. Let's see who hits the floor first."</div>
-                                     <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Cock Hammer & Shoot</button>`;
-            }
-            else if(node.type === "Bartender") {
-                overlay.innerHTML = `<h4>🥃 SALOON WATERING HOLE</h4>
-                                     <div class="dialogue-text">"Nasty dust out on the trail today. Pull up an iron stool."</div>
-                                     <button class="btn btn-blue" onclick="buySaloonServices('heal')">Pay 15g to Patch Up Frame (+25 HP)</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Leave Saloon</button>`;
-            }
-            else if(node.type === "Ragtime") {
-                overlay.innerHTML = `<h4>🎹 THE RAGTIME PIANIST</h4>
-                                     <div class="dialogue-text">A musician spins around on his stool, grinning through tobacco smoke. "Want a fast rhythm to syncopate your cylinder, outlaw?"</div>
-                                     <button class="btn btn-gold" onclick="buyRagtimeRhythm('staccato')">Pay 20g for a 'Staccato Shot' Module</button>
-                                     <button class="btn btn-blue" onclick="buyRagtimeRhythm('rhythm')">Pay 35g for Rare 'Crescendo Blast' Card</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Applaud and Leave</button>`;
-            }
-            else if(node.type === "SnakeOil") {
-                overlay.innerHTML = `<h4>🧪 THE SNAKE OIL SALESMAN</h4>
-                                     <div class="dialogue-text">A well-dressed huckster stands atop a colorful wagon. "Step right up! This patented remedy accelerates core outputs. 100% genuine guaranteed!"</div>
-                                     <button class="btn btn-gold" onclick="buySnakeOilPotions(true)">Buy Premium Grease (Gain 40 Gold, Lose 12 HP)</button>
-                                     <button class="btn btn-blue" onclick="buySnakeOilPotions(false)">Buy Miracle Compound (Pay 25g, Add 'Syncopated Rhythm' Card)</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Call Him a Fraud & Walk</button>`;
-            }
-            else if(node.type === "Gambler") {
-                overlay.innerHTML = `<h4>🎲 HIGH-CARD POKER</h4>
-                                     <div class="dialogue-text">"Flip one card. Double down or walk away broke."</div>
-                                     <button class="btn btn-gold" onclick="gambleFrontierCoins()">Wager 25g on High Draw</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Fold Hand</button>`;
-            }
-            else if(node.type === "Prospector") {
-                overlay.innerHTML = `<h4>⛏️ DRILL VEIN CACHE</h4>
-                                     <button class="btn btn-blue" onclick="mineLootVein()">Suffer 15 Damage Digging (+45 Gold)</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Walk On By</button>`;
-            }
-            else if(node.type === "Undertaker") {
-                overlay.innerHTML = `<h4>⚰️ THE UNDERTAKER</h4>
-                                     <button class="btn btn-gold" onclick="userState.gold-=20; userState.deck.push(104); exitEncounterNode();">Pay 20g for a Quickdraw Snap Card</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Keep Riding</button>`;
-            }
-            else if(node.type === "Preacher") {
-                overlay.innerHTML = `<h4>⛪ DUSTY CHAPEL</h4>
-                                     <button class="btn btn-blue" onclick="cleanseOutlawDeck()">Purge basic 'Rusty Six-Shooter' card</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Ignore Blessing</button>`;
-            }
-            else if(node.type === "BankRobber") {
-                overlay.innerHTML = `<h4>💰 VAULT HEIST</h4>
-                                     <button class="btn btn-danger" onclick="userState.gold+=60; userState.hp-=10; exitEncounterNode();">Help Rob Train (+60 Gold, Suffer 10 Damage)</button>
-                                     <button class="btn" onclick="exitEncounterNode()">Flee Scene</button>`;
-            }
-        }
-
-        function buySaloonServices(type) {
-            if(type === 'heal' && userState.gold >= 15) {
-                userState.gold -= 15; userState.hp = Math.min(userState.maxHp, userState.hp + 25);
-            } else { alert("Insufficient coins!"); return; }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
-        }
-
-        function buyRagtimeRhythm(trackType) {
-            if(trackType === 'staccato' && userState.gold >= 20) {
-                userState.gold -= 20; userState.deck.push(107);
-            } else if(trackType === 'rhythm' && userState.gold >= 35) {
-                userState.gold -= 35; userState.deck.push(108);
-            } else { alert("Not enough gold to request a tune!"); return; }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
-        }
-
-        function buySnakeOilPotions(isRiskyGrease) {
-            if(isRiskyGrease) {
-                userState.gold += 40; userState.hp -= 12;
-                if(userState.hp <= 0) { alert("The corrosive grease melted your lines!"); localStorage.removeItem("frontier_save_v7"); window.location.reload(); return; }
-            } else {
-                if(userState.gold >= 25) { userState.gold -= 25; userState.deck.push(303); } else { alert("No coin!"); return; }
-            }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
-        }
-
-        function gambleFrontierCoins() {
-            if(userState.gold < 25) { alert("Too broke!"); return; }
-            if(Math.random() > 0.45) { userState.gold += 30; alert("Winner! (+30g)"); } else { userState.gold -= 25; alert("Busted!"); }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
-        }
-
-        function mineLootVein() {
-            userState.hp -= 15; userState.gold += 45;
-            if(userState.hp <= 0) { alert("Chassis collapsed in deep shafts!"); localStorage.removeItem("frontier_save_v7"); window.location.reload(); return; }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
-        }
-
-        function cleanseOutlawDeck() {
-            const index = userState.deck.indexOf(101);
-            if(index > -1) { userState.deck.splice(index, 1); alert("Purged Rusty Six-Shooter."); } else { alert("No basic guns left."); }
-            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
+            const overlay = document.getElementById("encounter-notification"); overlay.classList.remove("hidden");
+            let enemyBlueprint = { name: node.label, hp: 45, dmg: 6, intent: "Scanning tracking locks directly onto you." };
+            overlay.innerHTML = `<h4>⚠️ ENCOUNTER: ${node.label}</h4><div class="dialogue-text">"Drop your weapon."</div>
+                                 <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Engage Core Fuses</button>`;
         }
 
         function exitEncounterNode() {
-            document.getElementById("encounter-notification").classList.add("hidden");
-            activeRowIndex++;
-            
-            const currentMapRows = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows;
-            if(activeRowIndex >= currentMapRows.length) {
-                alert("🤠 AREA BOUNTY SECURED! Region complete. Moving to next quadrant...");
-                activeRegionIndex++; activeRowIndex = 0;
-                if(activeRegionIndex >= FRONTIER_CAMPAIGN_MAPS.length) {
-                    alert("🏆 CONGRATULATIONS! You've cleared every extraction sector!");
-                    localStorage.removeItem("frontier_save_v7"); window.location.reload(); return;
-                }
-            }
+            document.getElementById("encounter-notification").classList.add("hidden"); activeRowIndex++;
+            if(activeRowIndex >= FRONTIFF_MAP_LENGTH = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows.length) { alert("Quadrant cleared!"); activeRegionIndex = 0; activeRowIndex = 0; }
             saveActiveRunData(); syncGlobalHUD(); buildFrontierMapUi();
         }
 
-        // COMBAT MATRIX SYSTEM
+        // EXPENDABLE CARD LAUNCH PATTERNS
         function setupCombatMatrix(eName, eHp, eDmg, eIntent) {
             activeCombatState.enemy = { name: eName, hp: eHp, maxHp: eHp, dmg: eDmg, intent: eIntent };
-            activeCombatState.currentEnergy = userState.maxEnergy;
-            activeCombatState.playerShield = userState.name === "The Iron Monarch" ? 12 : 0;
-            activeCombatState.abilityAvailable = true;
-            activeCombatState.delayedDamage = 0;
-            activeCombatState.enemyBleed = 0;
-            activeCombatState.cardsPlayedThisTurn = 0;
-            userState.thorns = 0;
+            activeCombatState.currentEnergy = userState.maxEnergy; activeCombatState.playerShield = 0;
+            activeCombatState.abilityAvailable = true; activeCombatState.cardsPlayedThisTurn = 0;
+            activeCombatState.liveHand = []; userState.thorns = 0;
 
-            document.getElementById("encounter-notification").classList.add("hidden");
-            switchActiveTab("battle-engine");
+            document.getElementById("encounter-notification").classList.add("hidden"); switchActiveTab("battle-engine");
+            fillHandArray(); renderCombatScreenInterfaceValues();
+        }
+
+        function fillHandArray() {
+            let deckPool = [...userState.deck]; activeCombatState.liveHand = [];
+            // Dynamically instantiate 4 card instances for the turn steps
+            for(let i=0; i<4; i++) {
+                if(deckPool.length === 0) break;
+                let idx = Math.floor(Math.random() * deckPool.length);
+                let template = CARD_DICTIONARY.find(c => c.id === deckPool.splice(idx, 1)[0]);
+                if(template) activeCombatState.liveHand.push({ ...template, instanceId: Math.random() });
+            }
+            renderArcedHandInterface();
+        }
+
+        // RENDERS CARDS OVERLAPPING IN AN ORGANIC GEOMETRIC FAN
+        function renderArcedHandInterface() {
+            const tray = document.getElementById("combat-current-hand-slots"); tray.innerHTML = "";
+            const total = activeCombatState.liveHand.length;
+
+            activeCombatState.liveHand.forEach((card, idx) => {
+                const item = document.createElement("div");
+                let tc = "card-attack"; if(card.type === "Defense") tc = "card-defense"; if(card.type === "Utility") tc = "card-utility";
+                item.className = `card-item ${tc} ${card.rare ? 'card-rare' : ''}`;
+                
+                // Geometry math calculations to fan cards horizontally across a curve
+                const angle = total > 1 ? ((idx / (total - 1)) - 0.5) * 35 : 0;
+                const shiftX = total > 1 ? ((idx / (total - 1)) - 0.5) * 160 : 0;
+                const shiftY = total > 1 ? Math.abs((idx / (total - 1)) - 0.5) * 12 : 0;
+
+                item.style.transform = `translateX(${shiftX}px) translateY(${shiftY}px) rotate(${angle}deg)`;
+                item.style.zIndex = idx + 10;
+                item.onclick = () => executeCardCompilationProcess(card.instanceId);
+                item.innerHTML = `<div class="badge">${card.cost}</div><div class="title">${card.title}</div><div class="body-text">${card.desc}</div>`;
+                tray.appendChild(item);
+            });
+        }
+
+        function executeCardCompilationProcess(instanceId) {
+            const targetIdx = activeCombatState.liveHand.findIndex(c => c.instanceId === instanceId);
+            if(targetIdx === -1) return;
+            const card = activeCombatState.liveHand[targetIdx];
+
+            if(activeCombatState.currentEnergy < card.cost) { alert("Insufficient energy cycles!"); return; }
+            activeCombatState.currentEnergy -= card.cost;
+            activeCombatState.cardsPlayedThisTurn++;
             
-            document.getElementById("combat-event-logger").innerHTML = `⚔️ INITIALIZED ENGAGEMENT: vs ${eName}`;
+            // Execute effect logic loops
+            card.run();
+
+            // EXPEND CARD RULE: Splice it directly out of the active hand pool
+            activeCombatState.liveHand.splice(targetIdx, 1);
+            
             renderCombatScreenInterfaceValues();
-            dealCombatActionHand();
+            renderArcedHandInterface();
+        }
+
+        function damageHostileTarget(amount) {
+            let t = activeCombatState.enemy; t.hp = Math.max(0, t.hp - amount);
+            if(t.hp <= 0) { alert("Target neutralized!"); userState.gold += 30; awardExperiencePoints(40); switchActiveTab("world-map"); exitEncounterNode(); }
+        }
+        function shieldPlayerTarget(amount) { activeCombatState.playerShield += amount; }
+
+        function processHostileTurnSequence() {
+            userState.hp -= Math.max(0, activeCombatState.enemy.dmg - activeCombatState.playerShield);
+            activeCombatState.playerShield = 0; activeCombatState.currentEnergy = userState.maxEnergy;
+            if(userState.hp <= 0) { alert("Core failure."); location.reload(); return; }
+            fillHandArray(); renderCombatScreenInterfaceValues();
         }
 
         function renderCombatScreenInterfaceValues() {
-            const e = activeCombatState.enemy;
+            const e = activeCombatState.enemy; if(!e) return;
+            document.getElementById("combat-enemy-title").innerText = e.name;
+            document.getElementById("combat-enemy-hp-text").innerText = `${e.hp}/${e.maxHp}`;
+            document.getElementById("combat-enemy-hp-bar").style.width = `${(e.hp / e.maxHp)*100}%`;
+            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Deals ${e.dmg} Damage]`;
+
             document.getElementById("combat-player-title").innerText = userState.name;
             document.getElementById("combat-player-hp-text").innerText = `${userState.hp}/${userState.maxHp}`;
             document.getElementById("combat-player-shield-text").innerText = `Armor Plating: ${activeCombatState.playerShield}`;
             document.getElementById("combat-player-hp-bar").style.width = `${(userState.hp / userState.maxHp)*100}%`;
             document.getElementById("combat-player-en-text").innerText = `${activeCombatState.currentEnergy}/${userState.maxEnergy}`;
             document.getElementById("combat-player-en-bar").style.width = `${(activeCombatState.currentEnergy / userState.maxEnergy)*100}%`;
-
-            document.getElementById("combat-enemy-title").innerText = e.name;
-            document.getElementById("combat-enemy-hp-text").innerText = `${e.hp}/${e.maxHp}`;
-            document.getElementById("combat-enemy-bleed-text").innerText = `Bleed Leak: ${activeCombatState.enemyBleed}`;
-            document.getElementById("combat-enemy-hp-bar").style.width = `${(e.hp / e.maxHp)*100}%`;
-            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Dealing ${e.dmg} Dmg]`;
-
-            const btn = document.getElementById("combat-active-tech-btn");
-            btn.disabled = !activeCombatState.abilityAvailable;
-            btn.innerText = activeCombatState.abilityAvailable ? "ENGAGE ARTIFACT OVERDRIVE CORE" : "CORE DEPRECIATED";
         }
 
-        function logCombat(msg) {
-            const l = document.getElementById("combat-event-logger");
-            l.innerHTML += `<br>&gt; ${msg}`; l.scrollTop = l.scrollHeight;
+        function awardExperiencePoints(amount) { userState.xp += amount; if(userState.xp>=100){ userState.level++; userState.xp=0; userState.maxHp+=10; userState.hp=userState.maxHp; } syncGlobalHUD(); saveActiveRunData(); }
+        function refreshDeckInspectorTab() {
+            document.getElementById("deck-stats-name").innerText = userState.name; document.getElementById("deck-stats-hp").innerText = `${userState.hp}/${userState.maxHp}`;
+            document.getElementById("deck-stats-energy").innerText = userState.maxEnergy; document.getElementById("deck-stats-level").innerText = userState.level;
+            document.getElementById("deck-stats-xp").innerText = `${userState.xp}/100`; document.getElementById("deck-count-num").innerText = userState.deck.length;
+            const grid = document.getElementById("deck-display-scroll-area"); grid.innerHTML = "";
+            userState.deck.forEach(cid => { const d = CARD_DICTIONARY.find(c => c.id === cid); if(d) { const i = document.createElement("div"); i.className="card-item card-attack"; i.style.position="relative"; i.innerHTML=`<div class="title">${d.title}</div><div class="body-text">${d.desc}</div>`; grid.appendChild(i); } });
         }
-
-        function dealCombatActionHand() {
-            const tray = document.getElementById("combat-current-hand-slots");
-            tray.innerHTML = "";
-            
-            let deckPool = [...userState.deck];
-            let handDealt = [];
-            for(let i=0; i<3; i++) {
-                if(deckPool.length === 0) break;
-                let pickIndex = Math.floor(Math.random() * deckPool.length);
-                handDealt.push(deckPool.splice(pickIndex, 1)[0]);
-            }
-
-            handDealt.forEach(cardId => {
-                const data = CARD_DICTIONARY.find(c => c.id === cardId);
-                if(!data) return;
-                const slot = document.createElement("div");
-                
-                let typeClass = "card-attack";
-                if(data.type === "Defense") typeClass = "card-defense";
-                if(data.type === "Utility") typeClass = "card-utility";
-
-                slot.className = `card-item ${typeClass} ${data.rare ? 'card-rare' : ''}`;
-                slot.onclick = () => executeCardCompilationProcess(data);
-                slot.innerHTML = `<div class="badge">${data.cost}</div><div class="title">${data.title}</div><div class="body-text">${data.desc}</div>`;
-                tray.appendChild(slot);
-            });
-        }
-
-        function executeCardCompilationProcess(card) {
-            if(activeCombatState.currentEnergy < card.cost) { logCombat("Insufficient clock loops!"); return; }
-            activeCombatState.currentEnergy -= card.cost;
-            logCombat(`Compiled: ${card.title}`);
-            
-            card.run();
-            activeCombatState.cardsPlayedThisTurn += 1;
-            renderCombatScreenInterfaceValues();
-            if(activeCombatState.enemy.hp > 0) dealCombatActionHand();
-        }
-
-        function damageHostileTarget(amount) {
-            let target = activeCombatState.enemy;
-            target.hp -= amount;
-            logCombat(`Dealt ${amount} kinetic breakdown damage to ${target.name}.`);
-            
-            if(target.hp <= 0) {
-                target.hp = 0; logCombat(`💥 TARGET BROUGHT DOWN!`);
-                alert(`BOUNTY CAPTURED! Earned 35 Gold & +45 XP.`);
-                userState.gold += 35;
-                awardExperiencePoints(45);
-                switchActiveTab("world-map"); exitEncounterNode();
-            }
-        }
-
-        function shieldPlayerTarget(amount) {
-            activeCombatState.playerShield += amount;
-            logCombat(`Dealt +${amount} shield absorption lines.`);
-        }
-
-        function fireActiveChassisTech() {
-            if(!activeCombatState.abilityAvailable) return;
-            logCombat(`BURST UNIQUE ABILITY RELIC RAY!`);
-            
-            if(userState.name === "The Gambler") {
-                executeCardCompilationProcess(CARD_DICTIONARY.find(c => c.id === 103));
-            } else if(userState.name === "The Iron Monarch") {
-                damageHostileTarget(15);
-            } else if(userState.name === "The Sheriff") {
-                activeCombatState.enemy.dmg = Math.max(2, activeCombatState.enemy.dmg - 6);
-            } else if(userState.name === "The Bank Robber") {
-                activeCombatState.currentEnergy = Math.min(4, activeCombatState.currentEnergy + 2);
-            }
-            
-            activeCombatState.abilityAvailable = false;
-            renderCombatScreenInterfaceValues();
-        }
-
-        function processHostileTurnSequence() {
-            logCombat("Venting loops. Enemy cycling armaments...");
-            let target = activeCombatState.enemy;
-
-            if(activeCombatState.enemyBleed > 0) {
-                target.hp -= activeCombatState.enemyBleed;
-                logCombat(`[Bleed Leak] Enemy took ${activeCombatState.enemyBleed} bleed damage.`);
-                if(target.hp <= 0) { damageHostileTarget(0); return; }
-            }
-
-            if(activeCombatState.delayedDamage > 0) {
-                target.hp -= activeCombatState.delayedDamage;
-                logCombat(`[Dynamite Fuse] Boom! Core explosive deals ${activeCombatState.delayedDamage} hit.`);
-                activeCombatState.delayedDamage = 0;
-                if(target.hp <= 0) { damageHostileTarget(0); return; }
-            }
-
-            let incoming = target.dmg;
-            if(activeCombatState.playerShield > 0) {
-                if(activeCombatState.playerShield >= incoming) {
-                    activeCombatState.playerShield -= incoming; logCombat(`Shield absorb filters caught all ${incoming} kinetic speed.`); incoming = 0;
-                } else {
-                    incoming -= activeCombatState.playerShield; logCombat(`Shield broke! ${incoming} hit chassis frame.`); activeCombatState.playerShield = 0;
-                }
-            }
-
-            if(incoming > 0) {
-                userState.hp -= incoming; logCombat(`Chassis took ${incoming} terminal impact.`);
-            }
-
-            if(userState.hp <= 0) {
-                userState.hp = 0; alert("💀 EXTRACTION FAILED! Outlaw chassis junked. Core wiped.");
-                localStorage.removeItem("frontier_save_v7"); window.location.reload(); return;
-            }
-
-            activeCombatState.currentEnergy = userState.maxEnergy;
-            activeCombatState.abilityAvailable = true;
-            activeCombatState.cardsPlayedThisTurn = 0;
-            
-            renderCombatScreenInterfaceValues();
-            dealCombatActionHand();
-        }
+        function fireActiveChassisTech() { if(!activeCombatState.abilityAvailable) return; damageHostileTarget(12); activeCombatState.abilityAvailable = false; renderCombatScreenInterfaceValues(); }
     </script>
 </body>
 </html>
