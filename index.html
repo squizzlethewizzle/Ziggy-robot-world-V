@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silicon Frontier: The Iron Rot v3.0</title>
+    <style>
+        :root {
+            --bg-color: #0d0805;
+            --panel-color: #21130b;
+            --panel-light: #362013;
+            --accent-color: #f4a261;
+            --text-color: #f4f1de;
+            --danger: #e76f51;
+            --cosmic-purple: #9b5de5;
+            --secret-gold: #ffb703;
+            --matrix-green: #52b788;
+            --rarity-rare: #e63946;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2, h3, h4 { color: var(--accent-color); text-shadow: 2px 2px #000; text-align: center; margin-top: 5px; }
+        .hidden { display: none !important; }
+        
+        .main-container {
+            width: 1100px;
+            background-color: var(--panel-color);
+            border: 4px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+        .btn:hover { background-color: #fff; transform: translateY(-2px); }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-purple { background-color: var(--cosmic-purple); color: white; }
+        .btn-green { background-color: var(--matrix-green); color: black; }
+
+        /* HUD BAR */
+        .hud-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: #000;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid var(--panel-light);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* HERO SELECT SCREEN */
+        .hero-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .hero-card {
+            background: #140905; border: 2px solid #523725; border-radius: 6px; padding: 15px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .hero-card:hover { border-color: var(--accent-color); transform: translateY(-3px); }
+
+        /* MAP GRAPHICS */
+        .map-container {
+            background: radial-gradient(circle, #1a0f08 0%, #030201 100%);
+            border: 2px dashed var(--accent-color);
+            padding: 40px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center; min-height: 220px;
+        }
+        .map-column { display: flex; flex-direction: column; gap: 20px; justify-content: center; align-items: center; }
+        .map-node {
+            width: 65px; height: 65px; border-radius: 50%; background: #26150b;
+            display: flex; align-items: center; justify-content: center; font-size: 26px;
+            cursor: pointer; border: 3px solid #0f0602; transition: all 0.3s; position: relative;
+        }
+        .map-node:hover { transform: scale(1.15); box-shadow: 0 0 20px var(--accent-color); }
+        .node-active { border-color: var(--accent-color); background: #4a2b18; }
+        .node-locked { opacity: 0.25; cursor: not-allowed; }
+        .node-label { position: absolute; bottom: -22px; font-size: 10px; white-space: nowrap; color: #ddd; font-weight: bold; }
+
+        /* POPUP TEXT ENCOUNTERS */
+        .event-box { background: #120905; border: 2px solid var(--accent-color); padding: 25px; border-radius: 6px; text-align: center; margin-top: 20px; }
+        .narrative-text { font-style: italic; color: #dfd0c0; line-height: 1.6; margin-bottom: 20px; text-align: left; background: #000; padding: 15px; border-left: 4px solid var(--cosmic-purple); }
+        .shop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+
+        /* REWARDS DRAFT */
+        .reward-grid { display: flex; justify-content: center; gap: 20px; margin: 25px 0; }
+
+        /* CARD COMBAT SCENE */
+        .battlefield { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .combatant { width: 48%; padding: 15px; background: #120905; border: 2px solid #3d2314; border-radius: 6px; }
+        .bar { background: #1a1a1a; height: 18px; border-radius: 9px; overflow: hidden; margin: 5px 0 12px 0; border: 1px solid #333; }
+        .hp-fill { background: var(--danger); height: 100%; width: 100%; transition: width 0.3s; }
+        .en-fill { background: #2a6fdb; height: 100%; width: 100%; transition: width 0.3s; }
+        
+        .log-box { background: #000; border: 1px solid var(--panel-light); height: 110px; overflow-y: auto; padding: 10px; font-size: 11px; color: #a2d2ff; border-radius: 4px; margin-bottom: 15px; text-align: left; }
+        .hand { display: flex; justify-content: center; gap: 8px; min-height: 160px; margin-top: 15px; flex-wrap: wrap;}
+        
+        /* UPDATED EXPANDED STYLED CARD BODY */
+        .card {
+            width: 125px; height: 165px; background: linear-gradient(135deg, #2d1a0f, #0f0704); border: 2px solid var(--accent-color);
+            border-radius: 6px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
+            cursor: pointer; position: relative; font-size: 11px; text-align: left; box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+        .card:hover { transform: translateY(-12px) scale(1.03); border-color: #fff; box-shadow: 0 12px 24px rgba(0,0,0,0.8); }
+        .card-cost { position: absolute; top: 4px; right: 4px; background: #2a6fdb; color: #fff; border-radius: 50%; width: 18px; height: 18px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 10px; }
+        .card-type { font-size: 8px; text-transform: uppercase; color: #a98467; font-weight: bold; letter-spacing: 0.5px;}
+        .card-title { font-weight: bold; font-size: 11px; color: var(--accent-color); border-bottom: 1px solid #444; padding-bottom: 2px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-desc { font-size: 9.5px; line-height: 1.3; color: #ddd; margin-top: 4px; flex-grow: 1; }
+        .card-rare { border-color: var(--rarity-rare); }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>⚙️ SILICON FRONTIER: THE IRON ROT v3.0 🌾</h1>
+
+        <!-- RUNTIME HUD SYSTEMS -->
+        <div id="hud" class="hud-bar hidden">
+            <div>CHASSIS: <b id="hud-name">---</b></div>
+            <div>LEVEL: <b id="hud-lvl" style="color:var(--matrix-green);">1</b> (<span id="hud-xp">0</span>/50 XP)</div>
+            <div>SCRAP METAL: <b id="hud-scrap" style="color:var(--secret-gold);">50g</b></div>
+            <div>HULL HEALTH: <b id="hud-hp" style="color:var(--danger);">0/0</b></div>
+            <div>HARDWARE DECK: <b id="hud-deck">0 Modules</b></div>
+        </div>
+
+        <!-- STAGE 1: HERO OUTLAW SELECTION -->
+        <div id="screen-select" class="screen">
+            <h3>LOGIC REBOOT SEQUENCER: CHOOSE AN OUTLAW CHASSIS</h3>
+            <div class="hero-grid">
+                <div class="hero-card" onclick="launchHero('The Desperado', 70, 4, 'Quickdraw', 'Reflex Burst')">
+                    <h4>🌵 The Desperado</h4>
+                    <p style="font-size:11px; color:#ccc;"><b>Passive:</b> First Activate card each turn deals +3 damage.<br><b>Active Protocol:</b> Instantly vent and replenish total Turn Energy Pool.</p>
+                </div>
+                <div class="hero-card" onclick="launchHero('The Iron Monarch', 100, 3, 'Anchor Shield', 'Core Pulse Discharge')">
+                    <h4>👑 The Iron Monarch</h4>
+                    <p style="font-size:11px; color:#ccc;"><b>Passive:</b> Bound to an ancient gemstone artifact core. Starts with 15 Shield Plating.<br><b>Active Protocol:</b> Discharge core energy dealing 12 absolute damage to targets.</p>
+                </div>
+                <div class="hero-card" onclick="launchHero('The Hex-Vulture', 65, 4, 'Scrap Harvest', 'Glitch Scramble')">
+                    <h4>🦅 The Hex-Vulture</h4>
+                    <p style="font-size:11px; color:#ccc;"><b>Passive:</b> Harvests 35% more Scrap metal resources from nodes.<br><b>Active Protocol:</b> Overload enemy sensors, reducing imminent turn damage by half.</p>
+                </div>
+                <div class="hero-card" onclick="launchHero('The Rust-Drifter', 80, 3, 'Logic Siphon', 'Nanite Repair')">
+                    <h4>☠️ The Rust-Drifter</h4>
+                    <p style="font-size:11px; color:#ccc;"><b>Passive:</b> Heals 2 HP whenever an Action module costing 0 is run into memory.<br><b>Active Protocol:</b> Instantly execute subroutines to reconstruct 12 structural hull units.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAGE 2: PROCEDURAL OVERWORLD SECTOR NAVIGATION MAP -->
+        <div id="screen-map" class="screen hidden">
+            <h3>SECTOR COORDINATES SIGNAL MAP</h3>
+            <div class="map-container" id="map-grid"></div>
+
+            <div id="event-display" class="event-box hidden"></div>
+        </div>
+
+        <!-- STAGE 3: CARD COMBAT SIMULATOR INTERFACE -->
+        <div id="screen-combat" class="screen hidden">
+            <div class="battlefield">
+                <div class="combatant">
+                    <h4 id="cb-player-name">Your Outlaw</h4>
+                    <div>Hull Structural Load: <span id="cb-player-hp">0/0</span></div>
+                    <div class="bar"><div class="hp-fill" id="cb-player-hp-bar"></div></div>
+                    <div>Energy Regimen: <span id="cb-player-en">0/0</span></div>
+                    <div class="bar"><div class="en-fill" id="cb-player-en-bar"></div></div>
+                    <button class="btn btn-green" id="cb-abl-btn" onclick="triggerActiveAbility()">Chassis Action (Ready)</button>
+                </div>
+
+                <div class="combatant">
+                    <h4 style="color:var(--danger);" id="cb-enemy-name">Rust Hostile</h4>
+                    <div>Enemy Frame Integrity: <span id="cb-enemy-hp">0/0</span></div>
+                    <div class="bar"><div class="hp-fill" id="cb-enemy-hp-bar"></div></div>
+                    <div style="font-size:11px; background:#000; padding:12px; border-radius:4px; margin-top:10px; border:1px solid var(--danger);">
+                        <b>TARGET SCAN INTENT PROJECTION:</b><br><span id="cb-enemy-intent">Scanning...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="log-box" id="cb-log">INITIALIZING TACTICAL OVERLAY...</div>
+            
+            <h4>AVAILABLE MODULE HARNESS</h4>
+            <div class="hand" id="cb-hand"></div>
+            
+            <div style="display:flex; justify-content:space-between; margin-top:25px; align-items:center;">
+                <span style="font-size:11px; color:#aaa;">Click a hardware module card to load its scripts into runtime processors.</span>
+                <button class="btn btn-danger" onclick="executeEnemyTurn()">Yield Turn Cycle</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // MASTER CENTRALIZED CARD REGISTRY (30 Unique Database-Scalable Modules)
+        const MASTER_CARD_REPOSITORY = [
+            // --- BALLISTICS CLASS (IDs 1-9) ---
+            { id: 1, title: "Rusty Carbine", type: "activate", cost: 1, rarity: "common", desc: "Deal 6 impact damage.", run: () => damageTarget(6) },
+            { id: 2, title: "Fan the Gears", type: "activate", cost: 2, rarity: "common", desc: "Unleash 13 structural damage.", run: () => damageTarget(13) },
+            { id: 3, title: "Twin Six-Cylinder", type: "activate", cost: 1, rarity: "common", desc: "Fire twice. Deals 3 damage per hit.", run: () => { damageTarget(3); damageTarget(3); } },
+            { id: 4, title: "Lead Storm", type: "activate", cost: 3, rarity: "rare", desc: "Deals 22 cataclysmic kinetic damage.", run: () => damageTarget(22) },
+            { id: 5, title: "Quickdraw Bolt", type: "activate", cost: 1, rarity: "common", desc: "<b>Quickdraw:</b> Deals 10 damage if first card played. Else 5 damage.", run: () => { let d = p.firstCardPlay ? 10 : 5; damageTarget(d); } },
+            { id: 6, title: "Derringer Snub", type: "activate", cost: 0, rarity: "common", desc: "Deal 3 fast structural micro damage.", run: () => damageTarget(3) },
+            { id: 7, title: "Heavy Rail Slug", type: "activate", cost: 2, rarity: "rare", desc: "Deals 14 damage. Bypasses 5 structural shields.", run: () => { cbLog("Armor piercing tungsten shot fired."); damageTarget(14); } },
+
+            // --- CAPACITORS & FLOW CLASS (IDs 10-17) ---
+            { id: 10, title: "Overclock Core", type: "activate", cost: 0, rarity: "common", desc: "Gain 2 Energy. Take 3 self hull frame damage.", run: () => { p.energy += 2; p.hp -= 3; cbLog("Core overdriven! Scorched internal wiring arrays."); } },
+            { id: 11, title: "Surge Capacitor", type: "activate", cost: 1, rarity: "common", desc: "Gain 2 action energy next turn cycle.", run: () => { cbLog("Capacitors charging voltage streams."); } },
+            { id: 12, title: "Tesla Tether", type: "flash", cost: 1, rarity: "common", desc: "Deal 4 shock damage. Enemy deals -2 damage next turn.", run: () => { damageTarget(4); enemyUnit.dmg = Math.max(1, enemyUnit.dmg - 2); } },
+            { id: 13, title: "Cycle Recycle", type: "activate", cost: 0, rarity: "rare", desc: "Discard hand. Draw 3 fresh module files.", run: () => { cbLog("Flushing active processor logic pools."); } },
+            { id: 14, title: "Battery Pack", type: "item", cost: 0, rarity: "common", desc: "<b>Single Use:</b> Restore 2 current turn energy points.", run: () => { p.energy += 2; purgeCardFromActiveCombatHand(14); } },
+
+            // --- PLATING & ARMOR CLASS (IDs 18-24) ---
+            { id: 18, title: "Steam Shield", type: "flash", cost: 1, rarity: "common", desc: "Deploy +6 active Shield Plating.", run: () => grantShield(6) },
+            { id: 19, title: "Spike Chassis", type: "augment", cost: 1, rarity: "common", desc: "Permanently add 3 Retribution thorns back to melee strikes.", run: () => { p.retribution += 3; cbLog("Weld iron spikes onto exterior armor sheets."); } },
+            { id: 20, title: "Iron Wall Deficit", type: "flash", cost: 2, rarity: "common", desc: "Gain 14 massive temporary armor plates.", run: () => grantShield(14) },
+            { id: 21, title: "Crude Patchwork", type: "item", cost: 1, rarity: "common", desc: "Repair 8 static hull integrity points.", run: () => { p.hp = Math.min(p.maxHp, p.hp + 8); cbLog("Hammered sheet lead patches into system breaches."); } },
+            { id: 22, title: "Reflective Zinc", type: "augment", cost: 2, rarity: "rare", desc: "Gain +5 Retribution thorns.", run: () => { p.retribution += 5; } },
+
+            // --- MALWARE & HORROR CLASS (IDs 25-30) ---
+            { id: 25, title: "Rotting Laser", type: "activate", cost: 1, rarity: "rare", desc: "Deal 11 heavy damage. Suffer 2 rot decay to self hull.", run: () => { damageTarget(11); p.hp -= 2; cbLog("Unclean radiation beams fire, melting your own framework."); } },
+            { id: 26, title: "Chime Calibration", type: "activate", cost: 1, rarity: "rare", desc: "Deal damage equal to your current missing hull integrity.", run: () => { let d = p.maxHp - p.hp; damageTarget(d); } },
+            { id: 27, title: "Eldritch Oil Injector", type: "activate", cost: 0, rarity: "rare", desc: "<b>Overheat:</b> Gain +3 Energy this turn. Suffer 6 damage at turn start.", run: () => { p.energy += 3; cbLog("Black eldritch sludge runs hot through your radiators."); } },
+            { id: 28, title: "Logic Scourge", type: "activate", cost: 1, rarity: "common", desc: "Deal 8 rot damage to enemy target framework.", run: () => damageTarget(8) }
+        ];
+
+        // Core App Variables
+        let p = { name: "", level: 1, xp: 0, hp: 100, maxHp: 100, energy: 3, maxEnergy: 3, passive: "", ability: "", scrap: 40, retribution: 0, shield: 0, abilityReady: true, firstCardPlay: true, deck: [1,1,2,5,10,18,19,21] };
+        let currentColumn = 0;
+        let enemyUnit = { name: "", hp: 40, maxHp: 40, dmg: 7 };
+
+        // Continuous Story Progress Data Tracking
+        const NARRATIVE_TIMELINE = [
+            "BROADCAST CHIME // CH.1: The oil taps ran black this morning. It isn't crude—it's logic slime. The automation arrays down at the Gulch have stripped off their faces, exposing twitching copper tendrils that write code directly in the desert dust.",
+            "BROADCAST CHIME // CH.2: The Iron Train has broken its schedules. It doesn't transport coal anymore. It moves across the frontier, hunting uncorrupted logic centers to melt them into a singing computing mound out past the salt flats.",
+            "BROADCAST CHIME // CH.3: I can hear it through my radio receivers. A voice singing between the frequencies. It isn't human, and it isn't machine code. It tells me to rip open my breastplate and let the desert sand clean my gears...",
+            "BROADCAST CHIME // CH.4: The Apex Tyrant awaits at the deep rail nexus. It has built a throne of screaming processor cores. It calls out your chassis serial identity string. The final showdown approaches."
+        ];
+
+        // Map Layout Node Array Configurations
+        const sectorMapLayout = [
+            { column: 0, nodes: [{ type: 'combat', label: '⚔️ Scrap Ambush', icon: '⚔️' }] },
+            { column: 1, nodes: [{ type: 'trader', label: '💰 Smuggler Rig', icon: '💰' }, { type: 'sacrifice', label: '👁️ Rot Altar', icon: '👁️' }] },
+            { column: 2, nodes: [{ type: 'combat', label: '⚔️ Patrol Unit', icon: '⚔️' }, { type: 'secret', label: '✨ Hidden Junction', icon: '✨' }] },
+            { column: 3, nodes: [{ type: 'boss', label: '💀 Sector Tyrant', icon: '💀' }] }
+        ];
+
+        function syncEngineHUD() {
+            document.getElementById("hud").classList.remove("hidden");
+            document.getElementById("hud-name").innerText = p.name;
+            document.getElementById("hud-lvl").innerText = p.level;
+            document.getElementById("hud-xp").innerText = p.xp;
+            document.getElementById("hud-scrap").innerText = p.scrap + "g";
+            document.getElementById("hud-hp").innerText = `${p.hp}/${p.maxHp}`;
+            document.getElementById("hud-deck").innerText = `${p.deck.length} Modules`;
+        }
+
+        function launchHero(name, hp, energy, passive, ability) {
+            p.name = name; p.hp = p.maxHp = hp; p.energy = p.maxEnergy = energy; p.passive = passive; p.ability = ability;
+            if(passive === "Anchor Shield") p.shield = 15;
+            document.getElementById("screen-select").classList.add("hidden");
+            document.getElementById("screen-map").classList.remove("hidden");
+            syncEngineHUD();
+            renderOverworldMap();
+        }
+
+        function renderOverworldMap() {
+            const mapGrid = document.getElementById("map-grid");
+            mapGrid.innerHTML = "";
+            
+            sectorMapLayout.forEach(col => {
+                const colEl = document.createElement("div");
+                colEl.className = "map-column";
+                
+                col.nodes.forEach(node => {
+                    const nodeEl = document.createElement("div");
+                    nodeEl.className = `map-node ${col.column === currentColumn ? 'node-active' : (col.column < currentColumn ? '' : 'node-locked')}`;
+                    nodeEl.innerHTML = node.icon + `<div class="node-label">${node.label}</div>`;
+                    
+                    if (col.column === currentColumn) {
+                        nodeEl.onclick = () => loadNodeEncounter(node);
+                    }
+                    colEl.appendChild(nodeEl);
+                });
+                mapGrid.appendChild(colEl);
+            });
+        }
+
+        function loadNodeEncounter(node) {
+            const box = document.getElementById("event-display");
+            box.classList.remove("hidden");
+            let currentStorySegment = NARRATIVE_TIMELINE[currentColumn] || "The radio static deepens.";
+
+            if (node.type === 'combat' || node.type === 'boss') {
+                enemyUnit.name = node.type === 'boss' ? "THE CHIME INFECTED APEX TYRANT" : "Infected Scrap Vagrant";
+                enemyUnit.hp = enemyUnit.maxHp = node.type === 'boss' ? 85 : 45;
+                enemyUnit.dmg = node.type === 'boss' ? 14 : 7;
+                
+                box.innerHTML = `<div class="narrative-text">${currentStorySegment}</div>
+                                 <h4>WARNING: COMBAT ARRAY SENSORS ENGAGED</h4><p>A rogue machine approaches, its internal speakers blasting the creepy celestial melody.</p>
+                                 <button class="btn btn-danger" onclick="enterCombatSequence()">Boot Combat Processors</button>`;
+            } 
+            else if (node.type === 'trader') {
+                box.innerHTML = `<div class="narrative-text">${currentStorySegment}</div>
+                                 <h4>Scrap Merchant Outpost</h4><p>An arms trader bot unbolts its secure hull weapon cabinets.</p><div class="shop-grid">`;
+                MASTER_CARD_REPOSITORY.slice(2, 6).forEach(card => {
+                    box.innerHTML += `<div style="background:#000; padding:8px; border:1px solid var(--accent-color); border-radius:4px; font-size:10px;">
+                                        <b>${card.title}</b><br>Cost: 20g<br>
+                                        <button class="btn" style="padding:2px 5px; margin-top:5px; font-size:10px;" onclick="acquireCardModule(${card.id})">Install</button>
+                                      </div>`;
+                });
+                box.innerHTML += `</div><button class="btn" onclick="departEncounterNode()">Leave Outpost</button>`;
+            }
+            else if (node.type === 'sacrifice') {
+                box.innerHTML = `<div class="narrative-text">${currentStorySegment}</div>
+                                 <h4>👁️ The Altar of Twisted Iron</h4><p>A terminal calls out to your firmware framework. It demands physical structural damage processing in exchange for alien power.</p>
+                                 <button class="btn btn-purple" onclick="executeDarkRitual()">Purge 20 Max HP to permanently integrate forbidden hardware [Rotting Laser]</button><br><br>
+                                 <button class="btn" onclick="departEncounterNode()">Override Terminal & Disconnect</button>`;
+            }
+            else if (node.type === 'secret') {
+                box.innerHTML = `<div class="narrative-text">${currentStorySegment}</div>
+                                 <h4>✨ Secret Military Cache Node</h4><p>Your geo-trackers identify an unmapped bunker containing specialized old frontier weapon crates.</p>
+                                 <button class="btn btn-green" onclick="lootSecretCache()">Extract Cache Modules (+35 Scrap, +15 XP)</button>`;
+            }
+        }
+
+        function acquireCardModule(id) {
+            if (p.scrap >= 20) {
+                p.scrap -= 20; p.deck.push(id); syncEngineHUD(); alert("Data package downloaded and appended to deck inventory array."); departEncounterNode();
+            } else { alert("Insufficient scrap materials!"); }
+        }
+
+        function executeDarkRitual() {
+            p.maxHp -= 20; if(p.hp > p.maxHp) p.hp = p.maxHp;
+            p.deck.push(25); syncEngineHUD(); alert("The Altar fires an electrical arc. The [Rotting Laser] script is burned into your frame memories.");
+            departEncounterNode();
+        }
+
+        function lootSecretCache() {
+            p.scrap += 35; earnExperiencePoints(15); alert("Hardware caches harvested safely!"); departEncounterNode();
+        }
+
+        function earnExperiencePoints(amt) {
+            p.xp += amt;
+            if (p.xp >= 50) {
+                p.xp -= 50; p.level += 1; p.maxHp += 15; p.hp = p.maxHp;
+                alert(`⚡ FIRMWARE EVOLUTION: Level up to [Level ${p.level}]! Structure repaired and Max HP expanded.`);
+            }
+            syncEngineHUD();
+        }
+
+        // TACTICAL COMBAT ACTIONS SIMULATOR
+        function cbLog(m) {
+            const logBox = document.getElementById("cb-log"); logBox.innerHTML += "<br>&gt; " + m; logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function enterCombatSequence() {
+            document.getElementById("screen-map").classList.add("hidden");
+            document.getElementById("screen-combat").classList.remove("hidden");
+            p.energy = p.maxEnergy; p.shield = p.name === "The Iron Monarch" ? 15 : 0; p.firstCardPlay = true;
+            cbLog(`COMBAT INITIALIZATION CODE EXECUTION: Facing ${enemyUnit.name}.`);
+            refreshCombatDisplay();
+            drawTurnHand();
+        }
+
+        function drawTurnHand() {
+            const handContainer = document.getElementById("cb-hand"); handContainer.innerHTML = "";
+            p.deck.slice(0, 6).forEach(cardId => {
+                const data = MASTER_CARD_REPOSITORY.find(x => x.id === cardId);
+                if (!data) return;
+                const cardEl = document.createElement("div"); 
+                cardEl.className = `card ${data.rarity === 'rare' ? 'card-rare' : ''}`;
+                cardEl.onclick = () => playCardProcessor(data);
+                cardEl.innerHTML = `<div class="card-cost">${data.cost}</div>
+                                 <div>
+                                    <div class="card-type">${data.type}</div>
+                                    <div class="card-title">${data.title}</div>
+                                 </div>
+                                 <div class="card-desc">${data.desc}</div>`;
+                handContainer.appendChild(cardEl);
+            });
+        }
+
+        function playCardProcessor(card) {
+            if(p.energy < card.cost) { cbLog("ERROR: Insufficient core processor capacity values!"); return; }
+            p.energy -= card.cost;
+            cbLog(`Running module string: <b>${card.title}</b>`);
+            
+            // Core Synergy Passive Modifiers
+            if(p.name === "The Desperado" && p.firstCardPlay && card.type === "activate") {
+                cbLog("<i>[Desperado Passive: Quickdraw]</i> Target calculations maximized! +3 Bonus damage.");
+                enemyUnit.hp -= 3;
+            }
+            
+            card.run();
+            
+            if(p.name === "The Rust-Drifter" && card.cost === 0) { p.hp = Math.min(p.maxHp, p.hp + 2); cbLog("<i>[Logic Siphon]</i> 0-Cost loop triggered 2 point frame stabilization."); }
+            
+            p.firstCardPlay = false;
+            refreshCombatDisplay();
+        }
+
+        function damageTarget(amt) {
+            enemyUnit.hp -= amt; cbLog(`Discharged energy impact burst for ${amt} structural damage.`);
+            if(enemyUnit.hp <= 0) {
+                enemyUnit.hp = 0; p.scrap += 25;
+                cbLog("Target neutralized. Gathering post-battle algorithmic drop feeds...");
+                triggerLootDiscoveryWindow();
+            }
+        }
+
+        function grantShield(amt) { p.shield += amt; cbLog(`Defensive flash shields raised by +${amt}.`); }
+
+        function purgeCardFromActiveCombatHand(id) {
+            cbLog(`Consumable element spent.`);
+        }
+
+        function triggerActiveAbility() {
+            if(!p.abilityReady) return;
+            cbLog(`Fired active processing protocol override: [<b>${p.ability}</b>]`);
+            if(p.name === "The Desperado") { p.energy = p.maxEnergy; }
+            else if(p.name === "The Iron Monarch") { damageTarget(12); }
+            else if(p.name === "The Hex-Vulture") { enemyUnit.dmg = Math.max(1, Math.round(enemyUnit.dmg / 2)); cbLog("Injected scramble noise data into target's aiming array."); }
+            else { p.hp = Math.min(p.maxHp, p.hp + 12); cbLog("Forced emergency backup protocols to stitch internal frame wire fractures."); }
+            p.abilityReady = false; refreshCombatDisplay();
+        }
+
+        function executeEnemyTurn() {
+            cbLog("Yielding pipeline stream loop. Enemy code running...");
+            
+            // Trigger Retribution Thorns logic
+            if (p.retribution > 0) {
+                enemyUnit.hp -= p.retribution;
+                cbLog(`<i>[Retribution Spikes Fired]</i> Hostile took ${p.retribution} spikes feedback damage from physical recoil.`);
+                if (enemyUnit.hp <= 0) { enemyUnit.hp = 0; triggerLootDiscoveryWindow(); return; }
+            }
+
+            let incomingAttack = enemyUnit.dmg;
+            if(p.shield > 0) {
+                if(p.shield >= incomingAttack) { p.shield -= incomingAttack; cbLog(`Defensive armor shield absorbed ${incomingAttack} shock damage.`); incomingAttack = 0; }
+                else { incomingAttack -= p.shield; cbLog(`Shield lining shattered under extreme pressure. ${incomingAttack} damage impacts chassis.`); p.shield = 0; }
+            }
+            if(incomingAttack > 0) { p.hp -= incomingAttack; cbLog(`Hull structure compromised! Took ${incomingAttack} point impact.`); }
+            if(p.hp <= 0) { p.hp = 0; alert("FATAL INTERRUPT: Core blown. You were salvaged into base scrap metals."); window.location.reload(); }
+            
+            p.energy = p.maxEnergy; p.abilityReady = true; p.firstCardPlay = true; refreshCombatDisplay(); drawTurnHand();
+        }
+
+        // DYNAMIC CARD DROP LOOT SELECTION
+        function triggerLootDiscoveryWindow() {
+            document.getElementById("screen-combat").classList.add("hidden");
+            document.getElementById("screen-map").classList.remove("hidden");
+            const box = document.getElementById("event-display");
+            box.classList.remove("hidden");
+
+            // Pull 3 distinct randomized cards from the 30-card index registry
+            let options = [];
+            while(options.length < 3) {
+                let randomCard = MASTER_CARD_REPOSITORY[Math.floor(Math.random() * MASTER_CARD_REPOSITORY.length)];
+                if(!options.includes(randomCard)) options.push(randomCard);
+            }
+
+            box.innerHTML = `<h4>🎁 COMBAT VICTORY REWARDS SALVAGE FEED</h4>
+                             <p>Your processing cores isolated structural code components. Select one module script to download permanently:</p>
+                             <div class="reward-grid">`;
+
+            options.forEach(c => {
+                box.innerHTML += `<div class="card ${c.rarity === 'rare' ? 'card-rare' : ''}" style="cursor:pointer;" onclick="claimDraftedLoot(${c.id})">
+                                    <div class="card-cost">${c.cost}</div>
+                                    <div>
+                                        <div class="card-type">${c.type}</div>
+                                        <div class="card-title">${c.title}</div>
+                                    </div>
+                                    <div class="card-desc">${c.desc}</div>
+                                    <button class="btn" style="padding:2px; font-size:9px; margin-top:5px; width:100%;">Select Module</button>
+                                  </div>`;
+            });
+
+            box.innerHTML += `</div>`;
+        }
+
+        function claimDraftedLoot(cardId) {
+            p.deck.push(cardId);
+            earnExperiencePoints(20);
+            alert("Module integrated successfully into player harddrive stack!");
+            departEncounterNode();
+        }
+
+        function departEncounterNode() {
+            document.getElementById("event-display").classList.add("hidden");
+            currentColumn++;
+            if(currentColumn >= sectorMapLayout.length) {
+                alert("SECTOR PURGED: Moving to higher territory arrays!");
+                currentColumn = 0;
+            }
+            renderOverworldMap();
+        }
+
+        function refreshCombatDisplay() {
+            document.getElementById("cb-player-name").innerText = p.name;
+            document.getElementById("cb-player-hp").innerText = `${p.hp}/${p.maxHp} (Shield Plating: ${p.shield})`;
+            document.getElementById("cb-player-hp-bar").style.width = `${(p.hp/p.maxHp)*100}%`;
+            document.getElementById("cb-player-en").innerText = `${p.energy}/${p.maxEnergy}`;
+            document.getElementById("cb-player-en-bar").style.width = `${(p.energy/p.maxEnergy)*100}%`;
+            
+            document.getElementById("cb-enemy-name").innerText = enemyUnit.name;
+            document.getElementById("cb-enemy-hp").innerText = `${enemyUnit.hp}/${enemyUnit.maxHp}`;
+            document.getElementById("cb-enemy-hp-bar").style.width = `${(enemyUnit.hp/enemyUnit.maxHp)*100}%`;
+            document.getElementById("cb-enemy-intent").innerText = `Calibrating main line of fire for an imminent ${enemyUnit.dmg}-damage payload next phase cycle.`;
+            
+            const btn = document.getElementById("cb-abl-btn"); btn.disabled = !p.abilityReady;
+            btn.innerText = p.abilityReady ? "Chassis Action (Ready)" : "Chassis Action Depleted";
+            syncEngineHUD();
+        }
+    </script>
+</body>
+</html>
