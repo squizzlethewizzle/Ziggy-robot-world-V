@@ -3,146 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silicon Frontier: Blood & Rust v9.0</title>
+    <title>Silicon Frontier: Blood & Rust v10.0</title>
     <style>
-        /* COLOR PALETTES CONFIGURATION ROOT */
+        /* DESIGN SYSTEM CONFIGURATION ROOT */
         :root {
-            --bg-dark: #060403;
-            --panel-deep: #120c09;
-            --panel-brighter: #231812;
+            --bg-dark: #070504;
+            --panel-deep: #16100d;
+            --panel-brighter: #2c201a;
             --neon-amber: #ff6b35;
             --neon-cyan: #00f5d4;
             --neon-gold: #fee440;
             --neon-purple: #9b5de5;
             --neon-red: #ff0054;
             --text-light: #f7ede2;
+            --glow: 0 0 12px rgba(255, 107, 53, 0.35);
         }
 
         body.theme-cyber {
-            --bg-dark: #03001e; --panel-deep: #220044; --panel-brighter: #ec38bc;
+            --bg-dark: #040112; --panel-deep: #16002c; --panel-brighter: #390066;
             --neon-amber: #ec38bc; --neon-cyan: #00f5d4; --neon-gold: #fde24f;
+            --glow: 0 0 12px rgba(236, 56, 188, 0.4);
         }
         body.theme-toxic {
-            --bg-dark: #0b0f07; --panel-deep: #1b2412; --panel-brighter: #384e24;
+            --bg-dark: #080c04; --panel-deep: #141c0e; --panel-brighter: #2a3b1d;
             --neon-amber: #70e000; --neon-cyan: #ccff33; --neon-gold: #38b000;
+            --glow: 0 0 12px rgba(112, 224, 0, 0.4);
         }
         body.theme-obsidian {
-            --bg-dark: #000000; --panel-deep: #111111; --panel-brighter: #222222;
-            --neon-amber: #ffffff; --neon-cyan: #888888; --neon-gold: #aaaaaa;
+            --bg-dark: #000000; --panel-deep: #111111; --panel-brighter: #2a2a2a;
+            --neon-amber: #ffffff; --neon-cyan: #999999; --neon-gold: #cccccc;
+            --glow: 0 0 12px rgba(255,255,255,0.2);
         }
         body.theme-crimson {
-            --bg-dark: #1a0000; --panel-deep: #330000; --panel-brighter: #660000;
+            --bg-dark: #120000; --panel-deep: #260000; --panel-brighter: #4d0000;
             --neon-amber: #ff3333; --neon-cyan: #ff6666; --neon-gold: #ffcc00;
+            --glow: 0 0 12px rgba(255, 51, 51, 0.4);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
             background-color: var(--bg-dark); color: var(--text-light);
-            font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden;
+            background-image: radial-gradient(circle at 50% 15%, var(--panel-deep) 0%, var(--bg-dark) 75%);
         }
 
+        /* SCANNABLE CONTAINER HOUSING */
         .app-window {
             width: 100%; max-width: 480px; height: calc(100vh - 60px);
-            background-color: var(--panel-deep); border: 2px solid var(--neon-amber);
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.2); padding: 14px; overflow-y: auto; position: relative;
+            background-color: rgba(22, 16, 13, 0.85); border: 2px solid var(--neon-amber);
+            box-shadow: var(--glow); padding: 16px; overflow-y: auto; position: relative;
+            backdrop-filter: blur(8px); display: flex; flex-direction: column;
         }
 
-        .screen-view { display: none; width: 100%; animation: fadeIn 0.25s ease-out; }
-        .screen-view.active { display: block; }
+        .screen-view { display: none; width: 100%; height: 100%; animation: slideIn 0.2s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        .screen-view.active { display: flex; flex-direction: column; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1 { font-size: 16px; color: var(--neon-amber); text-align: center; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
-        h3 { font-size: 13px; text-align: center; margin: 12px 0; color: #fff; text-transform: uppercase; border-bottom: 1px solid var(--panel-brighter); padding-bottom: 4px;}
-        h4 { font-size: 13px; margin: 4px 0; color: var(--neon-cyan); }
-        p { font-size: 11px; line-height: 1.4; margin: 4px 0; color: #d0c4bc; }
+        h1 { font-size: 18px; color: var(--neon-amber); text-align: center; margin: 0 0 14px 0; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-shadow: var(--glow); }
+        h3 { font-size: 13px; text-align: center; margin: 12px 0 6px 0; color: #fff; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        h4 { font-size: 13px; margin: 2px 0; color: var(--neon-cyan); letter-spacing: 0.5px; }
+        p { font-size: 11.5px; line-height: 1.5; margin: 4px 0; color: #d6c6bc; }
 
+        /* BUTTON SYSTEM SPECIFICATION */
         .btn {
-            background-color: var(--neon-amber); color: #000; border: none; padding: 12px 10px;
-            font-weight: bold; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 20px;
-            margin: 6px 0; width: 100%; display: block; text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 3px solid rgba(0,0,0,0.3); text-align: center; position: relative; z-index: 10;
+            background: linear-gradient(135deg, var(--neon-amber) 0%, #d44d1c 100%); color: #000; border: none; padding: 12px 14px;
+            font-weight: 800; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 8px;
+            margin: 6px 0; width: 100%; display: block; text-transform: uppercase; letter-spacing: 1.2px;
+            box-shadow: 0 3px 0px rgba(0,0,0,0.4); text-align: center; position: relative; transition: all 0.1s;
         }
-        .btn:active { transform: translateY(2px); border-bottom-width: 1px; background-color: #fff; }
-        .btn-danger { background-color: var(--neon-red); color: white; }
-        .btn-blue { background-color: var(--neon-cyan); color: black; }
-        .btn-gold { background-color: var(--neon-gold); color: black; }
-        .btn-outline { background-color: transparent; color: var(--neon-amber); border: 1px solid var(--neon-amber); }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0px rgba(0,0,0,0.4); filter: brightness(1.2); }
+        .btn-danger { background: linear-gradient(135deg, var(--neon-red) 0%, #b3003b 100%); color: white; }
+        .btn-blue { background: linear-gradient(135deg, var(--neon-cyan) 0%, #00b39b 100%); color: black; }
+        .btn-gold { background: linear-gradient(135deg, var(--neon-gold) 0%, #cca300 100%); color: black; }
+        .btn-outline { background: transparent; color: var(--neon-amber); border: 1px solid var(--neon-amber); box-shadow: none; }
+        .btn-outline:active { background: rgba(255, 107, 53, 0.1); color: #fff; }
 
+        /* HUD & NAVIGATION INTERACTIVE FRAMEWORKS */
         .top-hud {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #000;
-            padding: 8px; border-radius: 20px; margin-bottom: 14px; font-size: 9px;
-            border: 1px solid var(--neon-amber); text-align: center;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: rgba(0,0,0,0.6);
+            padding: 10px 6px; border-radius: 10px; margin-bottom: 14px; font-size: 9px;
+            border: 1px solid var(--panel-brighter); text-align: center; font-weight: 600;
         }
         .top-hud div:not(:last-child) { border-right: 1px solid var(--panel-brighter); }
 
         .tab-nav-bar {
             position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 60px;
             background: #000; border-top: 2px solid var(--neon-amber); display: grid;
-            grid-template-columns: repeat(3, 1fr); z-index: 999;
+            grid-template-columns: repeat(3, 1fr); z-index: 999; box-shadow: 0 -4px 15px rgba(0,0,0,0.6);
         }
         .nav-tab {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #665; font-size: 9px; font-weight: bold; cursor: pointer;
+            color: #7c6d64; font-size: 9.5px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; transition: color 0.15s;
         }
-        .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); }
+        .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); text-shadow: 0 0 6px rgba(0,245,212,0.3); }
 
-        .title-screen-logo { text-align: center; margin: 30px 0 15px 0; font-size: 24px; font-weight: bold; color: var(--neon-amber); letter-spacing: 2px; }
-        .title-backdrop { background: #000; border: 2px solid var(--neon-amber); padding: 20px; border-radius: 16px; text-align: center; }
+        .title-screen-logo { text-align: center; margin: 40px 0 20px 0; font-size: 26px; font-weight: 900; color: var(--neon-amber); letter-spacing: 3px; text-shadow: var(--glow); line-height: 1.1; }
+        .title-backdrop { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--panel-brighter); padding: 20px; border-radius: 12px; text-align: center; }
 
-        .chassis-row { border: 1px solid var(--panel-brighter); background: #0d0806; padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.1s; }
-        .chassis-row:active { border-color: var(--neon-cyan); background: var(--panel-brighter); }
+        .chassis-row { border: 1px solid var(--panel-brighter); background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+        .chassis-row:hover { border-color: var(--neon-cyan); background: var(--panel-brighter); }
 
-        .region-banner { background: #000; padding: 8px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 14px; border-radius: 8px; color: var(--neon-gold); }
-        .map-timeline { display: flex; flex-direction: column; gap: 16px; background: #020101; padding: 16px 10px; border-radius: 16px; }
+        .region-banner { background: #000; padding: 10px; text-align: center; font-weight: 800; font-size: 11px; margin-bottom: 14px; border-radius: 6px; color: var(--neon-gold); border: 1px solid var(--panel-brighter); letter-spacing: 1px; }
+        .map-timeline { display: flex; flex-direction: column; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 10px; border-radius: 12px; border: 1px solid var(--panel-brighter); }
         .map-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
         .map-node {
-            width: 52px; height: 52px; border-radius: 50%; background: #130a06;
+            width: 56px; height: 56px; border-radius: 50%; background: var(--panel-deep);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 16px; border: 2px solid var(--panel-brighter); cursor: pointer; position: relative; z-index: 10;
+            font-size: 18px; border: 2px solid var(--panel-brighter); cursor: pointer; position: relative; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .map-node.active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: 0 0 10px var(--neon-cyan); }
-        .map-node.cleared { opacity: 0.3; }
-        .map-node.locked { opacity: 0.1; pointer-events: none; }
-        .node-tag { position: absolute; bottom: -14px; font-size: 8px; color: #ccc; font-weight: bold; white-space: nowrap; }
+        .map-node.active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: 0 0 14px rgba(0,245,212,0.4); }
+        .map-node.cleared { opacity: 0.35; filter: grayscale(50%); }
+        .map-node.locked { opacity: 0.15; pointer-events: none; }
+        .node-tag { position: absolute; bottom: -16px; font-size: 8px; color: #b5a8a0; font-weight: 700; white-space: nowrap; text-transform: uppercase; }
 
-        .combat-arena { display: flex; flex-direction: column; gap: 10px; }
-        .combatant-capsule { background: transparent; padding: 4px; position: relative; }
+        /* COMBAT ARENA AND FEED CONFIGURATION */
+        .combat-arena { display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: space-between; }
+        .combatant-capsule { background: rgba(0,0,0,0.2); padding: 6px 0; position: relative; }
         
-        .meter { background: #000; height: 10px; border-radius: 20px; overflow: hidden; margin: 4px 0; border: 1px solid var(--panel-brighter); }
-        .meter-fill-hp { background: linear-gradient(90deg, var(--neon-red), #ff0054); height: 100%; width: 100%; transition: width 0.15s; }
-        .meter-fill-en { background: linear-gradient(90deg, var(--neon-cyan), #00b4d8); height: 100%; width: 100%; transition: width 0.15s; }
+        .meter { background: #000; height: 12px; border-radius: 6px; overflow: hidden; margin: 4px 0; border: 1px solid var(--panel-brighter); }
+        .meter-fill-hp { background: linear-gradient(90deg, var(--neon-red), #c7003e); height: 100%; width: 100%; transition: width 0.2s; }
+        .meter-fill-en { background: linear-gradient(90deg, var(--neon-cyan), #00b4d8); height: 100%; width: 100%; transition: width 0.2s; }
         
-        .combat-log { background: #000; height: 70px; overflow-y: auto; padding: 8px; font-size: 9px; color: var(--neon-cyan); border-radius: 12px; margin: 2px 0; }
-        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .combat-log { background: #000; height: 80px; overflow-y: auto; padding: 10px; font-family: 'Courier New', monospace; font-size: 10px; color: var(--neon-cyan); border-radius: 8px; border: 1px solid var(--panel-brighter); margin: 4px 0; line-height: 1.3; }
+        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 20px; }
 
+        /* HAND AND RENDERING ENGINE */
         .combat-hand-fan-container {
-            position: relative; height: 140px; margin-top: 15px; margin-bottom: 5px;
+            position: relative; height: 150px; margin-top: 10px; margin-bottom: 5px;
             display: flex; justify-content: center; width: 100%; overflow: visible;
         }
         
+        /* CARD ITEM ARCHITECTURE */
         .card-item {
-            background: #000; border: 2px solid #555; border-radius: 10px; padding: 8px; 
-            width: 90px; height: 130px; display: flex; flex-direction: column; justify-content: space-between; 
-            position: absolute; font-size: 8px; text-align: left; transition: transform 0.2s, top 0.2s; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); transform-origin: bottom center;
+            background: linear-gradient(145deg, #140f0d 0%, #000000 100%); border: 2px solid #55443d; border-radius: 12px; padding: 10px; 
+            width: 95px; height: 135px; display: flex; flex-direction: column; justify-content: space-between; 
+            position: absolute; font-size: 9px; text-align: left; transition: transform 0.15s ease-out, top 0.15s ease-out, box-shadow 0.15s; cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.6); transform-origin: bottom center; user-select: none; -webkit-user-select: none;
         }
-        .card-item.card-attack { border-color: var(--neon-red); }
-        .card-item.card-defense { border-color: var(--neon-cyan); }
-        .card-item.card-utility { border-color: var(--neon-gold); }
-        .card-item:hover { top: -15px; z-index: 100 !important; }
+        .card-item.card-attack { border-color: var(--neon-red); box-shadow: 0 2px 8px rgba(255, 0, 84, 0.15); }
+        .card-item.card-defense { border-color: var(--neon-cyan); box-shadow: 0 2px 8px rgba(0, 245, 212, 0.15); }
+        .card-item.card-utility { border-color: var(--neon-gold); box-shadow: 0 2px 8px rgba(254, 228, 100, 0.15); }
         
-        .card-item .badge { position: absolute; top: 4px; right: 4px; background: #fff; color: #000; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
-        .card-item .title { font-weight: bold; color: #fff; font-size: 8px; border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 2px; text-transform: uppercase; }
-        .card-item .body-text { font-size: 7.5px; color: #e0d5ce; line-height: 1.2; flex-grow: 1; margin-top: 4px; }
+        .card-item .badge { position: absolute; top: -6px; left: -6px; background: #fff; color: #000; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; border: 1px solid currentColor; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .card-item .title { font-weight: 800; color: #fff; font-size: 9px; border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; margin-left: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-item .body-text { font-size: 8.5px; color: #c4b5ac; line-height: 1.3; flex-grow: 1; margin-top: 6px; font-weight: 500; }
+        .card-item .type-tag { font-size: 7px; text-transform: uppercase; font-weight: 700; color: #7c6d64; text-align: right; }
 
+        /* THEME SELECTION UTILITIES */
         .theme-select-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px; }
-        .theme-dot { font-size: 8px; padding: 6px; text-align: center; background: #000; border: 1px solid #444; border-radius: 6px; cursor: pointer; color: #fff; z-index: 10; position: relative; }
+        .theme-dot { font-size: 9px; padding: 6px; text-align: center; background: #000; border: 1px solid var(--panel-brighter); border-radius: 6px; cursor: pointer; color: #fff; z-index: 10; font-weight: bold; }
         
-        .encounter-overlay { background: #0b0705; border: 2px solid var(--neon-gold); padding: 16px; border-radius: 12px; margin-top: 8px; position: relative; z-index: 20; box-shadow: 0 0 15px rgba(254, 228, 64, 0.15); }
-        .dialogue-text { font-style: italic; font-size: 11px; color: #ebdcd0; padding: 10px; background: #000; border-left: 3px solid var(--neon-gold); margin-bottom: 12px; line-height: 1.4; }
-        .dialogue-options-box { display: flex; flex-direction: column; gap: 6px; }
+        /* OVERLAY MODALS & EVENT HOUSING */
+        .encounter-overlay { background: rgba(18, 12, 9, 0.96); border: 2px solid var(--neon-gold); padding: 18px; border-radius: 14px; margin-top: 8px; position: relative; z-index: 20; box-shadow: 0 0 25px rgba(254, 228, 64, 0.25); backdrop-filter: blur(10px); }
+        .dialogue-text { font-style: italic; font-size: 12px; color: #f2e4dc; padding: 12px; background: rgba(0,0,0,0.4); border-left: 4px solid var(--neon-gold); margin-bottom: 14px; line-height: 1.5; border-radius: 0 8px 8px 0; }
+        .dialogue-options-box { display: flex; flex-direction: column; gap: 8px; }
+
+        /* INSPECT LARGE VIEW CONFIGURATION */
+        .inspect-card-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); z-index: 10000; display: none;
+            align-items: center; justify-content: center; flex-direction: column;
+            backdrop-filter: blur(12px); animation: fadeInOverlay 0.15s ease-out;
+        }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+
+        .large-card-display {
+            background: linear-gradient(145deg, #1c1512 0%, #050404 100%);
+            width: 240px; height: 340px; border-radius: 20px; border: 4px solid #fff;
+            padding: 20px; display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.8); position: relative;
+            transform: scale(1); animation: popCard 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        @keyframes popCard { from { transform: scale(0.85); } to { transform: scale(1); } }
+
+        .large-card-display .large-badge { position: absolute; top: -12px; left: -12px; background: #fff; color: #000; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; border: 2px solid currentColor; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+        .large-card-display .large-title { font-size: 16px; font-weight: 800; color: #fff; border-bottom: 2px solid var(--panel-brighter); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; margin-top: 10px; }
+        .large-card-display .large-body { font-size: 13px; color: #ebdcd3; line-height: 1.5; text-align: center; padding: 20px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+        .large-card-display .large-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; text-align: center; color: #8c7c73; }
+
+        .hint-text-hold { text-align: center; font-size: 9px; color: #8c7c73; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; }
     </style>
 </head>
 <body>
@@ -158,17 +200,17 @@
 
         <!-- ARCADE TITLE MENU SCREEN -->
         <div id="screen-main-menu" class="screen-view active">
-            <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:13px; color:#fff; letter-spacing:4px;">BLOOD & RUST</span></div>
+            <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:12px; color:#fff; letter-spacing:5px; font-weight: 400;">BLOOD & RUST</span></div>
             <div class="title-backdrop">
-                <p style="font-size:9px; margin-bottom: 14px; color:#aaa;">System Command Initialization Build v9.0</p>
+                <p style="font-size:10px; margin-bottom: 16px; color:#a3948c; font-family: monospace;">System Initialization Routine Build v10.0</p>
                 <button class="btn" onclick="initiateNewGameSetup()">⚡ ENGAGE MOTORS ⚡</button>
-                <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE RUN CHANNEL</button>
+                <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE ACTIVE CHANNELS</button>
                 
-                <h4 style="margin-top:20px; font-size:10px;">🎨 ENGINE GRAPHICS ROUTINE</h4>
+                <h3 style="margin-top:20px;">🎨 GRAPHICS CORE STYLES</h3>
                 <div class="theme-select-panel">
                     <div class="theme-dot" onclick="setMatrixTheme('rust')">Solar Rust</div>
                     <div class="theme-dot" onclick="setMatrixTheme('cyber')">Cyber Neon</div>
-                    <div class="theme-dot" onclick="setMatrixTheme('toxic')">Toxic Waste</div>
+                    <div class="theme-dot" onclick="setMatrixTheme('toxic')">Toxic Green</div>
                     <div class="theme-dot" onclick="setMatrixTheme('obsidian')">Obsidian</div>
                     <div class="theme-dot" onclick="setMatrixTheme('crimson')">Crimson</div>
                 </div>
@@ -177,9 +219,9 @@
 
         <!-- FRONTIER TOWN ROSTER POOL SELECTOR -->
         <div id="screen-setup" class="screen-view">
-            <h1>🌵 MOUNT OUTLAW SYSTEM CORE 🌾</h1>
-            <p style="text-align: center; font-size: 9px; margin-bottom: 10px;">Select from your 12 authorized frontier town assets:</p>
-            <div id="chassis-selection-list" style="max-height: 320px; overflow-y: auto; padding-right: 4px;"></div>
+            <h1>🌵 AUTHORIZE SYSTEM ASSET 🌾</h1>
+            <p style="text-align: center; font-size: 10px; margin-bottom: 12px; color: #a3948c;">Select an outlaw chassis module to bind to the upcoming expedition trail:</p>
+            <div id="chassis-selection-list" style="flex-grow: 1; overflow-y: auto; padding-right: 4px;"></div>
             <button class="btn btn-outline" style="margin-top:10px;" onclick="returnToMainMenu()">⬅️ REVERT BACK TO START</button>
         </div>
 
@@ -193,14 +235,14 @@
         <!-- ASSET MATRIX EXPANSION INVENTORY -->
         <div id="screen-inventory-deck" class="screen-view">
             <h3>🤠 CORE OUTLAW SYSTEM HARDWARE</h3>
-            <div style="background:#000; padding:10px; border-radius:12px; font-size:10px; border:1px solid var(--panel-brighter); line-height: 1.5;">
+            <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-size:11px; border:1px solid var(--panel-brighter); line-height: 1.6;">
                 • Core Name: <span id="deck-stats-name" style="color:var(--neon-cyan); font-weight:bold;">---</span><br>
                 • Level Tier: <span id="deck-stats-level" style="color:var(--neon-purple); font-weight:bold;">1</span> (XP: <span id="deck-stats-xp">0/100</span>)<br>
-                • Frame Stability: <span id="deck-stats-hp" style="color:var(--neon-red);">0/0</span><br>
-                • Loop Capacity: <span id="deck-stats-energy" style="color:var(--neon-gold);">0</span> Energy Base
+                • Frame Stability: <span id="deck-stats-hp" style="color:var(--neon-red); font-weight: bold;">0/0</span><br>
+                • Loop Capacity: <span id="deck-stats-energy" style="color:var(--neon-gold); font-weight: bold;">0</span> Energy Units
             </div>
             
-            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                 <button class="btn btn-outline" style="margin:0;" onclick="returnToMainMenu()">🛑 PAUSE RUN</button>
                 <button class="btn btn-danger" style="margin:0;" onclick="hardResetActiveRun()">⚠️ WIPE PROFILE</button>
             </div>
@@ -213,14 +255,14 @@
         <div id="screen-battle-engine" class="screen-view">
             <div class="combat-arena">
                 <!-- HOSTILE THREAT HOUSING -->
-                <div class="combatant-capsule" style="border-bottom: 1px dotted var(--neon-red); padding-bottom: 10px;">
-                    <h4 style="color:var(--neon-red);" id="combat-enemy-title">Hostile Entity</h4>
-                    <div style="font-size:9px; display:flex; justify-content:space-between; width:100%;">
-                        <span>Frame Lines: <b id="combat-enemy-hp-text">0/0</b></span>
+                <div class="combatant-capsule" style="border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 8px;">
+                    <h4 style="color:var(--neon-red); font-weight: 800;" id="combat-enemy-title">HOSTILE RADAR SIGNATURE</h4>
+                    <div style="font-size:10px; display:flex; justify-content:space-between; width:100%; margin-bottom: 2px;">
+                        <span>Frame Integrity:</span> <b id="combat-enemy-hp-text">0/0</b>
                     </div>
                     <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
-                    <div style="font-size:9px; background:#000; padding:6px; border-radius:8px; border:1px dashed var(--neon-red); margin-top:4px;">
-                        <span id="combat-enemy-intent-text" style="color:#fff;">Calculating ballistic projection...</span>
+                    <div style="font-size:10.5px; background:rgba(0,0,0,0.5); padding:8px; border-radius:6px; border:1px dashed var(--neon-red); margin-top:4px; color:#fff; font-style: italic;">
+                        <span id="combat-enemy-intent-text">Scanning telemetry tracks...</span>
                     </div>
                 </div>
 
@@ -228,24 +270,38 @@
                 <div class="combat-log" id="combat-event-logger">COOLING CYLINDER READY...</div>
 
                 <!-- LOCAL PLAYER INJECTOR FRAME -->
-                <div class="combatant-capsule" style="border-top: 1px dotted var(--neon-cyan); padding-top: 4px;">
-                    <h4 id="combat-player-title">Outlaw Core</h4>
-                    <div style="font-size:9px; display:flex; justify-content:space-between;">
-                        <span>Integrity: <b id="combat-player-hp-text">0/0</b></span>
-                        <span style="color:var(--neon-cyan);" id="combat-player-shield-text">Plating: 0</span>
+                <div class="combatant-capsule" style="border-top: 1px dashed var(--panel-brighter); padding-top: 4px;">
+                    <h4 id="combat-player-title" style="font-weight: 800;">ACTIVE EXPEDITION PILOT</h4>
+                    <div style="font-size:10px; display:flex; justify-content:space-between; margin-bottom: 2px;">
+                        <span>Chassis Core Integrity: <b id="combat-player-hp-text">0/0</b></span>
+                        <span style="color:var(--neon-cyan); font-weight: bold;" id="combat-player-shield-text">Plating: 0</span>
                     </div>
                     <div class="meter"><div class="meter-fill-hp" id="combat-player-hp-bar"></div></div>
-                    <div style="font-size:9px;">Action Clock Charge: <b id="combat-player-en-text" style="color:var(--neon-cyan);">0/0</b></div>
+                    <div style="font-size:10px; margin-top: 4px;">Action Engine Throttles: <b id="combat-player-en-text" style="color:var(--neon-cyan);">0/0</b></div>
                     <div class="meter"><div class="meter-fill-en" id="combat-player-en-bar"></div></div>
-                    <button class="btn btn-gold" style="padding:6px; font-size:9px; border-radius:8px; margin-top:4px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE UNIQUE SYSTÉM UTILITY</button>
+                    <button class="btn btn-gold" style="padding:8px; font-size:10px; border-radius:6px; margin-top:6px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE UTILITY MATRIX</button>
                 </div>
 
-                <!-- HAND OVERLAY CONTAINER -->
-                <div class="combat-hand-fan-container" id="combat-current-hand-slots"></div>
+                <!-- HAND OVERLAY AREA -->
+                <div>
+                    <div class="combat-hand-fan-container" id="combat-current-hand-slots"></div>
+                    <div class="hint-text-hold">💡 Tap to trigger module • Hold down to inspect details</div>
+                </div>
 
-                <button class="btn btn-danger" style="margin-top:4px;" onclick="processHostileTurnSequence()">CONCEDE ACTION TURN STEP</button>
+                <button class="btn btn-danger" style="margin-top:2px;" onclick="processHostileTurnSequence()">CONCEDE STRATEGIC STEP (END TURN)</button>
             </div>
         </div>
+    </div>
+
+    <!-- PERSISTENT REVOLVING INSPECT OVERLAY MODAL -->
+    <div class="inspect-card-overlay" id="global-inspect-modal-window" onclick="closeCardInspectionModal()">
+        <div class="large-card-display" id="large-card-frame-target" onclick="event.stopPropagation()">
+            <div class="large-badge" id="large-card-cost">0</div>
+            <div class="large-title" id="large-card-title">MODULE MODULE</div>
+            <div class="large-body" id="large-card-desc">System specification text description renders right inside this framework panel area block.</div>
+            <div class="large-type" id="large-card-type">CLASSIFICATION</div>
+        </div>
+        <button class="btn btn-gold" style="width:180px; margin-top:20px; border-radius: 20px;" onclick="closeCardInspectionModal()">Return to Combat</button>
     </div>
 
     <!-- BOTTOM TAB NAVIGATION -->
@@ -256,104 +312,102 @@
     </div>
 
     <script>
-        // GLOBAL POOL OF THE 5 SHARED COMMON BASE CARDS
+        // GLOBAL DATA DESIGN REPOSITORIES
         const GLOBAL_COMMON_CARDS = {
-            1: { id: 1, title: "Iron Shot", type: "Attack", cost: 1, desc: "Fires a fundamental kinetic round dealing 6 damage.", run: () => damageHostileTarget(6) },
-            2: { id: 2, title: "Quick Snap", type: "Attack", cost: 0, desc: "A snap discharge dealing 4 instantaneous damage.", run: () => damageHostileTarget(4) },
-            3: { id: 3, title: "Take Cover", type: "Defense", cost: 1, desc: "Duck behind structures to get +6 armor plating.", run: () => shieldPlayerTarget(6) },
-            4: { id: 4, title: "Brace Frame", type: "Defense", cost: 2, desc: "Anchor your chassis systems to gain +13 heavy protection.", run: () => shieldPlayerTarget(13) },
-            5: { id: 5, title: "Ration Pack", type: "Utility", cost: 1, desc: "Consume local emergency nutrients to heal 10 system HP.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 10); logCombatMessage("Consumed common rations. Restored 10 HP."); } }
+            1: { id: 1, title: "Iron Shot", type: "Attack", cost: 1, desc: "Loads dynamic solid slug ammo into chambers. Fires down target lanes to deal 6 structural kinetic damage.", run: () => damageHostileTarget(6) },
+            2: { id: 2, title: "Quick Snap", type: "Attack", cost: 0, desc: "An instantaneous reflex snapshot discharge. Bypasses cycle latency constraints to deal 4 quick kinetic damage.", run: () => damageHostileTarget(4) },
+            3: { id: 3, title: "Take Cover", type: "Defense", cost: 1, desc: "Drops chassis posture into low profiles behind available sector scrap. Grants +6 defensive armor plating sheets.", run: () => shieldPlayerTarget(6) },
+            4: { id: 4, title: "Brace Frame", type: "Defense", cost: 2, desc: "Anchors hydraulic stabiliser pistons, locking down the chassis structure. Secures +13 heavy industrial protection armor lines.", run: () => shieldPlayerTarget(13) },
+            5: { id: 5, title: "Ration Pack", type: "Utility", cost: 1, desc: "Injects synthetic emergency nourishment fluids directly into vulnerable wiring lines. Restores 10 damaged chassis health points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 10); logCombatMessage("Consumed ration pack lines. Repaired 10 HP."); } }
         };
 
-        // EXCLUSIVE CLASS UNIQUE MODULE CARDS (1 PER CLASS)
         const CLASS_UNIQUE_CARDS = {
-            101: { id: 101, title: "Desperado Heat", type: "Attack", cost: 3, desc: "OUTLAW ONLY: Unload a full cell for 26 damage, scales on low HP.", run: () => damageHostileTarget(26) },
-            102: { id: 102, title: "Loaded Draw", type: "Utility", cost: 1, desc: "GAMBLER ONLY: Bet 20 gold. Draw entire deck hand instantly.", run: () => { if(userState.gold>=20){ userState.gold-=20; fillHandArray(); logCombatMessage("Gambled 20g on a redial."); syncGlobalHUD(); } else { alert("Not enough gold to bet!"); } } },
-            103: { id: 103, title: "Molotov Mix", type: "Attack", cost: 2, desc: "BARTENDER ONLY: Crash spirits for 14 AoE fire damage.", run: () => damageHostileTarget(14) },
-            104: { id: 104, title: "Looping Melody", type: "Utility", cost: 1, desc: "RAGTIME ONLY: Refresh full operational Energy cycles back to max.", run: () => { activeCombatState.currentEnergy = userState.maxEnergy; logCombatMessage("Tempo reset energy!"); } },
-            105: { id: 105, title: "Blasting Cap", type: "Attack", cost: 2, desc: "PROSPECTOR ONLY: Blow away structural armor for 18 pierce damage.", run: () => damageHostileTarget(18) },
-            106: { id: 106, title: "Iron Warrant", type: "Defense", cost: 1, desc: "SHERIFF ONLY: Gain 8 plating and reflect incoming damage.", run: () => { shieldPlayerTarget(8); logCombatMessage("Warrant issued: Counter-plating active."); } },
-            107: { id: 107, title: "Toxic Liniment", type: "Attack", cost: 1, desc: "SALESMAN ONLY: Poison hostiles, dealing 12 delayed damage.", run: () => damageHostileTarget(12) },
-            108: { id: 108, title: "Zealous Fury", type: "Attack", cost: 2, desc: "PREACHER ONLY: Condemn heretics for 16 holy blast damage.", run: () => damageHostileTarget(16) },
-            109: { id: 109, title: "Lasso Snare", type: "Utility", cost: 1, desc: "WRANGLER ONLY: Displace target. Cancel enemy intent action completely.", run: () => { if(activeCombatState.enemy) { activeCombatState.enemy.intent = "Snared and trapped in place"; activeCombatState.enemy.dmg = 0; renderCombatScreenInterfaceValues(); logCombatMessage("Lassoed target, breaking intent!"); } } },
-            110: { id: 110, title: "Homestead Wall", type: "Defense", cost: 2, desc: "PIONEER ONLY: Erect fortress walls for +20 impenetrable plating.", run: () => shieldPlayerTarget(20) },
-            111: { id: 111, title: "Surgical Lance", type: "Attack", cost: 2, desc: "DOCTOR ONLY: Direct structural incision dealing 18 precision damage.", run: () => damageHostileTarget(18) },
-            112: { id: 112, title: "Pine Box Harvest", type: "Utility", cost: 0, desc: "UNDERTAKER ONLY: Gain 15 Gold instantly from fallen remnants.", run: () => { userState.gold += 15; syncGlobalHUD(); logCombatMessage("Scavenged 15g from scrap frames."); } }
+            101: { id: 101, title: "Desperado Heat", type: "Attack", cost: 3, desc: "OUTLAW EXCLUSIVE: Dumps whole reactor cells down gun barrels. Unloads a brutal blast for 26 damage, scaling intensely if your chassis is low.", run: () => damageHostileTarget(26) },
+            102: { id: 102, title: "Loaded Draw", type: "Utility", cost: 1, desc: "GAMBLER EXCLUSIVE: Risks financial assets. Sacrifices 20 gold units to instantly redial and pull a completely fresh hand of tech modules.", run: () => { if(userState.gold>=20){ userState.gold-=20; fillHandArray(); logCombatMessage("Gambled 20g on a complete hand redial."); syncGlobalHUD(); } else { alert("Insufficient gold holdings to cover the bet!"); } } },
+            103: { id: 103, title: "Molotov Mix", type: "Attack", cost: 2, desc: "BARTENDER EXCLUSIVE: Smashes combustible industrial chemical fluids. Ignites the battlefield grid for 14 fire damage.", run: () => damageHostileTarget(14) },
+            104: { id: 104, title: "Looping Melody", type: "Utility", cost: 1, desc: "RAGTIME EXCLUSIVE: Loops sonic disruption waves. Resets all core action clock throttles back to absolute max capacity.", run: () => { activeCombatState.currentEnergy = userState.maxEnergy; logCombatMessage("Musical rhythm reset available turn energy!"); } },
+            105: { id: 105, title: "Blasting Cap", type: "Attack", cost: 2, desc: "PROSPECTOR EXCLUSIVE: Detonates excavation mineral charges beneath target cover paths. Blasts armor aside for 18 pierce damage.", run: () => damageHostileTarget(18) },
+            106: { id: 106, title: "Iron Warrant", type: "Defense", cost: 1, desc: "SHERIFF EXCLUSIVE: Declares authority over the vector. Grants 8 protective armor plating points and prepares instant counter-fire protocols.", run: () => { shieldPlayerTarget(8); logCombatMessage("Warrant issued: Counter-defences fully primed."); } },
+            107: { id: 107, title: "Toxic Liniment", type: "Attack", cost: 1, desc: "SALESMAN EXCLUSIVE: Splashes dangerous unrefined chemical compounds. Melts through circuitry pathways for 12 poison damage.", run: () => damageHostileTarget(12) },
+            108: { id: 108, title: "Zealous Fury", type: "Attack", cost: 2, desc: "PREACHER EXCLUSIVE: Broadcasts heavy religious condemnation frequencies. Shatters hostile logic arrays for 16 blast damage.", run: () => damageHostileTarget(16) },
+            109: { id: 109, title: "Lasso Snare", type: "Utility", cost: 1, desc: "WRANGLER EXCLUSIVE: Throws high-tensile magnetic cabling lines. Wraps target, breaking and cancelling their entire planned intent.", run: () => { if(activeCombatState.enemy) { activeCombatState.enemy.intent = "Snared and structural movement bound fast"; activeCombatState.enemy.dmg = 0; renderCombatScreenInterfaceValues(); logCombatMessage("Lassoed target safely, disrupting hostile intent tracks!"); } } },
+            110: { id: 110, title: "Homestead Wall", type: "Defense", cost: 2, desc: "PIONEER EXCLUSIVE: Deploys drop-down construction grid shields. Erects an unyielding shelter that blocks 20 massive incoming damage.", run: () => shieldPlayerTarget(20) },
+            111: { id: 111, title: "Surgical Lance", type: "Attack", cost: 2, desc: "DOCTOR EXCLUSIVE: Drives clean laser incisions directly through micro-wiring lines. Deals 18 pinpoint targeted damage.", run: () => damageHostileTarget(18) },
+            112: { id: 112, title: "Box Harvest", type: "Utility", cost: 0, desc: "UNDERTAKER EXCLUSIVE: Scavenges damaged wrecks. Instantly extractions 15 gold pieces from component remains cluttering the area.", run: () => { userState.gold += 15; syncGlobalHUD(); logCombatMessage("Scavenged 15g from structural grid trash."); } }
         };
 
-        // CLASS REGISTRY CONTAINING THE UNIQUE STARTER DECK MIXES
         const OUTLAW_CHASSIS_REGISTRY = [
-            { name: "The Outlaw", hp: 100, energy: 3, desc: "Aggressive center. Converts lost health frames into heavy structural fire.", baseDeck: [1, 2, 3, 4, 101], techName: "Desperado Discharge (12 Dmg)" },
-            { name: "The Gambler", hp: 80, energy: 3, desc: "Alters probability matrices, risking currency to trigger massive critical returns.", baseDeck: [1, 2, 3, 5, 102], techName: "Cardsharp Rig (12 Dmg)" },
-            { name: "The Bartender", hp: 110, energy: 3, desc: "Crowd control anchor. Uses broken glass and thick physical blockades to stifle aggression.", baseDeck: [1, 3, 4, 5, 103], techName: "Bouncer Slam (12 Dmg)" },
-            { name: "The Ragtime", hp: 85, energy: 4, desc: "Battlefield orchestrator. Manipulates initiative queues and hand cycling speeds.", baseDeck: [1, 2, 3, 5, 104], techName: "Honky-Tonk Sync (12 Dmg)" },
-            { name: "The Prospector", hp: 105, energy: 3, desc: "Terrain manipulation asset. Excavates explosive minerals directly into combat grids.", baseDeck: [1, 2, 3, 4, 105], techName: "Dynamite Chunk (12 Dmg)" },
-            { name: "The Sheriff", hp: 115, energy: 3, desc: "Reaction sentinel. Marks enemies with bounties, striking them back on their own turns.", baseDeck: [1, 3, 4, 5, 106], techName: "Iron Law Execution (12 Dmg)" },
-            { name: "The Snake Oil Salesman", hp: 90, energy: 3, desc: "Deception and toxins. Delivers chemical hazards paired with toxic high-yield boosters.", baseDeck: [1, 2, 3, 5, 107], techName: "Corrosive Acid Spray (12 Dmg)" },
-            { name: "The Preacher", hp: 95, energy: 3, desc: "Morale manipulation force. Brands targets with systemic sins to shatter their code.", baseDeck: [1, 2, 3, 4, 108], techName: "Condemnation Aura (12 Dmg)" },
-            { name: "The Wrangler", hp: 100, energy: 3, desc: "Displacement authority. Pulls targets across ranks, breaking cover paths instantly.", baseDeck: [1, 2, 3, 4, 109], techName: "Whip Crack Pull (12 Dmg)" },
-            { name: "The Pioneer", hp: 125, energy: 3, desc: "Fortification specialist. Erects dense localized grids to absorb all kinetic spikes.", baseDeck: [1, 3, 4, 4, 110], techName: "Rail Spike Drive (12 Dmg)" },
-            { name: "The Doctor", hp: 95, energy: 3, desc: "Anatomical precision triage. Deals surgical targeting damage while cleansing core errors.", baseDeck: [1, 2, 3, 5, 111], techName: "Surgical Scalpel (12 Dmg)" },
-            { name: "The Undertaker", hp: 110, energy: 3, desc: "Grim scavenger. Harvests resources directly from decaying and spent battle units.", baseDeck: [1, 2, 3, 4, 112], techName: "Grave Dirt Shield (12 Dmg)" }
+            { name: "The Outlaw", hp: 100, energy: 3, desc: "Aggressive front-line asset. Weapon systems convert missing health blocks into heavy ballistic output metrics.", baseDeck: [1, 2, 3, 4, 101], techName: "Desperado Discharge (12 Dmg)" },
+            { name: "The Gambler", hp: 80, energy: 3, desc: "Fortune system manipulator. Sacrifices gold funds to reroll software layouts and force critical output returns.", baseDeck: [1, 2, 3, 5, 102], techName: "Cardsharp Rig (12 Dmg)" },
+            { name: "The Bartender", hp: 110, energy: 3, desc: "Crowd disruption specialist. Employs heavy material barriers to suppress multi-angle hostile engagement plans.", baseDeck: [1, 3, 4, 5, 103], techName: "Bouncer Slam (12 Dmg)" },
+            { name: "The Ragtime", hp: 85, energy: 4, desc: "Acoustic battlefield engine. Dictates core initiative timelines and reshapes mechanical speed limits.", baseDeck: [1, 2, 3, 5, 104], techName: "Honky-Tonk Sync (12 Dmg)" },
+            { name: "The Prospector", hp: 105, energy: 3, desc: "Demolition asset. Drops volatile mineral nodes into combat configurations to bypass enemy line armor.", baseDeck: [1, 2, 3, 4, 105], techName: "Dynamite Chunk (12 Dmg)" },
+            { name: "The Sheriff", hp: 115, energy: 3, desc: "Reactive protection armor node. Applies target tracking locks to intercept enemies during their own action turns.", baseDeck: [1, 3, 4, 5, 106], techName: "Iron Law Execution (12 Dmg)" },
+            { name: "The Snake Oil Salesman", hp: 90, energy: 3, desc: "Subterfuge master. Distributes volatile corrosive compounds that slowly liquify internal wiring grids.", baseDeck: [1, 2, 3, 5, 107], techName: "Corrosive Acid Spray (12 Dmg)" },
+            { name: "The Preacher", hp: 95, energy: 3, desc: "Ideological dampener. Infuses target logic blocks with systemic errors, breaking down moral cohesion metrics.", baseDeck: [1, 2, 3, 4, 108], techName: "Condemnation Aura (12 Dmg)" },
+            { name: "The Wrangler", hp: 100, energy: 3, desc: "Tactical positioning control. Uses electromagnetic grappling links to yank hostiles clear out of defensive structures.", baseDeck: [1, 2, 3, 4, 109], techName: "Whip Crack Pull (12 Dmg)" },
+            { name: "The Pioneer", hp: 125, energy: 3, desc: "Heavy baseline bunker. Configures high-density dynamic shields to safely absorb major ballistic impact surges.", baseDeck: [1, 3, 4, 4, 110], techName: "Rail Spike Drive (12 Dmg)" },
+            { name: "The Doctor", hp: 95, energy: 3, desc: "Triage frame. Conducts accurate surgical cutting operations while executing self-repair protocols.", baseDeck: [1, 2, 3, 5, 111], techName: "Surgical Scalpel (12 Dmg)" },
+            { name: "The Undertaker", hp: 110, energy: 3, desc: "Scrap collection engine. Generates continuous financial resources by breaking down scrap components.", baseDeck: [1, 2, 3, 4, 112], techName: "Grave Dirt Shield (12 Dmg)" }
         ];
 
-        // DYNAMIC MULTI-STAGE MIXED WORLD MAP PIPELINE
         const FRONTIER_CAMPAIGN_MAPS = [
             {
                 name: "STAGE I: THE RUSTWOOD SECTOR",
                 rows: [
-                    // ROW 1: COMBAT GATEWAY
-                    [{ type: "Combat", label: "🤠 Gulch Sentry", icon: "⚔️", id: "c1" }],
-                    // ROW 2: CHOICE EXPLORATION & DIALOGUE ENCOUNTER
+                    [{ type: "Combat", label: "Gulch Sentry Drone", icon: "⚙️", id: "c1" }],
                     [
-                        { type: "Dialogue", label: "🥃 Blackwood Saloon", icon: "🥃", id: "d1" }, 
-                        { type: "Dialogue", label: "🎹 Scrap Yard", icon: "⚙️", id: "d2" }
+                        { type: "Dialogue", label: "Blackwood Saloon", icon: "🥃", id: "d1" }, 
+                        { type: "Dialogue", label: "Scrap Junk Pile", icon: "🔩", id: "d2" }
                     ],
-                    // ROW 3: HARDCOMBAT SQUAD
-                    [{ type: "Combat", label: "🤠 Iron-Rail Skirmisher", icon: "⚔️", id: "c2" }],
-                    // ROW 4: REGION CAPSTONE BOSS
-                    [{ type: "Combat", label: "💀 Target: Bounty Hunter Vance", icon: "👹", id: "b1", isBoss: true }]
+                    [{ type: "Combat", label: "Iron-Rail Outrider", icon: "🏇", id: "c2" }],
+                    [{ type: "Combat", label: "Bounty Hunter Vance", icon: "👹", id: "b1", isBoss: true }]
                 ]
             }
         ];
 
-        // FULL DATABASE OF FORKING DIALOGUE BRANCHES WITH VARIABLE OUTCOMES
         const DIALOGUE_EVENT_DATABASE = {
             "d1": {
                 title: "The Smoldering Counter - Blackwood Saloon",
                 text: "You push open the rusted swinging doors. A hooded synthetic bartender looks up while wiping an oily glass with a filthy rag. 'We don't get your type around here. Buy a drink, drop some information, or step back into the storm.'",
                 options: [
-                    { label: "💳 Spend 20g on high-grade coolant oil (+15 HP)", effect: () => { if(userState.gold>=20){ userState.gold-=20; userState.hp = Math.min(userState.maxHp, userState.hp + 15); advanceStoryAfterChoice("The oil coats your processing lines smoothly. You feel repaired."); } else { alert("Insufficient gold!"); } } },
-                    { label: "👁️ Intimidate him for town secrets (+40 XP)", effect: () => { advanceStoryAfterChoice("You slam your metallic chassis onto the counter. He cowers, revealing back-alley maintenance codes. You feel more experienced!"); awardExperiencePoints(40); } },
-                    { label: "🚶 Quietly leave without drawing any attention", effect: () => { advanceStoryAfterChoice("You slip out back into the dust storm before trouble boils over."); } }
+                    { label: "💳 Spend 20g on high-grade coolant oil (+15 HP)", effect: () => { if(userState.gold>=20){ userState.gold-=20; userState.hp = Math.min(userState.maxHp, userState.hp + 15); advanceStoryAfterChoice("The chemical fluids coat your internal processing conduits smoothly. Heavy repair executed."); } else { alert("Insufficient gold resources!"); } } },
+                    { label: "👁️ Intimidate him for town database keys (+40 XP)", effect: () => { advanceStoryAfterChoice("You slam your kinetic frame heavy onto the metal bar counter. He cows down, tossing you backdoor diagnostic parameters."); awardExperiencePoints(40); } },
+                    { label: "🚶 Slip quietly back into the dust storm", effect: () => { advanceStoryAfterChoice("You turn and leave without purchasing fluids, sliding safely into shadows before trouble builds."); } }
                 ]
             },
             "d2": {
-                title: "The Scrap Yard - Heap Overload",
-                text: "An old scrapper stands over a mountain of dead core components holding a plasma cutter. 'Hey traveler, care to pitch a wager on these parts? Or maybe you're just looking to rob an old junker?'",
+                title: "The Junk Grid - Heap Overload",
+                text: "An ancient mechanised scrapper stands inside an expanse of shattered chassis frames holding an active arc cutter. 'Hey traveler, care to pitch a heavy wager on these blind component piles? Or are you just out here hunting for trouble?'",
                 options: [
-                    { label: "🎲 Bet 30 Gold on a random pile draw (50% Chance for unique armor)", effect: () => {
+                    { label: "🎲 Risk 30 Gold on a blind crate pull (50% Chance)", effect: () => {
                         if(userState.gold>=30) {
                             userState.gold -= 30;
                             if(Math.random() > 0.5) {
-                                userState.deck.push(4); // Add Brace Frame common
-                                advanceStoryAfterChoice("Jackpot! You uncover a heavy structural 'Brace Frame' module armor module.");
+                                userState.deck.push(4); 
+                                advanceStoryAfterChoice("Success! You fish out an untouched structural 'Brace Frame' module blueprint.");
                             } else {
-                                advanceStoryAfterChoice("Nothing but melted copper lines. You lost the wager.");
+                                advanceStoryAfterChoice("Nothing but fried wiring components and heavy ash blocks inside. Asset lost.");
                             }
                         } else { alert("Insufficient gold!"); }
                     } },
-                    { label: "🔧 Salvage loose wiring calmly (+10 Gold)", effect: () => { userState.gold += 10; advanceStoryAfterChoice("You patiently sort through copper conduits, finding 10 shiny bits of currency."); } }
+                    { label: "🔧 Salvage stray terminal power links (+10 Gold)", effect: () => { userState.gold += 10; advanceStoryAfterChoice("You calmly strip core wiring nodes, discovering 10 intact gold currency tokens."); } }
                 ]
             }
         };
 
+        // ENGINE RUNTIME STATE POOLS
         let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, level: 1, xp: 0, deck: [] };
         let activeRegionIndex = 0; let activeRowIndex = 0; let activeChoiceColumn = 0; 
         let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, liveHand: [] };
+        
+        // CLICK-AND-HOLD INSPECTION TIMER TRACKING VARIABLES
+        let holdTimerReference = null;
+        let isHoldExecutionTriggered = false;
+        const HOLD_DURATION_THRESHOLD_MS = 450; // Delay before holding activates inspection modal
 
         window.addEventListener("DOMContentLoaded", () => { 
-            if(localStorage.getItem("frontier_save_v9")) {
+            if(localStorage.getItem("frontier_save_v10")) {
                 document.getElementById("main-menu-continue-btn").classList.remove("hidden");
             } 
         });
@@ -377,15 +431,13 @@
         }
 
         function renderOutlawSelectionList() {
-            const listContainer = document.getElementById("chassis-selection-list");
-            listContainer.innerHTML = "";
+            const listContainer = document.getElementById("chassis-selection-list"); listContainer.innerHTML = "";
             OUTLAW_CHASSIS_REGISTRY.forEach((ch, idx) => {
-                const row = document.createElement("div");
-                row.className = "chassis-row";
+                const row = document.createElement("div"); row.className = "chassis-row";
                 row.onclick = () => instantiateSelectedChassis(idx);
-                row.innerHTML = `<h4>${ch.name} <span style="font-size:9px; color:var(--neon-gold); float:right;">HP: ${ch.hp} | EN: ${ch.energy}</span></h4>
-                                 <p>${ch.desc}</p>
-                                 <span style="font-size:7.5px; color: var(--neon-cyan);">Unique Weapon Card Added to Saddlebag!</span>`;
+                row.innerHTML = `<h4 style="color:var(--neon-amber); font-weight:800;">${ch.name} <span style="font-size:10px; color:var(--neon-gold); float:right;">HP: ${ch.hp} | EN: ${ch.energy}</span></h4>
+                                 <p style="margin-top:4px; font-size:11px;">${ch.desc}</p>
+                                 <span style="font-size:8px; color: var(--neon-cyan); font-weight:700;">🎁 UNLOCKED UNIQUE CARD INTEGRATED AVAILABLE</span>`;
                 listContainer.appendChild(row);
             });
         }
@@ -405,9 +457,9 @@
             switchActiveTab("world-map"); syncGlobalHUD(); buildFrontierMapUi();
         }
 
-        function saveActiveRunData() { localStorage.setItem("frontier_save_v9", JSON.stringify({ userState, activeRegionIndex, activeRowIndex, activeChoiceColumn })); }
-        function loadActiveRunData() { const cache = JSON.parse(localStorage.getItem("frontier_save_v9")); userState = cache.userState; activeRegionIndex = cache.activeRegionIndex; activeRowIndex = cache.activeRowIndex; enterTheFrontierWorld(); }
-        function hardResetActiveRun() { if(confirm("Discard all core progress data lines?")) { localStorage.removeItem("frontier_save_v9"); location.reload(); } }
+        function saveActiveRunData() { localStorage.setItem("frontier_save_v10", JSON.stringify({ userState, activeRegionIndex, activeRowIndex, activeChoiceColumn })); }
+        function loadActiveRunData() { const cache = JSON.parse(localStorage.getItem("frontier_save_v10")); userState = cache.userState; activeRegionIndex = cache.activeRegionIndex; activeRowIndex = cache.activeRowIndex; enterTheFrontierWorld(); }
+        function hardResetActiveRun() { if(confirm("Permanently wipe your outlaw's active channel records?")) { localStorage.removeItem("frontier_save_v10"); location.reload(); } }
 
         function switchActiveTab(targetTabId) {
             document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
@@ -440,64 +492,47 @@
         }
 
         function handleNodeInteractionGate(node) {
-            const overlay = document.getElementById("encounter-notification"); 
-            overlay.classList.remove("hidden");
-            
+            const overlay = document.getElementById("encounter-notification"); overlay.classList.remove("hidden");
             if(node.type === "Dialogue") {
                 const data = DIALOGUE_EVENT_DATABASE[node.id];
-                overlay.innerHTML = `<h4>💬 LOCALIZED ENCOUNTER: ${data.title}</h4>
+                overlay.innerHTML = `<h4>💬 LOCAL EVENT ROUTINE: ${data.title}</h4>
                                      <div class="dialogue-text">${data.text}</div>
                                      <div class="dialogue-options-box" id="dialogue-options-target"></div>`;
                 const box = document.getElementById("dialogue-options-target");
                 data.options.forEach(opt => {
-                    const b = document.createElement("button"); b.className = "btn btn-outline";
-                    b.innerText = opt.label; b.onclick = opt.effect;
-                    box.appendChild(b);
+                    const b = document.createElement("button"); b.className = "btn btn-outline"; b.innerText = opt.label; b.onclick = opt.effect; box.appendChild(b);
                 });
             } else {
-                // COMBAT NODE SELECTION REGISTER
                 let isBoss = node.isBoss || false;
                 let enemyBlueprint = isBoss ? 
-                    { name: "BOUNTY HUNTER VANCE", hp: 75, dmg: 9, intent: "Fanning heavy cylinder circuits straight into your processing armor." } :
-                    { name: node.label, hp: 45, dmg: 6, intent: "Locking vintage ballistic sights onto your structural nodes." };
+                    { name: "BOUNTY HUNTER VANCE [BOSS]", hp: 75, dmg: 10, intent: "Fanning blazing core projectile streams down center cover grids." } :
+                    { name: node.label, hp: 42, dmg: 6, intent: "Locking old kinetic rifle lines onto structural joints." };
 
-                overlay.innerHTML = `<h4>⚠️ BALISTIC ALERT: ${node.label}</h4>
-                                     <div class="dialogue-text">"You stepped onto the wrong hex grid, traveler. Prepare to vent steam."</div>
-                                     <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Engage Weapons Matrix</button>`;
+                overlay.innerHTML = `<h4>⚠️ BALISTIC TRACK IDENTIFIED: ${node.label}</h4>
+                                     <div class="dialogue-text">"Drop weapon cards and yield your saddlebag items right here, pilot."</div>
+                                     <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Engage Systems Matrix</button>`;
             }
         }
 
         function advanceStoryAfterChoice(resolutionText) {
             const overlay = document.getElementById("encounter-notification");
-            overlay.innerHTML = `<h4>📋 TRANSACTION RESULT</h4>
+            overlay.innerHTML = `<h4>📋 SECTOR METRIC RESOLUTION</h4>
                                  <div class="dialogue-text">${resolutionText}</div>
-                                 <button class="btn btn-gold" onclick="exitEncounterNode()">Resume Trail Voyage</button>`;
+                                 <button class="btn btn-gold" onclick="exitEncounterNode()">Resume Trail Sequence</button>`;
         }
 
         function exitEncounterNode() {
-            document.getElementById("encounter-notification").classList.add("hidden"); 
-            activeRowIndex++;
-            const totalRows = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows.length;
-            if(activeRowIndex >= totalRows) { 
-                alert("Sector fully conquered! Restarting loop pathway..."); 
-                activeRegionIndex = 0; 
-                activeRowIndex = 0; 
-            }
+            document.getElementById("encounter-notification").classList.add("hidden"); activeRowIndex++;
+            if(activeRowIndex >= FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows.length) { alert("Sector clear! Re-shuffling sector array path..."); activeRegionIndex = 0; activeRowIndex = 0; }
             saveActiveRunData(); syncGlobalHUD(); buildFrontierMapUi();
         }
 
         function setupCombatMatrix(eName, eHp, eDmg, eIntent) {
             activeCombatState.enemy = { name: eName, hp: eHp, maxHp: eHp, dmg: eDmg, intent: eIntent, baseDmg: eDmg, baseIntent: eIntent };
-            activeCombatState.currentEnergy = userState.maxEnergy; activeCombatState.playerShield = 0;
-            activeCombatState.abilityAvailable = true; activeCombatState.liveHand = [];
-
-            document.getElementById("encounter-notification").classList.add("hidden"); 
-            switchActiveTab("battle-engine");
-            
-            const localClass = OUTLAW_CHASSIS_REGISTRY.find(c => c.name === userState.name);
-            document.getElementById("combat-active-tech-btn").innerText = localClass.techName;
-
-            document.getElementById("combat-event-logger").innerHTML = "GUN CYLINDER ROTATED. START COMBAT LOOP.";
+            activeCombatState.currentEnergy = userState.maxEnergy; activeCombatState.playerShield = 0; activeCombatState.abilityAvailable = true; activeCombatState.liveHand = [];
+            document.getElementById("encounter-notification").classList.add("hidden"); switchActiveTab("battle-engine");
+            document.getElementById("combat-active-tech-btn").innerText = OUTLAW_CHASSIS_REGISTRY.find(c => c.name === userState.name).techName;
+            document.getElementById("combat-event-logger").innerHTML = ">> REVOLVER SYSTEM RE-CYCLED. ROUND INITIATED.";
             fillHandArray(); renderCombatScreenInterfaceValues();
         }
 
@@ -505,33 +540,91 @@
             let deckPool = [...userState.deck]; activeCombatState.liveHand = [];
             for(let i=0; i<4; i++) {
                 if(deckPool.length === 0) break;
-                let idx = Math.floor(Math.random() * deckPool.length);
-                let rawId = deckPool.splice(idx, 1)[0];
-                let template = GLOBAL_COMMON_CARDS[rawId] || CLASS_UNIQUE_CARDS[rawId];
-                if(template) activeCombatState.liveHand.push({ ...template, instanceId: Math.random() });
+                let rawId = deckPool.splice(Math.floor(Math.random() * deckPool.length), 1)[0];
+                let cardTemplate = GLOBAL_COMMON_CARDS[rawId] || CLASS_UNIQUE_CARDS[rawId];
+                if(cardTemplate) activeCombatState.liveHand.push({ ...cardTemplate, instanceId: Math.random() });
             }
             renderArcedHandInterface();
         }
 
+        // RENDER HAND SYSTEM CAPABLE OF DETECTING CLICK-AND-HOLD ACTION PROTOCOLS
         function renderArcedHandInterface() {
             const tray = document.getElementById("combat-current-hand-slots"); tray.innerHTML = "";
             const total = activeCombatState.liveHand.length;
 
             activeCombatState.liveHand.forEach((card, idx) => {
                 const item = document.createElement("div");
-                let tc = "card-attack"; if(card.type === "Defense") tc = "card-defense"; if(card.type === "Utility") tc = "card-utility";
-                item.className = `card-item ${tc}`;
+                let typeStyle = "card-attack"; if(card.type === "Defense") typeStyle = "card-defense"; if(card.type === "Utility") typeStyle = "card-utility";
+                item.className = `card-item ${typeStyle}`;
                 
-                const angle = total > 1 ? ((idx / (total - 1)) - 0.5) * 30 : 0;
-                const shiftX = total > 1 ? ((idx / (total - 1)) - 0.5) * 140 : 0;
-                const shiftY = total > 1 ? Math.abs((idx / (total - 1)) - 0.5) * 10 : 0;
+                const angle = total > 1 ? ((idx / (total - 1)) - 0.5) * 24 : 0;
+                const shiftX = total > 1 ? ((idx / (total - 1)) - 0.5) * 130 : 0;
+                const shiftY = total > 1 ? Math.abs((idx / (total - 1)) - 0.5) * 8 : 0;
 
                 item.style.transform = `translateX(${shiftX}px) translateY(${shiftY}px) rotate(${angle}deg)`;
                 item.style.zIndex = idx + 10;
-                item.onclick = () => executeCardCompilationProcess(card.instanceId);
-                item.innerHTML = `<div class="badge">${card.cost}</div><div class="title">${card.title}</div><div class="body-text">${card.desc}</div>`;
+                
+                item.innerHTML = `<div class="badge">${card.cost}</div>
+                                  <div class="title">${card.title}</div>
+                                  <div class="body-text">${card.desc.substring(0, 48)}...</div>
+                                  <div class="type-tag">${card.type}</div>`;
+
+                // INTERACTIVE POINTER ACTION LOGIC ROUTINES FOR CLICK-AND-HOLD / TOUCH-AND-HOLD
+                const initiateHoldAction = (e) => {
+                    isHoldExecutionTriggered = false;
+                    holdTimerReference = setTimeout(() => {
+                        isHoldExecutionTriggered = true;
+                        launchCardInspectionModal(card);
+                    }, HOLD_DURATION_THRESHOLD_MS);
+                };
+
+                const closeHoldAction = (e) => {
+                    clearTimeout(holdTimerReference);
+                    if (!isHoldExecutionTriggered) {
+                        executeCardCompilationProcess(card.instanceId);
+                    }
+                    isHoldExecutionTriggered = false;
+                };
+
+                const cancelHoldAction = () => { clearTimeout(holdTimerReference); };
+
+                // Mouse Event Bindings
+                item.addEventListener("mousedown", initiateHoldAction);
+                item.addEventListener("mouseup", closeHoldAction);
+                item.addEventListener("mouseleave", cancelHoldAction);
+
+                // Touch Mobile Event Bindings
+                item.addEventListener("touchstart", initiateHoldAction);
+                item.addEventListener("touchend", closeHoldAction);
+                item.addEventListener("touchmove", cancelHoldAction);
+
                 tray.appendChild(item);
             });
+        }
+
+        // LARGE SCREEN PREVIEW ENLARGEMENT SYSTEM CONTROLS
+        function launchCardInspectionModal(cardData) {
+            const overlay = document.getElementById("global-inspect-modal-window");
+            const innerFrame = document.getElementById("large-card-frame-target");
+            
+            // Set themed accent color to matches card spec
+            let targetColor = "var(--neon-red)";
+            if(cardData.type === "Defense") targetColor = "var(--neon-cyan)";
+            if(cardData.type === "Utility") targetColor = "var(--neon-gold)";
+            innerFrame.style.borderColor = targetColor;
+
+            document.getElementById("large-card-cost").innerText = cardData.cost;
+            document.getElementById("large-card-cost").style.color = targetColor;
+            document.getElementById("large-card-title").innerText = cardData.title;
+            document.getElementById("large-card-desc").innerText = cardData.desc;
+            document.getElementById("large-card-type").innerText = cardData.type;
+            document.getElementById("large-card-type").style.color = targetColor;
+
+            overlay.style.display = "flex";
+        }
+
+        function closeCardInspectionModal() {
+            document.getElementById("global-inspect-modal-window").style.display = "none";
         }
 
         function executeCardCompilationProcess(instanceId) {
@@ -539,10 +632,10 @@
             if(targetIdx === -1) return;
             const card = activeCombatState.liveHand[targetIdx];
 
-            if(activeCombatState.currentEnergy < card.cost) { alert("Action Clock throttling! Insufficient energy."); return; }
+            if(activeCombatState.currentEnergy < card.cost) { alert("Insufficient action throttling energy!"); return; }
             activeCombatState.currentEnergy -= card.cost;
             
-            logCombatMessage(`Compiled card module: ${card.title}`);
+            logCombatMessage(`Launched system: ${card.title}`);
             card.run();
             activeCombatState.liveHand.splice(targetIdx, 1);
             
@@ -552,33 +645,28 @@
 
         function damageHostileTarget(amount) {
             let t = activeCombatState.enemy; t.hp = Math.max(0, t.hp - amount);
-            logCombatMessage(`Dealt ${amount} frame structural damage to hostile.`);
+            logCombatMessage(`Dealt ${amount} point kinetic impact to target structures.`);
             if(t.hp <= 0) { 
-                alert("Target chassis pulverized! Scrap recovered."); 
-                userState.gold += 30; 
-                awardExperiencePoints(50); 
-                switchActiveTab("world-map"); 
-                exitEncounterNode(); 
+                alert("Target core exploded. Recovery protocols completed!"); 
+                userState.gold += 30; awardExperiencePoints(50); 
+                switchActiveTab("world-map"); exitEncounterNode(); 
             }
         }
-        function shieldPlayerTarget(amount) { activeCombatState.playerShield += amount; logCombatMessage(`Deployed +${amount} active armor protection sheets.`); }
-        function logCombatMessage(msg) { const logger = document.getElementById("combat-event-logger"); logger.innerHTML += `<br>• ${msg}`; logger.scrollTop = logger.scrollHeight; }
+        
+        function shieldPlayerTarget(amount) { activeCombatState.playerShield += amount; logCombatMessage(`Assembled +${amount} protective shielding plating.`); }
+        function logCombatMessage(msg) { const logger = document.getElementById("combat-event-logger"); logger.innerHTML += `<br>>> ${msg}`; logger.scrollTop = logger.scrollHeight; }
 
         function processHostileTurnSequence() {
-            let enemyAttack = activeCombatState.enemy.dmg;
-            let mitigated = Math.max(0, enemyAttack - activeCombatState.playerShield);
-            userState.hp -= mitigated;
+            let dmg = activeCombatState.enemy.dmg;
+            let finalHit = Math.max(0, dmg - activeCombatState.playerShield);
+            userState.hp -= finalHit;
+            logCombatMessage(`Hostile returns fire for ${dmg}. Plating blocked ${activeCombatState.playerShield}. Took ${finalHit} internal core damage.`);
             
-            logCombatMessage(`Hostile fires for ${enemyAttack}. Plating absorbed ${activeCombatState.playerShield}. Took ${mitigated} core damage.`);
-            
-            activeCombatState.playerShield = 0; 
-            activeCombatState.currentEnergy = userState.maxEnergy;
-            
-            // Restore enemy intent values back to standard state if modified
+            activeCombatState.playerShield = 0; activeCombatState.currentEnergy = userState.maxEnergy;
             activeCombatState.enemy.dmg = activeCombatState.enemy.baseDmg;
             activeCombatState.enemy.intent = activeCombatState.enemy.baseIntent;
 
-            if(userState.hp <= 0) { alert("Posse Core Failure. Hardware completely recycled."); location.reload(); return; }
+            if(userState.hp <= 0) { alert("Chassis structure reached fatal status limits. System reset required."); location.reload(); return; }
             fillHandArray(); renderCombatScreenInterfaceValues();
         }
 
@@ -587,7 +675,7 @@
             document.getElementById("combat-enemy-title").innerText = e.name;
             document.getElementById("combat-enemy-hp-text").innerText = `${e.hp}/${e.maxHp}`;
             document.getElementById("combat-enemy-hp-bar").style.width = `${(e.hp / e.maxHp)*100}%`;
-            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Threat Projection: ${e.dmg} Dmg]`;
+            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Projecting: ${e.dmg} Dmg]`;
 
             document.getElementById("combat-player-title").innerText = userState.name;
             document.getElementById("combat-player-hp-text").innerText = `${userState.hp}/${userState.maxHp}`;
@@ -597,7 +685,7 @@
             document.getElementById("combat-player-en-bar").style.width = `${(activeCombatState.currentEnergy / userState.maxEnergy)*100}%`;
         }
 
-        function awardExperiencePoints(amount) { userState.xp += amount; if(userState.xp>=100){ userState.level++; userState.xp=0; userState.maxHp+=10; userState.hp=userState.maxHp; alert("System level upgrade unlocked!"); } syncGlobalHUD(); saveActiveRunData(); }
+        function awardExperiencePoints(amount) { userState.xp += amount; if(userState.xp>=100){ userState.level++; userState.xp=0; userState.maxHp+=12; userState.hp=userState.maxHp; alert("System baseline hardware evolution initialized!"); } syncGlobalHUD(); saveActiveRunData(); }
         
         function refreshDeckInspectorTab() {
             document.getElementById("deck-stats-name").innerText = userState.name; document.getElementById("deck-stats-hp").innerText = `${userState.hp}/${userState.maxHp}`;
@@ -609,9 +697,9 @@
                 const d = GLOBAL_COMMON_CARDS[cid] || CLASS_UNIQUE_CARDS[cid]; 
                 if(d) { 
                     const i = document.createElement("div"); 
-                    let tc = "card-attack"; if(d.type === "Defense") tc = "card-defense"; if(d.type === "Utility") tc = "card-utility";
-                    i.className=`card-item ${tc}`; i.style.position="relative"; 
-                    i.innerHTML=`<div class="badge">${d.cost}</div><div class="title">${d.title}</div><div class="body-text">${d.desc}</div>`; 
+                    let ts = "card-attack"; if(d.type === "Defense") ts = "card-defense"; if(d.type === "Utility") ts = "card-utility";
+                    i.className=`card-item ${ts}`; i.style.position="relative"; 
+                    i.innerHTML=`<div class="badge">${d.cost}</div><div class="title">${d.title}</div><div class="body-text">${d.desc}</div><div class="type-tag">${d.type}</div>`; 
                     grid.appendChild(i); 
                 } 
             });
