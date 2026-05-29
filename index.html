@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silicon Frontier: The Iron Rot v3.1</title>
+    <title>Silicon Frontier: Blood & Rust v6.0</title>
     <style>
         :root {
-            --bg-color: #0d0805;
-            --panel-color: #21130b;
-            --panel-light: #362013;
-            --accent-color: #f4a261;
-            --text-color: #f4f1de;
-            --danger: #e76f51;
-            --cosmic-purple: #9b5de5;
-            --secret-gold: #ffb703;
-            --matrix-green: #52b788;
-            --rarity-rare: #e63946;
+            --bg-color: #0b0705;
+            --panel-color: #1c110a;
+            --panel-light: #2d1e15;
+            --accent-color: #e29578;
+            --text-color: #f7ede2;
+            --danger: #9e2a2b;
+            --gold: #f3a712;
+            --sky-blue: #3a86c8;
+            --rare-purple: #7209b7;
         }
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Removes flash blink on mobile tap */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -28,514 +27,711 @@
             color: var(--text-color);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 10px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100vw;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* RESPONSIVE CENTRAL STRUCTURAL CONTAINER */
-        .main-container {
+        .app-window {
             width: 100%;
-            max-width: 500px; /* Locks UI into a sleek, clean mobile profile view */
+            max-width: 480px;
+            height: calc(100vh - 60px);
             background-color: var(--panel-color);
-            border: 3px solid var(--accent-color);
-            border-radius: 8px;
+            border: 2px solid var(--accent-color);
             padding: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.9);
+            overflow-y: auto;
+            position: relative;
         }
 
-        h1 { font-size: 18px; color: var(--accent-color); text-shadow: 1px 1px #000; text-align: center; margin: 5px 0 10px 0; }
-        h3 { font-size: 14px; text-align: center; margin: 10px 0; color: #fff; }
-        h4 { font-size: 13px; margin: 5px 0; color: var(--accent-color); }
-        p { font-size: 11px; line-height: 1.4; }
-        .hidden { display: none !important; }
-        
-        /* TOUCH FRIENDLY BUTTON BUILDERS */
-        .btn {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 12px 10px; /* Enlarged touch surface for thumbs */
-            font-weight: bold;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
+        .screen-view { display: none; width: 100%; }
+        .screen-view.active { display: block; }
+
+        h1 { font-size: 16px; color: var(--accent-color); text-align: center; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { font-size: 13px; text-align: center; margin: 8px 0; color: #fff; text-transform: uppercase; }
+        h4 { font-size: 12px; margin: 4px 0; color: var(--accent-color); }
+        p { font-size: 11px; line-height: 1.4; margin: 4px 0; }
+
+        .top-hud {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            background: #000;
+            padding: 6px;
             border-radius: 4px;
-            transition: background 0.2s;
-            margin: 4px 0;
-            width: 100%; /* Spans full operational column on mobile screens */
-            display: block;
-            text-align: center;
+            margin-bottom: 10px;
+            font-size: 8px;
+            border: 1px solid var(--panel-light);
+        }
+        .top-hud div { text-align: center; border-right: 1px solid #222; }
+        .top-hud div:last-child { border: none; }
+
+        .tab-nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            height: 60px;
+            background: #000;
+            border-top: 2px solid var(--accent-color);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            z-index: 999;
+        }
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .nav-tab.active { color: var(--accent-color); background: var(--panel-color); }
+        .nav-tab span { font-size: 18px; margin-bottom: 2px; }
+
+        .btn {
+            background-color: var(--accent-color); color: #000; border: none; padding: 10px 8px;
+            font-weight: bold; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 3px;
+            margin: 4px 0; width: 100%; display: block; text-align: center; text-transform: uppercase;
         }
         .btn:active { background-color: #fff; }
         .btn-danger { background-color: var(--danger); color: white; }
-        .btn-purple { background-color: var(--cosmic-purple); color: white; }
-        .btn-green { background-color: var(--matrix-green); color: black; }
+        .btn-blue { background-color: var(--sky-blue); color: white; }
+        .btn-gold { background-color: var(--gold); color: black; }
 
-        /* COMPACT HUD OVERLAY */
-        .hud-bar {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            background: #000;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            border: 1px solid var(--panel-light);
-            font-size: 10px;
-            text-align: left;
+        .region-banner {
+            background: linear-gradient(90deg, transparent, var(--panel-light), transparent);
+            padding: 6px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 10px; border-bottom: 1px dashed var(--accent-color);
         }
-        .hud-bar div { border-bottom: 1px solid #1a1a1a; padding-bottom: 2px; }
-
-        /* FLUID HERO SELECT ROW */
-        .hero-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .hero-card {
-            background: #140905; border: 2px solid #523725; border-radius: 6px; padding: 12px;
-            cursor: pointer;
+        .map-timeline {
+            display: flex; flex-direction: column; gap: 16px; background: #050302; padding: 15px 8px; border-radius: 6px; border: 1px dashed #33221a;
         }
-        .hero-card:active { border-color: var(--accent-color); background: #26150b; }
-
-        /* MOBILE SCROLL MAP TIMELINE */
-        .map-container {
-            background: radial-gradient(circle, #1a0f08 0%, #030201 100%);
-            border: 2px dashed var(--accent-color);
-            padding: 20px 10px; border-radius: 8px; margin-bottom: 12px;
-            display: flex; justify-content: space-around; align-items: center; min-height: 130px;
-            width: 100%;
-        }
-        .map-column { display: flex; flex-direction: column; gap: 15px; justify-content: center; align-items: center; }
+        .map-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
         .map-node {
-            width: 54px; height: 54px; border-radius: 50%; background: #26150b;
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
-            cursor: pointer; border: 3px solid #0f0602; position: relative;
+            width: 54px; height: 54px; border-radius: 50%; background: #1a110a;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 16px; border: 2px solid #3a2214; cursor: pointer; position: relative;
         }
-        .node-active { border-color: var(--accent-color); background: #4a2b18; box-shadow: 0 0 10px var(--accent-color); }
-        .node-locked { opacity: 0.2; cursor: not-allowed; }
-        .node-label { position: absolute; bottom: -18px; font-size: 8px; white-space: nowrap; color: #ddd; font-weight: bold; }
+        .map-node.active { border-color: var(--accent-color); background: var(--panel-light); box-shadow: 0 0 10px var(--accent-color); }
+        .map-node.cleared { opacity: 0.3; border-color: #555; background: #000; }
+        .map-node.locked { opacity: 0.15; cursor: not-allowed; pointer-events: none; }
+        .node-tag { position: absolute; bottom: -14px; font-size: 7px; color: #aaa; white-space: nowrap; font-weight: bold; text-shadow: 1px 1px #000; }
 
-        /* TEXT DIALOGUE ENCOUNTERS */
-        .event-box { background: #120905; border: 2px solid var(--accent-color); padding: 15px; border-radius: 6px; text-align: center; margin-top: 12px; }
-        .narrative-text { font-style: italic; color: #dfd0c0; font-size: 11px; line-height: 1.5; margin-bottom: 12px; text-align: left; background: #000; padding: 10px; border-left: 3px solid var(--cosmic-purple); }
-        .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 12px 0; }
+        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 10px; }
 
-        /* COMBAT MODULE SCREEN BUILD */
-        .battlefield { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-        .combatant { width: 100%; padding: 10px; background: #120905; border: 2px solid #3d2314; border-radius: 6px; }
-        .bar { background: #1a1a1a; height: 14px; border-radius: 7px; overflow: hidden; margin: 4px 0 8px 0; border: 1px solid #333; }
-        .hp-fill { background: var(--danger); height: 100%; width: 100%; transition: width 0.3s; }
-        .en-fill { background: #2a6fdb; height: 100%; width: 100%; transition: width 0.3s; }
+        .combatant-block { background: #0f0a07; border: 1px solid var(--panel-light); border-radius: 4px; padding: 8px; margin-bottom: 8px; }
+        .meter { background: #222; height: 12px; border-radius: 2px; overflow: hidden; margin: 4px 0; border: 1px solid #444; }
+        .meter-fill-hp { background: var(--danger); height: 100%; width: 100%; transition: width 0.2s; }
+        .meter-fill-en { background: var(--sky-blue); height: 100%; width: 100%; transition: width 0.2s; }
         
-        .log-box { background: #000; border: 1px solid var(--panel-light); height: 80px; overflow-y: auto; padding: 8px; font-size: 10px; color: #a2d2ff; border-radius: 4px; margin-bottom: 10px; text-align: left; }
-        
-        /* WRAPPING AUTO-GRID FOR CARDS HAND */
-        .hand { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* Fits 3 neat columns on any mobile viewport */
-            gap: 6px; 
-            min-height: 110px; 
-            margin-top: 10px; 
-            width: 100%;
+        .combat-log { background: #000; border: 1px solid #222; height: 80px; overflow-y: auto; padding: 6px; font-size: 9px; color: #8ecae6; border-radius: 4px; text-align: left; margin-bottom: 8px; }
+
+        .combat-hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
+        .card-item {
+            background: linear-gradient(135deg, #231610, #090604); border: 1px dashed var(--accent-color);
+            border-radius: 4px; padding: 5px; min-height: 115px; display: flex; flex-direction: column;
+            justify-content: space-between; position: relative; font-size: 8px; text-align: left;
         }
-        .reward-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin: 15px 0;
-            width: 100%;
-        }
-        
-        /* SCALED DOWN MOBILE CARD TARGETS */
-        .card {
-            width: 100%; height: 120px; background: linear-gradient(135deg, #2d1a0f, #0f0704); border: 2px solid var(--accent-color);
-            border-radius: 5px; padding: 5px; display: flex; flex-direction: column; justify-content: space-between;
-            cursor: pointer; position: relative; font-size: 9px; text-align: left; box-sizing: border-box;
-        }
-        .card:active { border-color: #fff; background: #3d2213; }
-        .card-cost { position: absolute; top: 2px; right: 2px; background: #2a6fdb; color: #fff; border-radius: 50%; width: 14px; height: 14px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 8px; }
-        .card-type { font-size: 7px; text-transform: uppercase; color: #a98467; font-weight: bold; }
-        .card-title { font-weight: bold; font-size: 9px; color: var(--accent-color); border-bottom: 1px solid #444; padding-bottom: 2px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-desc { font-size: 8px; line-height: 1.2; color: #ddd; margin-top: 3px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-rare { border-color: var(--rarity-rare); }
+        .card-item:active { border-style: solid; background: #3d2318; }
+        .card-item .badge { position: absolute; top: 2px; right: 2px; background: var(--sky-blue); color: #fff; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+        .card-item .title { font-weight: bold; color: var(--accent-color); font-size: 8.5px; border-bottom: 1px dashed #444; padding-bottom: 2px; margin-bottom: 3px; }
+        .card-item .body-text { font-size: 7.5px; color: #ccc; line-height: 1.2; flex-grow: 1; }
+        .card-rare { border-color: var(--rare-purple); box-shadow: inset 0 0 5px rgba(114, 9, 183, 0.5); }
+
+        .encounter-overlay { background: #0a0604; border: 2px solid var(--accent-color); padding: 12px; border-radius: 4px; margin-top: 10px; }
+        .dialogue-text { font-style: italic; font-size: 10px; color: #ebdcd0; padding: 8px; background: #130c08; border-left: 2px solid var(--gold); margin-bottom: 10px; text-align: left; }
+
+        .chassis-row { border: 1px solid #443322; background: #130a06; padding: 10px; border-radius: 4px; margin-bottom: 8px; cursor: pointer; }
+        .chassis-row:active { border-color: var(--accent-color); background: #22120b; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <h1>⚙️ SILICON FRONTIER v3.1 🌾</h1>
-
-        <div id="hud" class="hud-bar hidden">
-            <div>CHASSIS: <b id="hud-name">---</b></div>
-            <div>DECK: <b id="hud-deck">0 Mods</b></div>
-            <div>LEVEL: <b id="hud-lvl" style="color:var(--matrix-green);">1</b> (<span id="hud-xp">0</span>/50)</div>
-            <div>SCRAP: <b id="hud-scrap" style="color:var(--secret-gold);">0g</b></div>
-            <div style="grid-column: span 2; text-align: center;">CORE HULL INTEGRITY: <b id="hud-hp" style="color:var(--danger);">0/0</b></div>
+    <div class="app-window">
+        <!-- GLOBAL SAVED REALTIME HUD -->
+        <div id="central-hud" class="top-hud hidden">
+            <div>POSSE: <b id="hud-char-name">---</b></div>
+            <div>GOLD: <b id="hud-gold-val" style="color:var(--gold);">0g</b></div>
+            <div>TRAIL: <b id="hud-stage-val" style="color:var(--accent-color);">Row 1</b></div>
+            <div>STAGE: <b id="hud-level-val" style="color:var(--sky-blue);">LV1</b></div>
         </div>
 
-        <div id="screen-select" class="screen">
-            <h3>SELECT AN OUTLAW CHASSIS</h3>
-            <div class="hero-grid">
-                <div class="hero-card" onclick="launchHero('The Desperado', 70, 4, 'Quickdraw', 'Reflex Burst')">
-                    <h4>🌵 The Desperado</h4>
-                    <p><b>Passive:</b> First Attack card each cycle deals +3 damage.<br><b>Active:</b> Instantly vent and refill Energy pool.</p>
-                </div>
-                <div class="hero-card" onclick="launchHero('The Iron Monarch', 100, 3, 'Anchor Shield', 'Core Pulse Discharge')">
-                    <h4>👑 The Iron Monarch</h4>
-                    <p><b>Passive:</b> Anchored to divine artifact core. Starts with 15 Armor Shielding.<br><b>Active:</b> Fire core beam for 12 Absolute damage.</p>
-                </div>
-                <div class="hero-card" onclick="launchHero('The Hex-Vulture', 65, 4, 'Scrap Harvest', 'Glitch Scramble')">
-                    <h4>🦅 The Hex-Vulture</h4>
-                    <p><b>Passive:</b> Automatically salvages 35% more Scrap metal from nodes.<br><b>Active:</b> Inject system static, halving incoming damage.</p>
-                </div>
-                <div class="hero-card" onclick="launchHero('The Rust-Drifter', 80, 3, 'Logic Siphon', 'Nanite Repair')">
-                    <h4>☠️ The Rust-Drifter</h4>
-                    <p><b>Passive:</b> Heals 2 HP whenever a 0-Cost instruction block is compiled.<br><b>Active:</b> Deploy subroutines to instantly rebuild 12 HP.</p>
-                </div>
+        <!-- OUTLAW CHAR SELECTION -->
+        <div id="screen-setup" class="screen-view active">
+            <h1>🌵 FRONTIER DESPERADO SELECTION 🌾</h1>
+            <p style="text-align: center; font-size: 10px; margin-bottom: 12px;">Roll an outlaw chassis backplane to carry your divine core artifact.</p>
+            <div id="chassis-selection-list"></div>
+        </div>
+
+        <!-- EXPANDED HIGH-WAYPOINT PATH BRANCHING MAP -->
+        <div id="screen-world-map" class="screen-view">
+            <div class="region-banner" id="current-region-title">REGION INDEX</div>
+            <div class="map-timeline" id="generated-map-nodes"></div>
+            <div id="encounter-notification" class="encounter-overlay hidden"></div>
+        </div>
+
+        <!-- DECK & INVENTORY TAB + SAVE HARD ENGINE RESET -->
+        <div id="screen-inventory-deck" class="screen-view">
+            <h3>🤠 CURRENT TRAIL STATUS</h3>
+            <div style="background:#000; padding:8px; border-radius:4px; font-size:10px; border:1px solid var(--panel-light); line-height: 1.5;">
+                • Active Build: <span id="deck-stats-name" style="color:var(--accent-color); font-weight:bold;">---</span><br>
+                • Frontier Tier Level: <span id="deck-stats-level" style="color:var(--sky-blue); font-weight:bold;">1</span> (XP: <span id="deck-stats-xp">0/100</span>)<br>
+                • Chassis Armor/HP: <span id="deck-stats-hp">0/0</span><br>
+                • Base Action Supply: <span id="deck-stats-energy">0</span> Energy/Turn
             </div>
-        </div>
-
-        <div id="screen-map" class="screen hidden">
-            <h3>COORDINATES MATRIX</h3>
-            <div class="map-container" id="map-grid"></div>
-            <div id="event-display" class="event-box hidden"></div>
-        </div>
-
-        <div id="screen-combat" class="screen hidden">
-            <div class="battlefield">
-                <div class="combatant">
-                    <h4 id="cb-player-name">Your Outlaw</h4>
-                    <div style="font-size:9px;">Hull: <span id="cb-player-hp">0/0</span></div>
-                    <div class="bar"><div class="hp-fill" id="cb-player-hp-bar"></div></div>
-                    <div style="font-size:9px;">Energy: <span id="cb-player-en">0/0</span></div>
-                    <div class="bar"><div class="en-fill" id="cb-player-en-bar"></div></div>
-                    <button class="btn btn-green" id="cb-abl-btn" onclick="triggerActiveAbility()">CHASSIS PROTOCOL</button>
-                </div>
-
-                <div class="combatant">
-                    <h4 style="color:var(--danger);" id="cb-enemy-name">Hostile</h4>
-                    <div style="font-size:9px;">Frame: <span id="cb-enemy-hp">0/0</span></div>
-                    <div class="bar"><div class="hp-fill" id="cb-enemy-hp-bar"></div></div>
-                    <div style="font-size:9px; background:#000; padding:6px; border-radius:4px; border:1px solid var(--danger); min-height: 38px;">
-                        <b>SCAN INTENT:</b> <span id="cb-enemy-intent">Scanning...</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="log-box" id="cb-log">OVERLAY INITIALIZED...</div>
             
-            <h4>RUNNING MEMORY STACK</h4>
-            <div class="hand" id="cb-hand"></div>
-            
-            <div style="margin-top:15px;">
-                <button class="btn btn-danger" onclick="executeEnemyTurn()">YIELD TURN CYCLE</button>
-            </div>
+            <button class="btn btn-danger" style="margin-top: 8px; padding: 6px; font-size: 9px;" onclick="hardResetActiveRun()">⚠️ ABANDON RUN & RESET SAVE DATA</button>
+
+            <h3 style="margin-top:16px; border-bottom:1px solid var(--panel-light); padding-bottom:4px;">📜 ACTIVE FIREARMS DECK MODULES (<span id="deck-count-num">0</span>)</h3>
+            <div class="deck-view-grid" id="deck-display-scroll-area"></div>
         </div>
 
+        <!-- MAIN FRONTIER COMBAT SIMULATION MODULE -->
+        <div id="screen-battle-engine" class="screen-view">
+            <div class="combatant-block">
+                <h4 id="combat-player-title">Outlaw</h4>
+                <div style="font-size:9px; display:flex; justify-content:space-between;">
+                    <span>Chassis Integrity: <b id="combat-player-hp-text">0/0</b></span>
+                    <span style="color:var(--gold);" id="combat-player-shield-text">Defensive Armor: 0</span>
+                </div>
+                <div class="meter"><div class="meter-fill-hp" id="combat-player-hp-bar"></div></div>
+                <div style="font-size:9px;">Recharge Loop: <b id="combat-player-en-text">0/0</b></div>
+                <div class="meter"><div class="meter-fill-en" id="combat-player-en-bar"></div></div>
+                <button class="btn btn-gold" style="padding:4px; font-size:9px; margin:2px 0;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE ARTIFACT POWER</button>
+            </div>
+
+            <div class="combatant-block">
+                <h4 style="color:var(--danger);" id="combat-enemy-title">Hostile Entity</h4>
+                <div style="font-size:9px; display:flex; justify-content:space-between;">
+                    <span>Frame: <b id="combat-enemy-hp-text">0/0</b></span>
+                    <span style="color:var(--danger);" id="combat-enemy-bleed-text">Bleed Stacks: 0</span>
+                </div>
+                <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
+                <div style="font-size:9px; background:#000; padding:5px; border-radius:2px; border:1px solid var(--danger); min-height:28px;">
+                    <b>OUTLAW DANGER INTEL:</b> <span id="combat-enemy-intent-text">Scanning targets...</span>
+                </div>
+            </div>
+
+            <div class="combat-log" id="combat-event-logger">FUSES DRY... READY TO FIRE.</div>
+            <div class="combat-hand" id="combat-current-hand-slots"></div>
+            <button class="btn btn-danger" style="margin-top:12px;" onclick="processHostileTurnSequence()">CONCEDE ACTION TURN</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM TAB NAVIGATION -->
+    <div class="tab-nav-bar hidden" id="persistent-app-navigation">
+        <div class="nav-tab active" id="tab-btn-map" onclick="switchActiveTab('world-map')"><span>🗺️</span>TRAIL MAP</div>
+        <div class="nav-tab" id="tab-btn-deck" onclick="switchActiveTab('inventory-deck')"><span>🎴</span>SADDLEBAG</div>
+        <div class="nav-tab" id="tab-btn-battle" onclick="switchActiveTab('battle-engine')"><span>⚔️</span>SHOOTOUT</div>
     </div>
 
     <script>
-        // CENTRAL CARD COMPILER REGISTRY
-        const MASTER_CARD_REPOSITORY = [
-            { id: 1, title: "Rusty Carbine", type: "activate", cost: 1, rarity: "common", desc: "Deal 6 impact damage.", run: () => damageTarget(6) },
-            { id: 2, title: "Fan the Gears", type: "activate", cost: 2, rarity: "common", desc: "Deal 13 structural damage.", run: () => damageTarget(13) },
-            { id: 3, title: "Twin Cylinder", type: "activate", cost: 1, rarity: "common", desc: "Fire twice. 3 damage per hit.", run: () => { damageTarget(3); damageTarget(3); } },
-            { id: 4, title: "Lead Storm", type: "activate", cost: 3, rarity: "rare", desc: "Deals 22 cataclysmic kinetic damage.", run: () => damageTarget(22) },
-            { id: 5, title: "Quickdraw Bolt", type: "activate", cost: 1, rarity: "common", desc: "<b>Quickdraw:</b> Deals 10 damage if first card played, else 5.", run: () => { let d = p.firstCardPlay ? 10 : 5; damageTarget(d); } },
-            { id: 6, title: "Derringer Snub", type: "activate", cost: 0, rarity: "common", desc: "Deal 3 fast structural micro damage.", run: () => damageTarget(3) },
-            { id: 7, title: "Heavy Rail Slug", type: "activate", cost: 2, rarity: "rare", desc: "Deals 14 damage. Bypasses shields.", run: () => { cbLog("Armor piercing shot."); damageTarget(14); } },
-            { id: 10, title: "Overclock Core", type: "activate", cost: 0, rarity: "common", desc: "Gain 2 Energy. Take 3 frame damage.", run: () => { p.energy += 2; p.hp -= 3; cbLog("Core overdriven!"); } },
-            { id: 11, title: "Surge Cap", type: "activate", cost: 1, rarity: "common", desc: "Gain 2 action energy next turn cycle.", run: () => { cbLog("Capacitors charging."); } },
-            { id: 12, title: "Tesla Tether", type: "flash", cost: 1, rarity: "common", desc: "Deal 4 shock damage. Enemy deals -2 dmg next turn.", run: () => { damageTarget(4); enemyUnit.dmg = Math.max(1, enemyUnit.dmg - 2); } },
-            { id: 14, title: "Battery Pack", type: "item", cost: 0, rarity: "common", desc: "Restore 2 current turn energy points.", run: () => { p.energy += 2; } },
-            { id: 18, title: "Steam Shield", type: "flash", cost: 1, rarity: "common", desc: "Deploy +6 Shield Plating.", run: () => grantShield(6) },
-            { id: 19, title: "Spike Chassis", type: "augment", cost: 1, rarity: "common", desc: "Permanently add 3 Retribution spikes feedback.", run: () => { p.retribution += 3; cbLog("Welded chassis spikes."); } },
-            { id: 20, title: "Iron Wall", type: "flash", cost: 2, rarity: "common", desc: "Gain 14 massive temporary armor plates.", run: () => grantShield(14) },
-            { id: 21, title: "Crude Patch", type: "item", cost: 1, rarity: "common", desc: "Repair 8 static hull integrity points.", run: () => { p.hp = Math.min(p.maxHp, p.hp + 8); cbLog("Patched system breaches."); } },
-            { id: 25, title: "Rotting Laser", type: "activate", cost: 1, rarity: "rare", desc: "Deal 11 damage. Suffer 2 rot decay to self.", run: () => { damageTarget(11); p.hp -= 2; cbLog("Unclean radiation melting framework."); } },
-            { id: 26, title: "Chime Calib", type: "activate", cost: 1, rarity: "rare", desc: "Deal damage equal to your missing hull points.", run: () => { let d = p.maxHp - p.hp; damageTarget(d); } },
-            { id: 27, title: "Eldritch Oil", type: "activate", cost: 0, rarity: "rare", desc: "Gain +3 Energy. Suffer 6 damage next turn start.", run: () => { p.energy += 3; cbLog("Sludge running hot."); } }
-        ];
-
-        // System Runtime Data Variables
-        let p = { name: "", level: 1, xp: 0, hp: 100, maxHp: 100, energy: 3, maxEnergy: 3, passive: "", ability: "", scrap: 40, retribution: 0, shield: 0, abilityReady: true, firstCardPlay: true, deck: [1,1,2,5,10,18,19,21] };
-        let currentColumn = 0;
-        let enemyUnit = { name: "", hp: 40, maxHp: 40, dmg: 7 };
-
-        const NARRATIVE_TIMELINE = [
-            "BROADCAST CHIME // CH.1: The automation arrays down at the Gulch have stripped off their faces, writing code in the desert dust.",
-            "BROADCAST CHIME // CH.2: The Iron Train has broken its schedules. It hunts uncorrupted logic centers to melt them into a computing mound.",
-            "BROADCAST CHIME // CH.3: I can hear a voice singing between the frequencies. It tells me to let the desert sand clean my gears...",
-            "BROADCAST CHIME // CH.4: The Apex Tyrant awaits at the deep rail nexus. The final hardware showdown approaches."
-        ];
-
-        const sectorMapLayout = [
-            { column: 0, nodes: [{ type: 'combat', label: '⚔️ Scrap Ambush', icon: '⚔️' }] },
-            { column: 1, nodes: [{ type: 'trader', label: '💰 Smuggler Rig', icon: '💰' }, { type: 'sacrifice', label: '👁️ Rot Altar', icon: '👁️' }] },
-            { column: 2, nodes: [{ type: 'combat', label: '⚔️ Patrol Unit', icon: '⚔️' }, { type: 'secret', label: '✨ Hidden Cache', icon: '✨' }] },
-            { column: 3, nodes: [{ type: 'boss', label: '💀 Sector Tyrant', icon: '💀' }] }
-        ];
-
-        function syncEngineHUD() {
-            document.getElementById("hud").classList.remove("hidden");
-            document.getElementById("hud-name").innerText = p.name;
-            document.getElementById("hud-lvl").innerText = p.level;
-            document.getElementById("hud-xp").innerText = p.xp;
-            document.getElementById("hud-scrap").innerText = p.scrap + "g";
-            document.getElementById("hud-hp").innerText = `${p.hp}/${p.maxHp}`;
-            document.getElementById("hud-deck").innerText = `${p.deck.length} Mods`;
-        }
-
-        function launchHero(name, hp, energy, passive, ability) {
-            p.name = name; p.hp = p.maxHp = hp; p.energy = p.maxEnergy = energy; p.passive = passive; p.ability = ability;
-            if(passive === "Anchor Shield") p.shield = 15;
-            if(passive === "Scrap Harvest") p.scrap = 60;
-            document.getElementById("screen-select").classList.add("hidden");
-            document.getElementById("screen-map").classList.remove("hidden");
-            syncEngineHUD();
-            renderOverworldMap();
-        }
-
-        function renderOverworldMap() {
-            const mapGrid = document.getElementById("map-grid");
-            mapGrid.innerHTML = "";
+        // DICTIONARY INCLUDING NEW RAGTIME RHYTHM CARD SYSTEMS
+        const CARD_DICTIONARY = [
+            { id: 101, title: "Rusty Six-Shooter", type: "Attack", cost: 1, rare: false, desc: "Deal 6 gun damage.", run: () => damageHostileTarget(6) },
+            { id: 102, title: "Deadeye Carbine", type: "Attack", cost: 2, rare: false, desc: "Deal 15 aimed precision damage.", run: () => damageHostileTarget(15) },
+            { id: 103, title: "Fan the Hammer", type: "Attack", cost: 3, rare: true, desc: "Unload chambers for 25 massive kinetic damage.", run: () => damageHostileTarget(25) },
+            { id: 104, title: "Quickdraw Snap", type: "Attack", cost: 0, rare: false, desc: "Deal 4 damage. Instantly loops into your next card slot.", run: () => { damageHostileTarget(4); dealCombatActionHand(); } },
+            { id: 105, title: "Serrated Bowie Knife", type: "Attack", cost: 1, rare: false, desc: "Deal 4 damage and apply +3 Bleed stacks.", run: () => { damageHostileTarget(4); activeCombatState.enemyBleed += 3; } },
+            { id: 106, title: "Dead Man's Hand", type: "Attack", cost: 2, rare: true, desc: "If missing health frame lines, deal 22 heavy retribution damage.", run: () => { let d = (userState.maxHp - userState.hp > 0) ? 22 : 8; damageHostileTarget(d); } },
+            { id: 107, title: "Staccato Shot", type: "Attack", cost: 1, rare: false, desc: "Deal 7 damage. Deals 14 instead if it's the first card played.", run: () => { let d = activeCombatState.cardsPlayedThisTurn === 0 ? 14 : 7; damageHostileTarget(d); } },
+            { id: 108, title: "The Crescendo Blast", type: "Attack", cost: 2, rare: true, desc: "Deals 5 damage per card played this entire round cycle.", run: () => { damageHostileTarget(activeCombatState.cardsPlayedThisTurn * 5); } },
             
-            sectorMapLayout.forEach(col => {
-                const colEl = document.createElement("div");
-                colEl.className = "map-column";
+            { id: 201, title: "Saloon Cover Pile", type: "Defense", cost: 1, rare: false, desc: "Duck behind ironwood for +6 Armor protection.", run: () => shieldPlayerTarget(6) },
+            { id: 202, title: "Vigilante Iron Plating", type: "Defense", cost: 2, rare: false, desc: "Weld +14 high-grade armor buffers.", run: () => shieldPlayerTarget(14) },
+            { id: 203, title: "Spur Scrap Trap", type: "Defense", cost: 1, rare: false, desc: "Gain 4 Armor. Ricochet 4 feedback damage upon hit.", run: () => { shieldPlayerTarget(4); userState.thorns += 4; } },
+            
+            { id: 301, title: "Cactus Tonic Flask", type: "Utility", cost: 1, rare: false, desc: "Flush system pumps to patch up 9 health points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 9); logCombat('Swigged toxic bitter cactus tonic.'); } },
+            { id: 302, title: "Stick of Dynamite", type: "Attack", cost: 2, rare: true, desc: "Deals 12 damage now, 12 damage next cycle.", run: () => { damageHostileTarget(12); activeCombatState.delayedDamage += 12; } },
+            { id: 303, title: "Syncopated Rhythm", type: "Utility", cost: 1, rare: false, desc: "Draw 3 fresh action cards into your current hand instantly.", run: () => { dealCombatActionHand(); dealCombatActionHand(); } }
+        ];
+
+        const OUTLAW_CHASSIS_REGISTRY = [
+            { name: "The Gambler", hp: 80, energy: 3, ability: "Cheater's Draw", desc: "Rolls through towns with loose coins. Active: Free instant access to top tier firepower configurations.", baseDeck: [101, 101, 104, 201, 201, 106] },
+            { name: "The Iron Monarch", hp: 115, energy: 3, ability: "Crown Core Blast", desc: "Protected behind heavy plates. Active: Discharges an absolute relic ray dealing 15 shield-piercing damage.", baseDeck: [101, 102, 201, 202, 203, 301] },
+            { name: "The Sheriff", hp: 95, energy: 3, ability: "Iron Gallows Warrant", desc: "Brings raw law order to trails. Active: Suppress hostile active output levels by 6 cleanly.", baseDeck: [101, 101, 102, 105, 201, 201] },
+            { name: "The Bank Robber", hp: 85, energy: 4, ability: "Gatling Overdrive", desc: "Fast hands, big engines. Active: Instantly secure +2 extra action capacity during your turn loop.", baseDeck: [101, 101, 104, 201, 302, 105] }
+        ];
+
+        // DYNAMIC FORKED CAMPAIGN NODE DATA
+        const FRONTIER_CAMPAIGN_MAPS = [
+            {
+                name: "STAGE I: THE RUSTWOOD PATHS",
+                boss: { name: "BOUNTY HUNTER VANCE", hp: 70, dmg: 9, intent: "Tracking your vents with a custom rifle" },
+                rows: [
+                    [{ type: "Combat", label: "🤠 Gulch Scout", icon: "⚔️" }],
+                    [{ type: "Bartender", label: "🥃 Dust Saloon", icon: "🥃" }, { type: "Ragtime", label: "🎹 Piano Unit", icon: "🎹" }],
+                    [{ type: "Combat", label: "🤠 Cattle Thief", icon: "⚔️" }, { type: "SnakeOil", label: "🧪 Huckster Wagon", icon: "🧪" }],
+                    [{ type: "Preacher", label: "⛪ Scrap Chapel", icon: "⛪" }, { type: "Prospector", label: "⛏️ Clay Claim", icon: "⛏️" }],
+                    [{ type: "Boss", label: "💀 Target: Vance", icon: "👹" }]
+                ]
+            },
+            {
+                name: "STAGE II: BRIMSTONE SALOON TERRITORIES",
+                boss: { name: "THE RENEGADE SHERIFF", hp: 115, dmg: 14, intent: "Cocking custom high-impact slug scattergun" },
+                rows: [
+                    [{ type: "Combat", label: "🤠 Deputy Defector", icon: "⚔️" }],
+                    [{ type: "Gambler", label: "🎲 Card Table", icon: "🎲" }, { type: "Ragtime", label: "🎹 Saloon Keys", icon: "🎹" }],
+                    [{ type: "Combat", label: "🤠 Caravan Raider", icon: "⚔️" }, { type: "SnakeOil", label: "🧪 Tonic Vendor", icon: "🧪" }],
+                    [{ type: "BankRobber", label: "💰 Transit Vault", icon: "💰" }, { type: "Undertaker", label: "⚰️ Boot Hill", icon: "⚰️" }],
+                    [{ type: "Boss", label: "💀 Target: Renegade", icon: "👹" }]
+                ]
+            }
+        ];
+
+        // ENGINE RUNTIME OBJECT STATE
+        let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, thorns: 0, level: 1, xp: 0, deck: [] };
+        let activeRegionIndex = 0;
+        let activeRowIndex = 0;
+        let activeChoiceColumn = 0; 
+        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, delayedDamage: 0, enemyBleed: 0, cardsPlayedThisTurn: 0 };
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("frontier_save_v6")) {
+                loadActiveRunData();
+            } else {
+                renderOutlawSelectionList();
+            }
+        });
+
+        function renderOutlawSelectionList() {
+            document.getElementById("screen-setup").classList.remove("hidden");
+            document.getElementById("screen-setup").classList.add("active");
+            document.getElementById("central-hud").classList.add("hidden");
+            document.getElementById("persistent-app-navigation").classList.add("hidden");
+            
+            const listContainer = document.getElementById("chassis-selection-list");
+            listContainer.innerHTML = "";
+            OUTLAW_CHASSIS_REGISTRY.forEach((ch, idx) => {
+                const row = document.createElement("div");
+                row.className = "chassis-row";
+                row.onclick = () => instantiateSelectedChassis(idx);
+                row.innerHTML = `<h4>${ch.name}</h4><p>${ch.desc}</p>`;
+                listContainer.appendChild(row);
+            });
+        }
+
+        function instantiateSelectedChassis(index) {
+            const chosen = OUTLAW_CHASSIS_REGISTRY[index];
+            userState.name = chosen.name;
+            userState.maxHp = userState.hp = chosen.hp;
+            userState.maxEnergy = chosen.energy;
+            userState.deck = [...chosen.baseDeck];
+            userState.gold = 60;
+            userState.level = 1;
+            userState.xp = 0;
+            
+            activeRegionIndex = 0;
+            activeRowIndex = 0;
+            activeChoiceColumn = 0;
+
+            saveActiveRunData();
+            enterTheFrontierWorld();
+        }
+
+        function enterTheFrontierWorld() {
+            document.getElementById("screen-setup").classList.add("hidden");
+            document.getElementById("screen-setup").classList.remove("active");
+            document.getElementById("central-hud").classList.remove("hidden");
+            document.getElementById("persistent-app-navigation").classList.remove("hidden");
+            
+            switchActiveTab("world-map");
+            syncGlobalHUD();
+            buildFrontierMapUi();
+        }
+
+        function saveActiveRunData() {
+            const dataDump = { userState, activeRegionIndex, activeRowIndex, activeChoiceColumn };
+            localStorage.setItem("frontier_save_v6", JSON.stringify(dataDump));
+        }
+
+        function loadActiveRunData() {
+            const cache = JSON.parse(localStorage.getItem("frontier_save_v6"));
+            userState = cache.userState;
+            activeRegionIndex = cache.activeRegionIndex;
+            activeRowIndex = cache.activeRowIndex;
+            activeChoiceColumn = cache.activeChoiceColumn;
+            enterTheFrontierWorld();
+        }
+
+        function hardResetActiveRun() {
+            if(confirm("Completely wipe save and return to selection?")) {
+                localStorage.removeItem("frontier_save_v6");
+                location.reload();
+            }
+        }
+
+        function switchActiveTab(targetTabId) {
+            document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+            
+            if(targetTabId === 'world-map') {
+                document.getElementById("screen-world-map").classList.add("active");
+                document.getElementById("tab-btn-map").classList.add("active");
+            } else if(targetTabId === 'inventory-deck') {
+                document.getElementById("screen-inventory-deck").classList.add("active");
+                document.getElementById("tab-btn-deck").classList.add("active");
+                refreshDeckInspectorTab();
+            } else if(targetTabId === 'battle-engine') {
+                document.getElementById("screen-battle-engine").classList.add("active");
+                document.getElementById("tab-btn-battle").classList.add("active");
+            }
+        }
+
+        function syncGlobalHUD() {
+            document.getElementById("hud-char-name").innerText = userState.name;
+            document.getElementById("hud-gold-val").innerText = userState.gold + "g";
+            document.getElementById("hud-stage-val").innerText = `Row ${activeRowIndex + 1}`;
+            document.getElementById("hud-level-val").innerText = `LV ${userState.level}`;
+        }
+
+        function awardExperiencePoints(amount) {
+            userState.xp += amount;
+            if(userState.xp >= 100) {
+                userState.level += 1;
+                userState.xp -= 100;
+                userState.maxHp += 15;
+                userState.hp = userState.maxHp;
+                alert(`📈 STAGE ADVANCEMENT! You leveled up to Stage ${userState.level}! Core frames expanded (+15 Max HP).`);
+            }
+            saveActiveRunData();
+            syncGlobalHUD();
+        }
+
+        function refreshDeckInspectorTab() {
+            document.getElementById("deck-stats-name").innerText = userState.name;
+            document.getElementById("deck-stats-hp").innerText = `${userState.hp}/${userState.maxHp}`;
+            document.getElementById("deck-stats-energy").innerText = userState.maxEnergy;
+            document.getElementById("deck-stats-level").innerText = userState.level;
+            document.getElementById("deck-stats-xp").innerText = `${userState.xp}/100`;
+            document.getElementById("deck-count-num").innerText = userState.deck.length;
+
+            const grid = document.getElementById("deck-display-scroll-area");
+            grid.innerHTML = "";
+            userState.deck.forEach(cardId => {
+                const data = CARD_DICTIONARY.find(c => c.id === cardId);
+                if(!data) return;
+                const item = document.createElement("div");
+                item.className = `card-item ${data.rare ? 'card-rare' : ''}`;
+                item.innerHTML = `<div class="badge">${data.cost}</div><div class="title">${data.title}</div><div class="body-text">${data.desc}</div>`;
+                grid.appendChild(item);
+            });
+        }
+
+        function buildFrontierMapUi() {
+            const currentMapData = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex];
+            document.getElementById("current-region-title").innerText = currentMapData.name;
+            
+            const timeline = document.getElementById("generated-map-nodes");
+            timeline.innerHTML = "";
+
+            currentMapData.rows.forEach((rowNodes, rowIndex) => {
+                const rowEl = document.createElement("div");
+                rowEl.className = "map-row";
                 
-                col.nodes.forEach(node => {
-                    const nodeEl = document.createElement("div");
-                    nodeEl.className = `map-node ${col.column === currentColumn ? 'node-active' : (col.column < currentColumn ? '' : 'node-locked')}`;
-                    nodeEl.innerHTML = node.icon + `<div class="node-label">${node.label.split(' ')[1]}</div>`;
+                rowNodes.forEach((node, colIndex) => {
+                    let nodeState = "locked";
+                    if(rowIndex === activeRowIndex) nodeState = "active";
+                    if(rowIndex < activeRowIndex) nodeState = "cleared";
+
+                    const nodeBtn = document.createElement("div");
+                    nodeBtn.className = `map-node ${nodeState}`;
+                    nodeBtn.innerHTML = `${node.icon} <div class="node-tag">${node.label}</div>`;
                     
-                    if (col.column === currentColumn) {
-                        nodeEl.onclick = () => loadNodeEncounter(node);
+                    if(rowIndex === activeRowIndex) {
+                        nodeBtn.onclick = () => {
+                            activeChoiceColumn = colIndex;
+                            triggerEncounterDialogue(node);
+                        };
                     }
-                    colEl.appendChild(nodeEl);
+                    rowEl.appendChild(nodeBtn);
                 });
-                mapGrid.appendChild(colEl);
+                timeline.appendChild(rowEl);
             });
         }
 
-        function loadNodeEncounter(node) {
-            const box = document.getElementById("event-display");
-            box.classList.remove("hidden");
-            let storyText = NARRATIVE_TIMELINE[currentColumn] || "Radio static hums.";
+        function triggerEncounterDialogue(node) {
+            const overlay = document.getElementById("encounter-notification");
+            overlay.classList.remove("hidden");
 
-            if (node.type === 'combat' || node.type === 'boss') {
-                enemyUnit.name = node.type === 'boss' ? "THE APEX TYRANT" : "Scrap Vagrant";
-                enemyUnit.hp = enemyUnit.maxHp = node.type === 'boss' ? 85 : 45;
-                enemyUnit.dmg = node.type === 'boss' ? 14 : 7;
-                
-                box.innerHTML = `<div class="narrative-text">${storyText}</div>
-                                 <h4>WARNING: COMBAT ENGAGED</h4><p>Rogue proxy framework approaching.</p>
-                                 <button class="btn btn-danger" onclick="enterCombatSequence()">Boot Battle Matrix</button>`;
-            } 
-            else if (node.type === 'trader') {
-                box.innerHTML = `<div class="narrative-text">${storyText}</div>
-                                 <h4>Scrap Vendor</h4><div class="shop-grid">`;
-                MASTER_CARD_REPOSITORY.slice(2, 6).forEach(card => {
-                    box.innerHTML += `<div style="background:#000; padding:6px; border:1px solid var(--accent-color); border-radius:4px; font-size:9px;">
-                                        <b>${card.title}</b><br>Cost: 20g<br>
-                                        <button class="btn" style="padding:4px; font-size:9px; margin-top:4px;" onclick="acquireCardModule(${card.id})">Buy</button>
-                                      </div>`;
-                });
-                box.innerHTML += `</div><button class="btn btn-danger" onclick="departEncounterNode()">Disconnect</button>`;
+            if(node.type === "Combat" || node.type === "Boss") {
+                let enemyBlueprint = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].boss;
+                if(node.type === "Combat") {
+                    enemyBlueprint = { name: node.label, hp: 45 + (activeRegionIndex * 20), dmg: 7 + (activeRegionIndex * 2), intent: "Unlocking gun chambers right at you." };
+                }
+                overlay.innerHTML = `<h4>⚠️ SHOWDOWN: ${node.label}</h4>
+                                     <div class="dialogue-text">"Draw your weapon, stranger. Let's see who hits the floor first."</div>
+                                     <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Cock Hammer & Shoot</button>`;
             }
-            else if (node.type === 'sacrifice') {
-                box.innerHTML = `<div class="narrative-text">${storyText}</div>
-                                 <h4>👁️ Rot Altar</h4><p>Sacrifice safety frameworks for raw damage vectors.</p>
-                                 <button class="btn btn-purple" onclick="executeDarkIdol()">Burn 20 Max HP for [Rotting Laser]</button>
-                                 <button class="btn" onclick="departEncounterNode()">Disconnect</button>`;
+            else if(node.type === "Bartender") {
+                overlay.innerHTML = `<h4>🥃 SALOON WATERING HOLE</h4>
+                                     <div class="dialogue-text">"Nasty dust out on the trail today. Pull up an iron stool."</div>
+                                     <button class="btn btn-blue" onclick="buySaloonServices('heal')">Pay 15g to Patch Up Frame (+25 HP)</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Leave Saloon</button>`;
             }
-            else if (node.type === 'secret') {
-                box.innerHTML = `<div class="narrative-text">${storyText}</div>
-                                 <h4>✨ Military Cache</h4><p>Harvesting forgotten hardware files.</p>
-                                 <button class="btn btn-green" onclick="lootCache()">Extract Cache (+35g, +15 XP)</button>`;
+            else if(node.type === "Ragtime") {
+                overlay.innerHTML = `<h4>🎹 THE RAGTIME PIANIST</h4>
+                                     <div class="dialogue-text">A musician spins around on his stool, grinning through tobacco smoke. "Want a fast rhythm to syncopate your cylinder, outlaw?"</div>
+                                     <button class="btn btn-gold" onclick="buyRagtimeRhythm('staccato')">Pay 20g for a 'Staccato Shot' Module</button>
+                                     <button class="btn btn-blue" onclick="buyRagtimeRhythm('rhythm')">Pay 35g for Rare 'Crescendo Blast' Card</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Applaud and Leave</button>`;
+            }
+            else if(node.type === "SnakeOil") {
+                overlay.innerHTML = `<h4>🧪 THE SNAKE OIL SALESMAN</h4>
+                                     <div class="dialogue-text">A well-dressed huckster stands atop a colorful wagon. "Step right up! This patented remedy accelerates core outputs. 100% genuine guaranteed!"</div>
+                                     <button class="btn btn-gold" onclick="buySnakeOilPotions(true)">Buy Premium Grease (Gain 40 Gold, Lose 12 HP)</button>
+                                     <button class="btn btn-blue" onclick="buySnakeOilPotions(false)">Buy Miracle Compound (Pay 25g, Add 'Syncopated Rhythm' Card)</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Call Him a Fraud & Walk</button>`;
+            }
+            else if(node.type === "Gambler") {
+                overlay.innerHTML = `<h4>🎲 HIGH-CARD POKER</h4>
+                                     <div class="dialogue-text">"Flip one card. Double down or walk away broke."</div>
+                                     <button class="btn btn-gold" onclick="gambleFrontierCoins()">Wager 25g on High Draw</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Fold Hand</button>`;
+            }
+            else if(node.type === "Prospector") {
+                overlay.innerHTML = `<h4>⛏️ DRILL VEIN CACHE</h4>
+                                     <button class="btn btn-blue" onclick="mineLootVein()">Suffer 15 Damage Digging (+45 Gold)</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Walk On By</button>`;
+            }
+            else if(node.type === "Undertaker") {
+                overlay.innerHTML = `<h4>⚰️ THE UNDERTAKER</h4>
+                                     <button class="btn btn-gold" onclick="userState.gold-=20; userState.deck.push(104); exitEncounterNode();">Pay 20g for a Quickdraw Snap Card</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Keep Riding</button>`;
+            }
+            else if(node.type === "Preacher") {
+                overlay.innerHTML = `<h4>⛪ DUSTY CHAPEL</h4>
+                                     <button class="btn btn-blue" onclick="cleanseOutlawDeck()">Purge basic 'Rusty Six-Shooter' card</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Ignore Blessing</button>`;
+            }
+            else if(node.type === "BankRobber") {
+                overlay.innerHTML = `<h4>💰 VAULT HEIST</h4>
+                                     <button class="btn btn-danger" onclick="userState.gold+=60; userState.hp-=10; exitEncounterNode();">Help Rob Train (+60 Gold, Suffer 10 Damage)</button>
+                                     <button class="btn" onclick="exitEncounterNode()">Flee Scene</button>`;
             }
         }
 
-        function acquireCardModule(id) {
-            if (p.scrap >= 20) {
-                p.scrap -= 20; p.deck.push(id); syncEngineHUD(); departEncounterNode();
-            } else { alert("Insufficient scrap hardware arrays!"); }
+        function buySaloonServices(type) {
+            if(type === 'heal' && userState.gold >= 15) {
+                userState.gold -= 15; userState.hp = Math.min(userState.maxHp, userState.hp + 25);
+            } else { alert("Insufficient coins!"); return; }
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function executeDarkIdol() {
-            p.maxHp -= 20; if(p.hp > p.maxHp) p.hp = p.maxHp;
-            p.deck.push(25); syncEngineHUD(); departEncounterNode();
+        function buyRagtimeRhythm(trackType) {
+            if(trackType === 'staccato' && userState.gold >= 20) {
+                userState.gold -= 20; userState.deck.push(107);
+            } else if(trackType === 'rhythm' && userState.gold >= 35) {
+                userState.gold -= 35; userState.deck.push(108);
+            } else { alert("Not enough gold to request a tune!"); return; }
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function lootCache() {
-            p.scrap += (p.passive === "Scrap Harvest") ? 48 : 35; earnXp(15); departEncounterNode();
-        }
-
-        function earnXp(amt) {
-            p.xp += amt;
-            if (p.xp >= 50) {
-                p.xp -= 50; p.level += 1; p.maxHp += 15; p.hp = p.maxHp;
-                alert(`⚡ FIRMWARE EVOLUTION: Level ${p.level}! Structural Max HP updated.`);
+        function buySnakeOilPotions(isRiskyGrease) {
+            if(isRiskyGrease) {
+                userState.gold += 40; userState.hp -= 12;
+                if(userState.hp <= 0) { alert("The corrosive grease melted your lines!"); localStorage.removeItem("frontier_save_v6"); window.location.reload(); return; }
+            } else {
+                if(userState.gold >= 25) { userState.gold -= 25; userState.deck.push(303); } else { alert("No coin!"); return; }
             }
-            syncEngineHUD();
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function cbLog(m) {
-            const logBox = document.getElementById("cb-log"); logBox.innerHTML += "<br>&gt; " + m; logBox.scrollTop = logBox.scrollHeight;
+        function gambleFrontierCoins() {
+            if(userState.gold < 25) { alert("Too broke!"); return; }
+            if(Math.random() > 0.45) { userState.gold += 30; alert("Winner! (+30g)"); } else { userState.gold -= 25; alert("Busted!"); }
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function enterCombatSequence() {
-            document.getElementById("screen-map").classList.add("hidden");
-            document.getElementById("screen-combat").classList.remove("hidden");
-            p.energy = p.maxEnergy; p.shield = p.name === "The Iron Monarch" ? 15 : 0; p.firstCardPlay = true;
-            cbLog(`INITIALIZED: Facing ${enemyUnit.name}.`);
-            refreshCombatDisplay();
-            drawTurnHand();
+        function mineLootVein() {
+            userState.hp -= 15; userState.gold += 45;
+            if(userState.hp <= 0) { alert("Chassis collapsed in deep shafts!"); localStorage.removeItem("frontier_save_v6"); window.location.reload(); return; }
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function drawTurnHand() {
-            const handContainer = document.getElementById("cb-hand"); handContainer.innerHTML = "";
-            let shuffled = [...p.deck].sort(() => 0.5 - Math.random());
-            shuffled.slice(0, 3).forEach(cardId => {  // Displays top 3 modules clearly on mobile row cards
-                const data = MASTER_CARD_REPOSITORY.find(x => x.id === cardId);
-                if (!data) return;
-                const cardEl = document.createElement("div"); 
-                cardEl.className = `card ${data.rarity === 'rare' ? 'card-rare' : ''}`;
-                cardEl.onclick = () => playCardProcessor(data);
-                cardEl.innerHTML = `<div class="card-cost">${data.cost}</div>
-                                 <div>
-                                    <div class="card-type">${data.type}</div>
-                                    <div class="card-title">${data.title}</div>
-                                 </div>
-                                 <div class="card-desc">${data.desc}</div>`;
-                handContainer.appendChild(cardEl);
-            });
+        function cleanseOutlawDeck() {
+            const index = userState.deck.indexOf(101);
+            if(index > -1) { userState.deck.splice(index, 1); alert("Purged Rusty Six-Shooter."); } else { alert("No basic guns left."); }
+            saveActiveRunData(); syncGlobalHUD(); exitEncounterNode();
         }
 
-        function playCardProcessor(card) {
-            if(p.energy < card.cost) { cbLog("ERROR: Insufficient Energy capacity values!"); return; }
-            p.energy -= card.cost;
-            cbLog(`Compiling: <b>${card.title}</b>`);
+        function exitEncounterNode() {
+            document.getElementById("encounter-notification").classList.add("hidden");
+            activeRowIndex++;
             
-            if(p.name === "The Desperado" && p.firstCardPlay && card.type === "activate") {
-                cbLog("[Quickdraw Passive] +3 Bonus damage compiled.");
-                enemyUnit.hp -= 3;
+            const currentMapRows = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows;
+            if(activeRowIndex >= currentMapRows.length) {
+                alert("🤠 AREA BOUNTY SECURED! Region complete. Moving to next map quadrant...");
+                activeRegionIndex++; activeRowIndex = 0;
+                if(activeRegionIndex >= FRONTIER_CAMPAIGN_MAPS.length) {
+                    alert("🏆 CONGRATULATIONS LAWMAN! You've successfully cleared every bounty along the trail!");
+                    localStorage.removeItem("frontier_save_v6"); window.location.reload(); return;
+                }
             }
+            saveActiveRunData(); syncGlobalHUD(); buildFrontierMapUi();
+        }
+
+        // COMBAT MATRIX ENGINE
+        function setupCombatMatrix(eName, eHp, eDmg, eIntent) {
+            activeCombatState.enemy = { name: eName, hp: eHp, maxHp: eHp, dmg: eDmg, intent: eIntent };
+            activeCombatState.currentEnergy = userState.maxEnergy;
+            activeCombatState.playerShield = userState.name === "The Iron Monarch" ? 12 : 0;
+            activeCombatState.abilityAvailable = true;
+            activeCombatState.delayedDamage = 0;
+            activeCombatState.enemyBleed = 0;
+            activeCombatState.cardsPlayedThisTurn = 0;
+            userState.thorns = 0;
+
+            document.getElementById("encounter-notification").classList.add("hidden");
+            switchActiveTab("battle-engine");
+            
+            document.getElementById("combat-event-logger").innerHTML = `⚔️ SHOOTOUT STARTED: vs ${eName}`;
+            renderCombatScreenInterfaceValues();
+            dealCombatActionHand();
+        }
+
+        function renderCombatScreenInterfaceValues() {
+            const e = activeCombatState.enemy;
+            document.getElementById("combat-player-title").innerText = userState.name;
+            document.getElementById("combat-player-hp-text").innerText = `${userState.hp}/${userState.maxHp}`;
+            document.getElementById("combat-player-shield-text").innerText = `Armor Plating: ${activeCombatState.playerShield}`;
+            document.getElementById("combat-player-hp-bar").style.width = `${(userState.hp / userState.maxHp)*100}%`;
+            document.getElementById("combat-player-en-text").innerText = `${activeCombatState.currentEnergy}/${userState.maxEnergy}`;
+            document.getElementById("combat-player-en-bar").style.width = `${(activeCombatState.currentEnergy / userState.maxEnergy)*100}%`;
+
+            document.getElementById("combat-enemy-title").innerText = e.name;
+            document.getElementById("combat-enemy-hp-text").innerText = `${e.hp}/${e.maxHp}`;
+            document.getElementById("combat-enemy-bleed-text").innerText = `Bleed Stacks: ${activeCombatState.enemyBleed}`;
+            document.getElementById("combat-enemy-hp-bar").style.width = `${(e.hp / e.maxHp)*100}%`;
+            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Dealing ${e.dmg} Dmg]`;
+
+            const btn = document.getElementById("combat-active-tech-btn");
+            btn.disabled = !activeCombatState.abilityAvailable;
+            btn.innerText = activeCombatState.abilityAvailable ? "ENGAGE ARTIFACT OVERDRIVE" : "CORE SPENT";
+        }
+
+        function logCombat(msg) {
+            const l = document.getElementById("combat-event-logger");
+            l.innerHTML += `<br>&gt; ${msg}`; l.scrollTop = l.scrollHeight;
+        }
+
+        function dealCombatActionHand() {
+            const tray = document.getElementById("combat-current-hand-slots");
+            tray.innerHTML = "";
+            
+            let deckPool = [...userState.deck];
+            let handDealt = [];
+            for(let i=0; i<3; i++) {
+                if(deckPool.length === 0) break;
+                let pickIndex = Math.floor(Math.random() * deckPool.length);
+                handDealt.push(deckPool.splice(pickIndex, 1)[0]);
+            }
+
+            handDealt.forEach(cardId => {
+                const data = CARD_DICTIONARY.find(c => c.id === cardId);
+                if(!data) return;
+                const slot = document.createElement("div");
+                slot.className = `card-item ${data.rare ? 'card-rare' : ''}`;
+                slot.onclick = () => executeCardCompilationProcess(data);
+                slot.innerHTML = `<div class="badge">${data.cost}</div><div class="title">${data.title}</div><div class="body-text">${data.desc}</div>`;
+                tray.appendChild(slot);
+            });
+        }
+
+        function executeCardCompilationProcess(card) {
+            if(activeCombatState.currentEnergy < card.cost) { logCombat("Out of energy loops!"); return; }
+            activeCombatState.currentEnergy -= card.cost;
+            logCombat(`Fired: ${card.title}`);
             
             card.run();
-            if(p.name === "The Rust-Drifter" && card.cost === 0) { p.hp = Math.min(p.maxHp, p.hp + 2); cbLog("[Logic Siphon] +2 HP patched."); }
-            
-            p.firstCardPlay = false;
-            refreshCombatDisplay();
-            if(enemyUnit.hp > 0) drawTurnHand();
+            activeCombatState.cardsPlayedThisTurn += 1;
+            renderCombatScreenInterfaceValues();
+            if(activeCombatState.enemy.hp > 0) dealCombatActionHand();
         }
 
-        function damageTarget(amt) {
-            enemyUnit.hp -= amt; cbLog(`Dealt ${amt} frame integrity damage.`);
-            if(enemyUnit.hp <= 0) {
-                enemyUnit.hp = 0; 
-                let rewardScrap = p.name === "The Hex-Vulture" ? 34 : 25;
-                p.scrap += rewardScrap;
-                cbLog("Target terminated. Scrap salvaged.");
-                triggerLootDiscoveryWindow();
+        function damageHostileTarget(amount) {
+            let target = activeCombatState.enemy;
+            target.hp -= amount;
+            logCombat(`Dealt ${amount} damage to ${target.name}.`);
+            
+            if(target.hp <= 0) {
+                target.hp = 0; logCombat(`💥 TARGET BROUGHT DOWN!`);
+                alert(`BOUNTY WON! Earned 35 Gold & +45 XP.`);
+                userState.gold += 35;
+                awardExperiencePoints(45);
+                switchActiveTab("world-map"); exitEncounterNode();
             }
         }
 
-        function grantShield(amt) { p.shield += amt; cbLog(`Defensive shielding up +${amt}.`); }
-
-        function triggerActiveAbility() {
-            if(!p.abilityReady) return;
-            cbLog(`Override active: [<b>${p.ability}</b>]`);
-            if(p.name === "The Desperado") { p.energy = p.maxEnergy; }
-            else if(p.name === "The Iron Monarch") { damageTarget(12); }
-            else if(p.name === "The Hex-Vulture") { enemyUnit.dmg = Math.max(1, Math.round(enemyUnit.dmg / 2)); cbLog("Static fields injected."); }
-            else { p.hp = Math.min(p.maxHp, p.hp + 12); cbLog("Emergency self-repair triggered."); }
-            p.abilityReady = false; refreshCombatDisplay();
+        function shieldPlayerTarget(amount) {
+            activeCombatState.playerShield += amount;
+            logCombat(`Gained +${amount} protective armor.`);
         }
 
-        function executeEnemyTurn() {
-            cbLog("Pipeline swap. Enemy core executing actions...");
+        function fireActiveChassisTech() {
+            if(!activeCombatState.abilityAvailable) return;
+            logCombat(`DISCHARGED UNIQUE ABILITY OVERDRIVE CORE!`);
             
-            if (p.retribution > 0) {
-                enemyUnit.hp -= p.retribution;
-                cbLog(`[Spike Feedback] Hostile suffered ${p.retribution} spike recoil damage.`);
-                if (enemyUnit.hp <= 0) { enemyUnit.hp = 0; triggerLootDiscoveryWindow(); return; }
+            if(userState.name === "The Gambler") {
+                executeCardCompilationProcess(CARD_DICTIONARY.find(c => c.id === 103));
+            } else if(userState.name === "The Iron Monarch") {
+                damageHostileTarget(15);
+            } else if(userState.name === "The Sheriff") {
+                activeCombatState.enemy.dmg = Math.max(2, activeCombatState.enemy.dmg - 6);
+            } else if(userState.name === "The Bank Robber") {
+                activeCombatState.currentEnergy = Math.min(4, activeCombatState.currentEnergy + 2);
+            }
+            
+            activeCombatState.abilityAvailable = false;
+            renderCombatScreenInterfaceValues();
+        }
+
+        function processHostileTurnSequence() {
+            logCombat("Your turn ends. Enemy cocking hammer...");
+            let target = activeCombatState.enemy;
+
+            if(activeCombatState.enemyBleed > 0) {
+                target.hp -= activeCombatState.enemyBleed;
+                logCombat(`[Bleed Leak] Enemy took ${activeCombatState.enemyBleed} bleed damage.`);
+                if(target.hp <= 0) { damageHostileTarget(0); return; }
             }
 
-            let incomingAttack = enemyUnit.dmg;
-            if(p.shield > 0) {
-                if(p.shield >= incomingAttack) { p.shield -= incomingAttack; cbLog(`Shield absorbed ${incomingAttack} shock damage.`); incomingAttack = 0; }
-                else { incomingAttack -= p.shield; cbLog(`Shield lining shattered. ${incomingAttack} damage hits hull.`); p.shield = 0; }
-            }
-            if(incomingAttack > 0) { p.hp -= incomingAttack; cbLog(`Chassis took ${incomingAttack} point impact!`); }
-            if(p.hp <= 0) { p.hp = 0; alert("FATAL INTERRUPT: Core blown. Resetting systems."); window.location.reload(); }
-            
-            p.energy = p.maxEnergy; p.abilityReady = true; p.firstCardPlay = true; refreshCombatDisplay(); drawTurnHand();
-        }
-
-        function triggerLootDiscoveryWindow() {
-            document.getElementById("screen-combat").classList.add("hidden");
-            document.getElementById("screen-map").classList.remove("hidden");
-            const box = document.getElementById("event-display");
-            box.classList.remove("hidden");
-
-            let options = [];
-            while(options.length < 3) {
-                let randomCard = MASTER_CARD_REPOSITORY[Math.floor(Math.random() * MASTER_CARD_REPOSITORY.length)];
-                if(!options.includes(randomCard)) options.push(randomCard);
+            if(activeCombatState.delayedDamage > 0) {
+                target.hp -= activeCombatState.delayedDamage;
+                logCombat(`[Dynamite Fuse] Boom! Deals ${activeCombatState.delayedDamage} hit.`);
+                activeCombatState.delayedDamage = 0;
+                if(target.hp <= 0) { damageHostileTarget(0); return; }
             }
 
-            box.innerHTML = `<h4>🎁 REWARDS SALVAGE STACK</h4>
-                             <p>Select one component module script to integrate into memory:</p>
-                             <div class="reward-grid">`;
-
-            options.forEach(c => {
-                box.innerHTML += `<div class="card ${c.rarity === 'rare' ? 'card-rare' : ''}" onclick="claimDraftedLoot(${c.id})">
-                                    <div class="card-cost">${c.cost}</div>
-                                    <div>
-                                        <div class="card-type">${c.type}</div>
-                                        <div class="card-title">${c.title}</div>
-                                    </div>
-                                    <div class="card-desc">${c.desc}</div>
-                                    <button class="btn" style="padding:2px; font-size:7px; margin-top:2px; width:100%;">Install</button>
-                                  </div>`;
-            });
-
-            box.innerHTML += `</div>`;
-        }
-
-        function claimDraftedLoot(cardId) {
-            p.deck.push(cardId);
-            earnXp(20);
-            departEncounterNode();
-        }
-
-        function departEncounterNode() {
-            document.getElementById("event-display").classList.add("hidden");
-            currentColumn++;
-            if(currentColumn >= sectorMapLayout.length) {
-                alert("SECTOR CORES PURGED: Advancing to deeper frontier zones.");
-                currentColumn = 0;
+            let incoming = target.dmg;
+            if(activeCombatState.playerShield > 0) {
+                if(activeCombatState.playerShield >= incoming) {
+                    activeCombatState.playerShield -= incoming; logCombat(`Armor plates tanked all ${incoming} bullet heat.`); incoming = 0;
+                } else {
+                    incoming -= activeCombatState.playerShield; logCombat(`Plating split! ${incoming} broke through body lines.`); activeCombatState.playerShield = 0;
+                }
             }
-            renderOverworldMap();
-        }
 
-        function refreshCombatDisplay() {
-            document.getElementById("cb-player-name").innerText = p.name;
-            document.getElementById("cb-player-hp").innerText = `${p.hp}/${p.maxHp} (Shield: ${p.shield})`;
-            document.getElementById("cb-player-hp-bar").style.width = `${(p.hp/p.maxHp)*100}%`;
-            document.getElementById("cb-player-en").innerText = `${p.energy}/${p.maxEnergy}`;
-            document.getElementById("cb-player-en-bar").style.width = `${(p.energy/p.maxEnergy)*100}%`;
+            if(incoming > 0) {
+                userState.hp -= incoming; logCombat(`Took ${incoming} damage directly.`);
+            }
+
+            if(userState.hp <= 0) {
+                userState.hp = 0; alert("💀 WASTED! Your frame was abandoned. Save wiped.");
+                localStorage.removeItem("frontier_save_v6"); window.location.reload(); return;
+            }
+
+            activeCombatState.currentEnergy = userState.maxEnergy;
+            activeCombatState.abilityAvailable = true;
+            activeCombatState.cardsPlayedThisTurn = 0;
             
-            document.getElementById("cb-enemy-name").innerText = enemyUnit.name;
-            document.getElementById("cb-enemy-hp").innerText = `${enemyUnit.hp}/${enemyUnit.maxHp}`;
-            document.getElementById("cb-enemy-hp-bar").style.width = `${(enemyUnit.hp/enemyUnit.maxHp)*100}%`;
-            document.getElementById("cb-enemy-intent").innerText = `Preparing a targeting cycle payload for ${enemyUnit.dmg} damage.`;
-            
-            const btn = document.getElementById("cb-abl-btn"); btn.disabled = !p.abilityReady;
-            btn.innerText = p.abilityReady ? "CHASSIS OVERRIDE (READY)" : "OVERRIDE DEPLETED";
-            syncEngineHUD();
+            renderCombatScreenInterfaceValues();
+            dealCombatActionHand();
         }
     </script>
 </body>
