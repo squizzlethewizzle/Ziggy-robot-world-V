@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silicon Frontier: Blood & Rust v8.1</title>
+    <title>Silicon Frontier: Blood & Rust v8.2</title>
     <style>
         /* COLOR PALETTES CONFIGURATION ROOT */
         :root {
@@ -18,7 +18,6 @@
             --text-light: #f7ede2;
         }
 
-        /* PALETTE THEME OVERRIDES */
         body.theme-cyber {
             --bg-dark: #03001e; --panel-deep: #220044; --panel-brighter: #ec38bc;
             --neon-amber: #ec38bc; --neon-cyan: #00f5d4; --neon-gold: #fde24f;
@@ -59,7 +58,6 @@
         h4 { font-size: 13px; margin: 4px 0; color: var(--neon-cyan); }
         p { font-size: 11px; line-height: 1.4; margin: 4px 0; color: #d0c4bc; }
 
-        /* THEMED HIGH-CONTRAST BUTTONS */
         .btn {
             background-color: var(--neon-amber); color: #000; border: none; padding: 12px 10px;
             font-weight: bold; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 20px;
@@ -72,7 +70,6 @@
         .btn-gold { background-color: var(--neon-gold); color: black; }
         .btn-outline { background-color: transparent; color: var(--neon-amber); border: 1px solid var(--neon-amber); }
 
-        /* GLOBAL TOP HUD */
         .top-hud {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #000;
             padding: 8px; border-radius: 20px; margin-bottom: 14px; font-size: 9px;
@@ -80,7 +77,6 @@
         }
         .top-hud div:not(:last-child) { border-right: 1px solid var(--panel-brighter); }
 
-        /* PERSISTENT BOTTOM NAVIGATION TABS */
         .tab-nav-bar {
             position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 60px;
             background: #000; border-top: 2px solid var(--neon-amber); display: grid;
@@ -92,15 +88,12 @@
         }
         .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); }
 
-        /* START SCREEN CONTROLS */
         .title-screen-logo { text-align: center; margin: 30px 0 15px 0; font-size: 24px; font-weight: bold; color: var(--neon-amber); letter-spacing: 2px; }
         .title-backdrop { background: #000; border: 2px solid var(--neon-amber); padding: 20px; border-radius: 16px; text-align: center; }
 
-        /* CHARACTER SELECTOR SHEET ROW */
         .chassis-row { border: 1px solid var(--panel-brighter); background: #0d0806; padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.1s; }
         .chassis-row:active { border-color: var(--neon-cyan); background: var(--panel-brighter); }
 
-        /* MAP SYSTEMS */
         .region-banner { background: #000; padding: 8px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 14px; border-radius: 8px; color: var(--neon-gold); }
         .map-timeline { display: flex; flex-direction: column; gap: 16px; background: #020101; padding: 16px 10px; border-radius: 16px; }
         .map-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
@@ -114,7 +107,6 @@
         .map-node.locked { opacity: 0.1; pointer-events: none; }
         .node-tag { position: absolute; bottom: -14px; font-size: 8px; color: #ccc; font-weight: bold; }
 
-        /* COMBAT MODULES */
         .combat-arena { display: flex; flex-direction: column; gap: 10px; }
         .combatant-capsule { background: transparent; padding: 4px; position: relative; }
         
@@ -125,7 +117,6 @@
         .combat-log { background: #000; height: 70px; overflow-y: auto; padding: 8px; font-size: 9px; color: var(--neon-cyan); border-radius: 12px; margin: 2px 0; }
         .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
 
-        /* ARCED PLAYING HAND DESIGN SYSTEM - UPDATED HEIGHT/CONTAINMENT */
         .combat-hand-fan-container {
             position: relative; height: 140px; margin-top: 15px; margin-bottom: 5px;
             display: flex; justify-content: center; width: 100%; overflow: visible;
@@ -140,7 +131,6 @@
         .card-item.card-attack { border-color: var(--neon-red); }
         .card-item.card-defense { border-color: var(--neon-cyan); }
         .card-item.card-utility { border-color: var(--neon-gold); }
-        .card-item.card-rare { border-color: var(--neon-purple); box-shadow: 0 0 8px var(--neon-purple); }
         .card-item:hover { top: -15px; z-index: 100 !important; }
         
         .card-item .badge { position: absolute; top: 4px; right: 4px; background: #fff; color: #000; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
@@ -168,7 +158,7 @@
         <div id="screen-main-menu" class="screen-view active">
             <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:13px; color:#fff; letter-spacing:4px;">BLOOD & RUST</span></div>
             <div class="title-backdrop">
-                <p style="font-size:9px; margin-bottom: 14px; color:#aaa;">System Command Initialization Build v8.1</p>
+                <p style="font-size:9px; margin-bottom: 14px; color:#aaa;">System Command Initialization Build v8.2</p>
                 <button class="btn" onclick="initiateNewGameSetup()">⚡ ENGAGE MOTORS ⚡</button>
                 <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE RUN CHANNEL</button>
                 
@@ -183,10 +173,10 @@
             </div>
         </div>
 
-        <!-- FULL UNTRUNCATED OUTLAW CHASSIS SELECTOR RECONSTRUCTION -->
+        <!-- FRONTIER TOWN ROSTER POOL SELECTOR -->
         <div id="screen-setup" class="screen-view">
             <h1>🌵 MOUNT OUTLAW SYSTEM CORE 🌾</h1>
-            <p style="text-align: center; font-size: 9px; margin-bottom: 10px;">Select from your complete authorized asset array registry:</p>
+            <p style="text-align: center; font-size: 9px; margin-bottom: 10px;">Select from your 12 authorized frontier town assets:</p>
             <div id="chassis-selection-list" style="max-height: 320px; overflow-y: auto; padding-right: 4px;"></div>
             <button class="btn btn-outline" style="margin-top:10px;" onclick="returnToMainMenu()">⬅️ REVERT BACK TO START</button>
         </div>
@@ -217,16 +207,14 @@
             <div class="deck-view-grid" id="deck-display-scroll-area"></div>
         </div>
 
-        <!-- HIGH-CONTRAST INVERTED COMBAT SIMULATION SCENE -->
+        <!-- COMBAT ENGINE -->
         <div id="screen-battle-engine" class="screen-view">
             <div class="combat-arena">
-                
-                <!-- 1. HOSTILE THREAT HOUSING -->
+                <!-- HOSTILE THREAT HOUSING -->
                 <div class="combatant-capsule" style="border-bottom: 1px dotted var(--neon-red); padding-bottom: 10px;">
                     <h4 style="color:var(--neon-red);" id="combat-enemy-title">Hostile Entity</h4>
                     <div style="font-size:9px; display:flex; justify-content:space-between; width:100%;">
                         <span>Frame Lines: <b id="combat-enemy-hp-text">0/0</b></span>
-                        <span style="margin-left:auto; color:var(--neon-amber);" id="combat-enemy-bleed-text">Bleed: 0</span>
                     </div>
                     <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
                     <div style="font-size:9px; background:#000; padding:6px; border-radius:8px; border:1px dashed var(--neon-red); margin-top:4px;">
@@ -234,10 +222,10 @@
                     </div>
                 </div>
 
-                <!-- 2. SYSTEM DATA TRANSACTION LOG -->
+                <!-- SYSTEM DATA TRANSACTION LOG -->
                 <div class="combat-log" id="combat-event-logger">COOLING CYLINDER READY...</div>
 
-                <!-- 3. LOCAL PLAYER INJECTOR FRAME -->
+                <!-- LOCAL PLAYER INJECTOR FRAME -->
                 <div class="combatant-capsule" style="border-top: 1px dotted var(--neon-cyan); padding-top: 4px;">
                     <h4 id="combat-player-title">Outlaw Core</h4>
                     <div style="font-size:9px; display:flex; justify-content:space-between;">
@@ -250,7 +238,7 @@
                     <button class="btn btn-gold" style="padding:6px; font-size:9px; border-radius:8px; margin-top:4px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE CORE ARTIFACT</button>
                 </div>
 
-                <!-- 4. ORGANIC ARC DISTRIBUTED CHARACTER CARDS DECK HAND -->
+                <!-- HAND OVERLAY CONTAINER -->
                 <div class="combat-hand-fan-container" id="combat-current-hand-slots"></div>
 
                 <button class="btn btn-danger" style="margin-top:4px;" onclick="processHostileTurnSequence()">CONCEDE ACTION TURN STEP</button>
@@ -258,7 +246,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM TAB CONTROLLER PLATFORM -->
+    <!-- BOTTOM TAB NAVIGATION -->
     <div class="tab-nav-bar hidden" id="persistent-app-navigation">
         <div class="nav-tab active" id="tab-btn-map" onclick="switchActiveTab('world-map')">TRAIL MAP</div>
         <div class="nav-tab" id="tab-btn-deck" onclick="switchActiveTab('inventory-deck')">SADDLEBAG</div>
@@ -266,35 +254,32 @@
     </div>
 
     <script>
-        // MASTER COMPILATION CARD DICTIONARY
+        // CORE CARD ACTION ARCHETYPES
         const CARD_DICTIONARY = [
             { id: 101, title: "Rusty Six-Shooter", type: "Attack", cost: 1, desc: "Deal 6 gun damage.", run: () => damageHostileTarget(6) },
             { id: 102, title: "Deadeye Carbine", type: "Attack", cost: 2, desc: "Deal 15 precision damage.", run: () => damageHostileTarget(15) },
             { id: 103, title: "Fan the Hammer", type: "Attack", cost: 3, desc: "Unload cells for 25 burst damage.", run: () => damageHostileTarget(25) },
             { id: 104, title: "Quickdraw Snap", type: "Attack", cost: 0, desc: "Deal 4 quick kinetic damage.", run: () => damageHostileTarget(4) },
-            { id: 105, title: "Serrated Bowie Knife", type: "Attack", cost: 1, desc: "Deal 4 damage and add +3 Bleed.", run: () => { damageHostileTarget(4); activeCombatState.enemyBleed += 3; } },
-            { id: 106, title: "Dead Man's Hand", type: "Attack", cost: 2, desc: "Deals 22 points damage if frame is cracked.", run: () => { let d = (userState.maxHp - userState.hp > 0) ? 22 : 8; damageHostileTarget(d); } },
-            { id: 107, title: "Staccato Shot", type: "Attack", cost: 1, desc: "Deals 14 damage if first card played.", run: () => { let d = activeCombatState.cardsPlayedThisTurn === 0 ? 14 : 7; damageHostileTarget(d); } },
-            { id: 108, title: "Crescendo Blast", type: "Attack", cost: 2, desc: "Deals 6 damage per card expended.", run: () => { damageHostileTarget(activeCombatState.cardsPlayedThisTurn * 6); } },
             { id: 201, title: "Saloon Cover Pile", type: "Defense", cost: 1, desc: "Gain +6 defensive plate lines.", run: () => shieldPlayerTarget(6) },
             { id: 202, title: "Iron Plating", type: "Defense", cost: 2, desc: "Gain +14 heavy hull plating.", run: () => shieldPlayerTarget(14) },
-            { id: 203, title: "Spur Scrap Trap", type: "Defense", cost: 1, desc: "Gain 4 armor and reflect feedback.", run: () => { shieldPlayerTarget(4); userState.thorns += 4; } },
             { id: 301, title: "Cactus Tonic Flask", type: "Utility", cost: 1, desc: "Patch up 10 raw damage points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 10); } },
             { id: 303, title: "Syncopated Rhythm", type: "Utility", cost: 1, desc: "Draw additional operational directives.", run: () => { fillHandArray(); } }
         ];
 
-        // FULL ROSTER OF ALL 10 REGISTERED ARCHETYPES
+        // FULL INTERCHANGEABLE 12-CLASS SYSTEM REGISTRY
         const OUTLAW_CHASSIS_REGISTRY = [
-            { name: "The Gambler", hp: 80, energy: 3, desc: "High critical potential. Uses luck-based execution loops.", baseDeck: [101, 101, 104, 201, 106] },
-            { name: "The Iron Monarch", hp: 120, energy: 3, desc: "Heavy mechanical plate array with an ancient anchor artifact.", baseDeck: [101, 102, 201, 202, 203] },
-            { name: "The Sheriff", hp: 95, energy: 3, desc: "Suppresses criminal engine blocks, targeting enemy arrays directly.", baseDeck: [101, 101, 102, 105, 201] },
-            { name: "The Bank Robber", hp: 85, energy: 4, desc: "Highly dynamic power cycles designed around rapid firing matrixes.", baseDeck: [101, 104, 201, 201, 107] },
-            { name: "The Arcane", hp: 75, energy: 3, desc: "Manipulates raw data matrices to project synthetic tracking currents.", baseDeck: [101, 201, 303, 108] },
-            { name: "The Warlock", hp: 90, energy: 3, desc: "Draws extraction output via high-risk Titan/Primordial pact conduits.", baseDeck: [101, 105, 201, 106] },
-            { name: "The Brawler", hp: 110, energy: 3, desc: "Melee framework optimized for hardened and sumo impact maneuvers.", baseDeck: [101, 101, 201, 203] },
-            { name: "The Nomad", hp: 85, energy: 3, desc: "Scavenger chassis specializing in dynamic displacement and evasive trail steps.", baseDeck: [101, 104, 201, 301] },
-            { name: "The Artificer", hp: 90, energy: 3, desc: "Deploys companion automatic turrets and builds scrap micro traps.", baseDeck: [101, 201, 202, 203] },
-            { name: "The Medic", hp: 100, energy: 3, desc: "Recharges operating frame lines dynamically through high-potency nanite tonics.", baseDeck: [101, 201, 301, 301] }
+            { name: "The Outlaw", hp: 100, energy: 3, desc: "High Heat mechanics. Converts lost health frames into explosive structural damage.", baseDeck: [101, 101, 103, 201, 104] },
+            { name: "The Gambler", hp: 80, energy: 3, desc: "Wagers chips and alters probability matrixes to trigger massive critical hits.", baseDeck: [101, 104, 201, 303, 101] },
+            { name: "The Bartender", hp: 110, energy: 3, desc: "Uses heavy environmental blockades and crowd control mixology to stall threats.", baseDeck: [101, 201, 202, 201, 104] },
+            { name: "The Ragtime", hp: 85, energy: 4, desc: "Orchestrates turn queues and manipulates the operational initiative loop clock.", baseDeck: [101, 104, 303, 303, 201] },
+            { name: "The Prospector", hp: 105, energy: 3, desc: "Alters terrain boards with pickaxes and constructs high-yield demolition setups.", baseDeck: [101, 102, 201, 202, 103] },
+            { name: "The Sheriff", hp: 115, energy: 3, desc: "Bounty marker sentinel. Triggers structural response counters when targeted.", baseDeck: [101, 102, 201, 202, 104] },
+            { name: "The Snake Oil Salesman", hp: 90, energy: 3, desc: "Infects deep code targets with chemical toxins and high-risk performance boosters.", baseDeck: [101, 104, 201, 301, 303] },
+            { name: "The Preacher", hp: 95, energy: 3, desc: "Manipulates resolve matrices, branding targets with high-penalty sins.", baseDeck: [101, 102, 201, 201, 303] },
+            { name: "The Wrangler", hp: 100, energy: 3, desc: "Displaces targets violently across grid ranks using specialized line lassos.", baseDeck: [101, 104, 104, 201, 202] },
+            { name: "The Pioneer", hp: 125, energy: 3, desc: "Fortification specialist. Builds static armor lines that resist grid damage.", baseDeck: [101, 201, 202, 202, 201] },
+            { name: "The Doctor", hp: 95, energy: 3, desc: "High-accuracy structural triage. Targets critical nodes with anatomical focus.", baseDeck: [101, 102, 201, 301, 301] },
+            { name: "The Undertaker", hp: 110, energy: 3, desc: "Harvests operational metrics from neutralized frameworks to build execution spikes.", baseDeck: [101, 103, 201, 202, 104] }
         ];
 
         const FRONTIER_CAMPAIGN_MAPS = [
@@ -303,16 +288,16 @@
                 boss: { name: "BOUNTY HUNTER VANCE", hp: 70, dmg: 8, intent: "Targeting your processing vents with a high-velocity frame piercer" },
                 rows: [
                     [{ type: "Combat", label: "🤠 Gulch Sentry", icon: "⚔️" }],
-                    [{ type: "Bartender", label: "🥃 Blackwood Saloon", icon: "🥃" }, { type: "Ragtime", label: "🎹 Junk Piano", icon: "🎹" }],
+                    [{ type: "Event", label: "🥃 Blackwood Saloon", icon: "🥃" }, { type: "Event", label: "🎹 Junk Piano", icon: "🎹" }],
                     [{ type: "Combat", label: "🤠 Scrap Raider", icon: "⚔️" }],
                     [{ type: "Boss", label: "💀 Target: Vance", icon: "👹" }]
                 ]
             }
         ];
 
-        let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, thorns: 0, level: 1, xp: 0, deck: [] };
+        let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, level: 1, xp: 0, deck: [] };
         let activeRegionIndex = 0; let activeRowIndex = 0; let activeChoiceColumn = 0; 
-        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, delayedDamage: 0, enemyBleed: 0, cardsPlayedThisTurn: 0, liveHand: [] };
+        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, liveHand: [] };
 
         window.addEventListener("DOMContentLoaded", () => { 
             if(localStorage.getItem("frontier_save_v8")) {
@@ -402,8 +387,8 @@
 
         function triggerEncounterDialogue(node) {
             const overlay = document.getElementById("encounter-notification"); overlay.classList.remove("hidden");
-            let enemyBlueprint = { name: node.label, hp: 45, dmg: 6, intent: "Scanning tracking locks directly onto you." };
-            overlay.innerHTML = `<h4>⚠️ ENCOUNTER: ${node.label}</h4><div class="dialogue-text">"Drop your weapon."</div>
+            let enemyBlueprint = { name: node.label, hp: 45, dmg: 6, intent: "Locking iron ironsights directly onto your position." };
+            overlay.innerHTML = `<h4>⚠️ ENCOUNTER: ${node.label}</h4><div class="dialogue-text">"This town ain't big enough for your code."</div>
                                  <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Engage Core Fuses</button>`;
         }
 
@@ -422,8 +407,7 @@
         function setupCombatMatrix(eName, eHp, eDmg, eIntent) {
             activeCombatState.enemy = { name: eName, hp: eHp, maxHp: eHp, dmg: eDmg, intent: eIntent };
             activeCombatState.currentEnergy = userState.maxEnergy; activeCombatState.playerShield = 0;
-            activeCombatState.abilityAvailable = true; activeCombatState.cardsPlayedThisTurn = 0;
-            activeCombatState.liveHand = []; userState.thorns = 0;
+            activeCombatState.abilityAvailable = true; activeCombatState.liveHand = [];
 
             document.getElementById("encounter-notification").classList.add("hidden"); switchActiveTab("battle-engine");
             fillHandArray(); renderCombatScreenInterfaceValues();
@@ -468,7 +452,6 @@
 
             if(activeCombatState.currentEnergy < card.cost) { alert("Insufficient energy cycles!"); return; }
             activeCombatState.currentEnergy -= card.cost;
-            activeCombatState.cardsPlayedThisTurn++;
             
             card.run();
             activeCombatState.liveHand.splice(targetIdx, 1);
