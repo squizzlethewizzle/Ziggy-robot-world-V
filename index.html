@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Weird West: Steam & Gears</title>
     <style>
-        /* --- AUTOMATON DISPLAY CORES --- */
+        /* --- SYSTEM VARIABLE DEFINITIONS --- */
         :root {
             --bg: #0d0907;
             --panel: #17110d;
@@ -88,7 +88,7 @@
         }
         #top-hud span { color: var(--accent); font-size: 12px; text-shadow: 0 0 6px var(--glow); font-weight: bold; display: block; margin-top: 2px; }
 
-        /* --- STAGE LAYER SCREEN CONTAINER --- */
+        /* --- SCREEN CONTAINER --- */
         #screen-container {
             flex-grow: 1; overflow-y: auto;
             padding: 16px; padding-bottom: 84px; 
@@ -136,22 +136,28 @@
             padding: 8px 2px; font-size: 9px; color: var(--text); cursor: pointer; text-align: center;
         }
 
-        /* --- CHARACTER ASSEMBLER SELECTION --- */
+        /* --- CHARACTER SELECT EXPANSION --- */
         .char-scroller-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            overflow-y: auto; max-height: 340px; margin-bottom: 12px; padding: 2px;
+            overflow-y: auto; flex-grow: 1; max-height: 380px; margin-bottom: 12px; padding: 4px;
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; background: rgba(0,0,0,0.15);
         }
         .char-card {
             background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px;
-            padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 105px;
+            padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;
         }
         .char-card.selected { border-color: var(--accent); box-shadow: 0 0 12px var(--glow); transform: scale(0.98); }
 
-        /* --- INTUITIVE NAVIGATION MAP GRID LINKER --- */
+        /* --- SEGMENTED POWER MODULES --- */
+        .ap-container-bar { display: flex; gap: 3px; margin-top: 4px; width: 70px; height: 10px; }
+        .ap-segment { flex-grow: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 2px; }
+        .ap-segment.filled { background: var(--accent); box-shadow: 0 0 6px var(--glow); border-color: transparent; }
+
+        /* --- MAP FRAMEWORK PANELS --- */
         .map-info-banner {
             background: rgba(0,0,0,0.5); border: 2px solid var(--border); border-radius: 14px;
             padding: 10px 12px; margin-bottom: 10px; font-size: 11px; text-align: center;
-            color: var(--text); line-height: 1.4; box-shadow: inset 0 0 8px #000; min-height: 54px;
+            color: var(--text); line-height: 1.4; box-shadow: inset 0 0 8px #000; min-height: 64px;
             display: flex; flex-direction: column; justify-content: center;
         }
         .map-scroll-pane {
@@ -164,15 +170,15 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1;
         }
-        .map-nodes-container-div { display: flex; flex-direction: column-reverse; padding: 30px 0; position: relative; z-index: 2; }
-        .map-layer-row { display: flex; justify-content: space-around; align-items: center; height: 75px; position: relative; }
+        .map-nodes-container-div { display: flex; flex-direction: column-reverse; padding: 40px 0; position: relative; z-index: 2; }
+        .map-layer-row { display: flex; justify-content: space-around; align-items: center; height: 95px; position: relative; }
         
         .node-circle {
             width: 44px; height: 44px; border-radius: 50%;
             background: var(--card-bg); border: 2px solid var(--border);
             display: flex; align-items: center; justify-content: center;
             font-size: 18px; cursor: pointer; position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5); z-index: 5;
         }
         .node-circle.available { border-color: var(--accent); animation: nodePulse 1.6s infinite alternate; }
         @keyframes nodePulse {
@@ -185,10 +191,10 @@
             position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
             background: var(--danger); color: #fff; font-size: 8px; font-weight: bold;
             padding: 2px 6px; border-radius: 10px; border: 1px solid #fff;
-            box-shadow: 0 0 8px var(--danger); z-index: 5; white-space: nowrap;
+            box-shadow: 0 0 8px var(--danger); z-index: 10; white-space: nowrap;
         }
 
-        /* --- CARD OBJECT MODULES --- */
+        /* --- CARD DESIGN SCHEMATICS --- */
         .mobile-card {
             width: 105px; height: 145px; background: var(--card-bg);
             border: 2px solid var(--border); border-radius: 12px; padding: 10px;
@@ -202,7 +208,7 @@
         .mobile-card.rarity-RARE { border-color: #8e44ad; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.2); }
         .mobile-card.rarity-LEGENDARY { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
 
-        /* --- ARCKED TACTICAL ENCOUNTER INTERFACE --- */
+        /* --- COMBAT ARENA GRID --- */
         .combat-arena-wrapper { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
         .vital-readout-strip {
             display: flex; justify-content: space-between; background: rgba(0,0,0,0.4);
@@ -217,7 +223,7 @@
         .hand-arc-container .mobile-card { position: absolute; bottom: 15px; left: 50%; transform-origin: bottom center; cursor: pointer; }
         .hand-arc-container .mobile-card:active { transform: scale(1.15) translateY(-20px) !important; z-index: 200 !important; border-color: var(--accent); }
 
-        /* --- CAMPFIRE PROTOCOL GRID FIXES --- */
+        /* --- MAINTENANCE DOCK FIXES --- */
         .camp-scroll-dock {
             background: rgba(0,0,0,0.3); border: 2px solid var(--border); border-radius: var(--window-radius);
             padding: 12px; margin-bottom: 14px; box-shadow: inset 0 0 10px #000;
@@ -227,9 +233,8 @@
             scroll-snap-type: x mandatory; min-height: 165px; align-items: center;
         }
         .card-flex-row-layout .mobile-card { flex-shrink: 0; scroll-snap-align: start; cursor: pointer; }
-        .card-flex-row-layout .mobile-card:active { transform: scale(0.96); opacity: 0.8; }
 
-        /* --- HOVER TELEMETRY OVERLAY POPUPS --- */
+        /* --- OVERLAY TELEMETRY INTERFACES --- */
         #inspect-modal-overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
@@ -241,7 +246,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px var(--glow);
         }
 
-        /* --- PERSISTENT CONTROLLER TAB FOOTER --- */
+        /* --- FOOTER CONTROLLER TRACKS --- */
         #bottom-navigation-bar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 64px;
             background: linear-gradient(to top, #060403 85%, rgba(0,0,0,0));
@@ -268,6 +273,7 @@
         </div>
 
         <div id="screen-container">
+            <!-- VIEW 1: BOOT ENGINE MAIN MENU -->
             <div id="view-start" class="screen active">
                 <div class="start-frame">
                     <div class="menu-logo-container">
@@ -290,9 +296,10 @@
                 </div>
             </div>
 
+            <!-- VIEW 2: COMPREHENSIVE REGISTRY MATRIX -->
             <div id="view-charselect" class="screen">
                 <h2>Select Frame Type</h2>
-                <p>Hardware presets define initial tactical subroutine structures.</p>
+                <p>Deploy specialized custom system subroutines across the frontier.</p>
                 <div class="char-scroller-grid" id="character-injection-grid"></div>
                 <div style="margin-top:auto;">
                     <button class="btn" style="border-color: var(--accent);" onclick="app.confirmCharacterSelection()">Initialize System</button>
@@ -300,6 +307,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 3: SECTOR NETWORKS MAP -->
             <div id="view-map" class="screen">
                 <h2>Sector Map Routing</h2>
                 <div class="map-info-banner" id="map-target-node-descriptor">
@@ -311,15 +319,16 @@
                 </div>
             </div>
 
+            <!-- VIEW 4: ACTIVE COMBAT CORE INTERFACE -->
             <div id="view-combat" class="screen">
                 <div class="combat-arena-wrapper">
                     <div class="vital-readout-strip">
                         <div class="vital-block">
-                            <div style="display:flex; justify-content:space-between; font-weight:bold;">
-                                <span id="cb-player-frame-title" style="color:var(--accent);">Chassis</span>
-                                <span>⚡ <strong id="cb-player-ap" style="color:var(--accent);">3</strong> AP</span>
+                            <div style="display:flex; flex-direction:column; justify-content: flex-start;">
+                                <span id="cb-player-frame-title" style="color:var(--accent); font-weight: bold;">Chassis</span>
+                                <div class="ap-container-bar" id="cb-player-ap-bar"></div>
                             </div>
-                            <div style="font-size:9px; margin-top:2px; color:var(--text-muted);">
+                            <div style="font-size:9px; margin-top:6px; color:var(--text-muted);">
                                 HP: <span id="cb-player-hp">50</span> | PLT: <span id="cb-player-armor">0</span>
                             </div>
                             <div class="hp-bar-outer"><div class="hp-bar-inner" id="bar-player-hp-pc"></div></div>
@@ -339,6 +348,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 5: SCRAP WORKBENCHES -->
             <div id="view-campfire" class="screen">
                 <h2>🔥 Maintenance Scrap Fire</h2>
                 <p>Tap memory blocks to shift files between your active holster pouch and storage safe vaults.</p>
@@ -356,6 +366,7 @@
                 <button class="btn" onclick="app.exitNodeToTrails()" style="margin-top:auto; border-color: var(--accent);">Close Panels & Roll Out</button>
             </div>
 
+            <!-- VIEW 6: GENERAL MERCHANT GENERAL PORT -->
             <div id="view-shop" class="screen">
                 <h2>🏪 Fueling Port Scrap Shop</h2>
                 <p>Spend raw fuel scrap to weld heavy mechanical expansions onto your active data storage matrix.</p>
@@ -363,6 +374,7 @@
                 <button class="btn btn-danger" onclick="app.exitNodeToTrails()" style="margin-top:auto;">Leave Port</button>
             </div>
 
+            <!-- VIEW 7: CHASSIS REGISTRY SPECS -->
             <div id="view-character" class="screen">
                 <h2>Chassis Engineering Data</h2>
                 <div class="char-card" style="text-align:center; min-height: auto; border-radius: 20px; padding: 20px 10px;">
@@ -381,6 +393,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 8: GENERAL RECOGNITION DICTIONARIES -->
             <div id="view-rules" class="screen">
                 <h2>Frontier Systems Codex</h2>
                 <div class="rules-card"><strong>1. Chassis Deck Hardware Space</strong><br>Your compilation stream is restricted by your active Holster limit box. Excess code blocks shard straight to cargo storage safe vaults automatically.</div>
@@ -388,6 +401,7 @@
                 <div class="rules-card"><strong>3. Trailing Network Nodes</strong><br>Trace down 14 high-risk structural vertical tiers. Completing layer 14 advances the machine suite directly to subsequent frontier grids.</div>
             </div>
 
+            <!-- VIEW 9: INTERFACE GRAPHIC VISUAL DESIGN -->
             <div id="view-themes" class="screen">
                 <h2>Terminal Display Drivers</h2>
                 <p>Adjust visual frequency patterns to tune optic tracking performance across hazardous operations.</p>
@@ -411,13 +425,23 @@
     </div>
 
     <script>
+        // --- EXPANDED 15-MEMBER COMPLETE CHASSIS REGISTRY ---
         const WEST_BOT_CLASSES = [
+            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Over-clocks offensive weapon subroutines by stripping down armor shield allocations.' },
+            { name: 'Harlot', icon: '💃', desc: 'Deploys localized electromagnetic misdirection nets to scramble targeted incoming threat metrics.' },
+            { name: 'Bank Robber', icon: '💰', desc: 'Siphons oil reserves and fuel directly from active security nodes via high-velocity drill hooks.' },
             { name: 'Gambler', icon: '🎲', desc: 'Recalculates calculation matrix logs to force high-risk logic crit registers.' },
             { name: 'Bartender', icon: '🍺', desc: 'Vents high-pressure lubrication fluid lines to accelerate motor reaction rates.' },
-            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Over-clocks offensive weapon subroutines by stripping down armor shield allocations.' },
             { name: 'Drunk', icon: '🍾', desc: 'Exhibits highly sporadic movement vectors derived from leaking corrosive coolant loops.' },
-            { name: 'Bar Fighter', icon: '👊', desc: 'Heavy cast-alloy hydraulic load frame built to absorb massive kinetic impacts.' },
-            { name: 'Undertaker', icon: '⚰️', desc: 'Processes scrap fragments directly from spent machines to rebuild structural hulls.' }
+            { name: 'Prospector', icon: '⛏️', desc: 'Equipped with heavy seismic sub-scanners specialized in parsing structural geo-nodes for rare ore fragments.' },
+            { name: 'Snake Oil Salesman', icon: '🧪', desc: 'Injects unstable chemical payloads into engine fuel systems to trigger hazardous status anomalies.' },
+            { name: 'Preacher', icon: '✝️', desc: 'Transmits low-frequency core structural resonance protocols to re-weld chassis systems dynamically.' },
+            { name: 'Doctor', icon: '🥼', desc: 'Performs precise execution routines utilizing tactical pneumatic saws to splice mechanical nodes safely.' },
+            { name: 'Inventor', icon: '🛠️', desc: 'Constantly fabricates throwaway secondary dynamic processing circuits during tactical turn loops.' },
+            { name: 'Sheriff', icon: '⭐', desc: 'Binds targeted threats using automated heavy dragnet anchors, locking execution protocols.' },
+            { name: 'Undertaker', icon: '⚰️', desc: 'Processes scrap fragments directly from spent machines to rebuild structural hulls.' },
+            { name: 'Frontiersman', icon: '🧭', desc: 'Self-adjusting multi-terrain gear assemblies optimize long-range pathway scanning calculations.' },
+            { name: 'Wrangler', icon: '🤠', desc: 'Deploys magnetic tracking cables to restrict and direct locomotion systems on active rogue units.' }
         ];
 
         const BOX_UPGRADES_CATALOG = [
@@ -426,7 +450,6 @@
             { id: 'b3', name: 'Gatling Expansion Bank', capacity: 12, cost: 110, perk: 'BONUS_AP', desc: 'Expands execution memory buffer slots to 12. Adds +1 Action Point on initial turn cycles.' }
         ];
 
-        // --- ENHANCED NODE SYSTEM ENCYCLOPEDIA ---
         const NODE_DICTIONARY = {
             'CAMPFIRE': { label: '🔥 MAINTENANCE DIAGNOSTIC NODE', definition: 'A secure automation workbench terminal. Allows complete structural sorting of your subroutines between your active card holster pouch and cargo vault. Prevents software corruption.' },
             'GENERAL_STORE': { label: '🏪 MECHANICAL TRADING PORT', definition: 'A black-market trading port hosted by neutral machine scrap merchants. Exchange raw fuel oil barrels here to install upgraded card holster frameworks to boost your max hand memory.' },
@@ -436,17 +459,17 @@
 
         class WeirdWestEngine {
             constructor() {
-                this.selectedClass = 'Gambler';
-                this.saveKey = 'WeirdWestMobile_SaveSession_v4';
+                this.selectedClass = 'Outlaw';
+                this.saveKey = 'WeirdWestMobile_SaveSession_v5';
                 this.inspectTimeoutHook = null;
                 this.isInspectingTriggered = false;
                 
                 this.state = {
                     level: 1, gold: 60, hp: 50, maxHp: 50, activeBoxId: 'b1',
                     activeDeck: [], safeStorage: [], mapNodes: [],
-                    currentMeepleNodeId: null, currentDepth: -1, mapId: 1, characterClass: 'Gambler'
+                    currentMeepleNodeId: null, currentDepth: -1, mapId: 1, characterClass: 'Outlaw'
                 };
-                this.combat = { enemyHp: 0, enemyMaxHp: 0, enemyIntentDmg: 0, playerArmor: 0, playerAp: 3, hand: [], draw: [], discard: [] };
+                this.combat = { enemyHp: 0, enemyMaxHp: 0, enemyIntentDmg: 0, playerArmor: 0, maxAp: 3, playerAp: 3, hand: [], draw: [], discard: [] };
             }
 
             init() {
@@ -454,7 +477,14 @@
                 this.checkSavedSessionAvailability();
                 this.setThemePalette('default');
                 
-                // Add event listener to redraw paths if orientation/resize shifts maps
+                const scrollView = document.getElementById('map-scroll-view');
+                if (scrollView) {
+                    scrollView.addEventListener('scroll', () => {
+                        if (document.getElementById('view-map').classList.contains('active')) {
+                            this.drawVectorConnectionLinesMap();
+                        }
+                    });
+                }
                 window.addEventListener('resize', () => {
                     if (document.getElementById('view-map').classList.contains('active')) {
                         this.drawVectorConnectionLinesMap();
@@ -588,7 +618,6 @@
                     }
                 }
 
-                // SECURE PATH CONNECT ENGINE ACROSS TIERS
                 for (let d = 0; d < depthTarget - 1; d++) {
                     const currentRows = this.state.mapNodes.filter(n => n.depthIndex === d);
                     const nextRows = this.state.mapNodes.filter(n => n.depthIndex === d + 1);
@@ -669,34 +698,33 @@
                 `;
             }
 
-            // --- FULLY TRACED RELIABLE VECTOR SVG PATH ENGINE ---
+            // --- DEEP SCROLL INTEGRATED ABSOLUTE VIEWPORT SCANNERS ---
             drawVectorConnectionLinesMap() {
                 const svg = document.getElementById('map-connections-svg');
                 if(!svg) return;
                 svg.innerHTML = '';
                 
                 const scrollPane = document.getElementById('map-scroll-view');
-                svg.setAttribute('width', scrollPane.clientWidth);
-                svg.setAttribute('height', scrollPane.scrollHeight);
-
-                const paneRect = scrollPane.getBoundingClientRect();
+                const paneWidth = scrollPane.clientWidth;
+                const paneHeight = scrollPane.scrollHeight;
+                
+                svg.setAttribute('width', paneWidth);
+                svg.setAttribute('height', paneHeight);
 
                 this.state.mapNodes.forEach(currNode => {
                     const currEl = document.getElementById(`ui_node_id_${currNode.id}`);
                     if (!currEl) return;
-                    const currRect = currEl.getBoundingClientRect();
-
-                    // Map coordinates calculating scrolling panel layout shifts accurately
-                    const x1 = (currRect.left + currRect.width / 2) - paneRect.left;
-                    const y1 = (currRect.top + currRect.height / 2) - paneRect.top + scrollPane.scrollTop;
+                    
+                    // Native offset mapping avoids standard rect container shift bugs during scrolls
+                    const x1 = currEl.offsetLeft + (currEl.offsetWidth / 2);
+                    const y1 = currEl.offsetTop + (currEl.offsetHeight / 2);
 
                     currNode.connections.forEach(targetId => {
                         const targetEl = document.getElementById(`ui_node_id_${targetId}`);
                         if (!targetEl) return;
-                        const targetRect = targetEl.getBoundingClientRect();
 
-                        const x2 = (targetRect.left + targetRect.width / 2) - paneRect.left;
-                        const y2 = (targetRect.top + targetRect.height / 2) - paneRect.top + scrollPane.scrollTop;
+                        const x2 = targetEl.offsetLeft + (targetEl.offsetWidth / 2);
+                        const y2 = targetEl.offsetTop + (targetEl.offsetHeight / 2);
 
                         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                         line.setAttribute('x1', x1); line.setAttribute('y1', y1);
@@ -756,7 +784,9 @@
                 this.combat.enemyMaxHp = Math.round((isElite ? 40 : 18) * enemyScaleFactor);
                 this.combat.enemyHp = this.combat.enemyMaxHp;
                 this.combat.playerArmor = this.activeBoxSpec.perk === 'SHIELD_START' ? 4 : 0;
-                this.combat.playerAp = this.activeBoxSpec.perk === 'BONUS_AP' ? 4 : 3;
+                
+                this.combat.maxAp = this.activeBoxSpec.perk === 'BONUS_AP' ? 4 : 3;
+                this.combat.playerAp = this.combat.maxAp;
 
                 document.getElementById('cb-enemy-name').innerText = isElite ? '💀 Elite Mech-Behemoth' : '⚙️ Scrap Vagrant Drone';
                 this.combat.draw = [...this.state.activeDeck].sort(() => Math.random() - 0.5);
@@ -782,14 +812,26 @@
                 document.getElementById('cb-enemy-intent').innerText = `Intent: Strike ${this.combat.enemyIntentDmg}`;
             }
 
+            // --- RENDER REFINED ACTION POINT BAR SEGMENTS ---
+            renderActionPointSegments() {
+                const container = document.getElementById('cb-player-ap-bar');
+                container.innerHTML = '';
+                for (let i = 0; i < this.combat.maxAp; i++) {
+                    const segment = document.createElement('div');
+                    segment.className = `ap-segment ${i < this.combat.playerAp ? 'filled' : ''}`;
+                    container.appendChild(segment);
+                }
+            }
+
             renderCombatArenaUi() {
                 document.getElementById('cb-player-hp').innerText = this.state.hp;
                 document.getElementById('cb-player-armor').innerText = this.combat.playerArmor;
-                document.getElementById('cb-player-ap').innerText = this.combat.playerAp;
                 document.getElementById('cb-enemy-hp').innerText = this.combat.enemyHp;
 
                 document.getElementById('bar-player-hp-pc').style.width = `${(this.state.hp / this.state.maxHp) * 100}%`;
                 document.getElementById('bar-enemy-hp-pc').style.width = `${(this.combat.enemyHp / this.combat.enemyMaxHp) * 100}%`;
+
+                this.renderActionPointSegments();
 
                 const arcContainer = document.getElementById('combat-hand-arc-frame');
                 arcContainer.innerHTML = '';
@@ -854,6 +896,7 @@
 
             closeInspectTelemetryModal() { document.getElementById('inspect-modal-overlay').style.display = 'none'; }
 
+            // --- FIXED COMBAT RESOLUTION LOOP PIPELINE ---
             executeCardResolution(idx) {
                 const card = this.combat.hand[idx];
                 if (this.combat.playerAp < card.cost) {
@@ -873,6 +916,7 @@
                 if (armMatch) this.combat.playerArmor += parseInt(armMatch[1]);
                 if (healMatch) this.state.hp = Math.min(this.state.maxHp, this.state.hp + parseInt(healMatch[1]));
 
+                // Immediate health validation checks to prevent locked combat frames
                 if (this.combat.enemyHp <= 0) {
                     alert("🎉 Target Destroyed! Reclaimed +25 scrap fuel oil.");
                     this.state.gold += 25;
@@ -880,7 +924,7 @@
                     const lootCard = { id: `loot_${Date.now()}`, name: 'Spike Expander', rarity: 'RARE', cost: 1, effect: 'Deal 9 DMG.' };
                     if(this.state.activeDeck.length < this.activeBoxSpec.capacity) {
                         this.state.activeDeck.push(lootCard);
-                        alert(`Wolded [${lootCard.name}] straight to active Holster Holster.`);
+                        alert(`Welded [${lootCard.name}] straight to active Holster.`);
                     } else {
                         this.state.safeStorage.push(lootCard);
                         alert(`Holster full. Shunted [${lootCard.name}] to Secure Vault cargo spaces.`);
@@ -892,6 +936,8 @@
                         this.generateProceduralMobileMap();
                         this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
                     }
+                    
+                    // Hard exit execution line
                     this.exitNodeToTrails();
                     return;
                 }
@@ -909,11 +955,10 @@
                 }
 
                 this.combat.discard.push(...this.combat.hand); this.combat.hand = [];
-                this.combat.playerAp = 3; this.drawCardsToCombatHand(4);
+                this.combat.playerAp = this.combat.maxAp; this.drawCardsToCombatHand(4);
                 this.generateEnemyIntentAction(); this.renderCombatArenaUi(); this.updateGlobalHudDisplay();
             }
 
-            // --- RECONFIGURED MAINTENANCE ZONE FLEX ROW HANDLERS ---
             renderCampfireVaultPanels() {
                 document.getElementById('camp-active-count').innerText = `${this.state.activeDeck.length}/${this.activeBoxSpec.capacity}`;
                 
