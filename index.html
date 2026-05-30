@@ -7,46 +7,51 @@
     <style>
         /* --- THEMATIC AUTOMATON COLOR THEMES --- */
         :root {
-            --bg: #0d0a08;
-            --panel: #1a130f;
-            --border: #4a3525;
-            --accent: #e5a93b;
-            --accent-rgb: 229, 169, 59;
-            --text: #f4eae1;
-            --text-muted: #9e8470;
-            --danger: #cf3a3a;
-            --card-bg: #261c15;
-            --glow: rgba(229, 169, 59, 0.2);
+            --bg: #0f0b08;
+            --panel: #1a1410;
+            --border: #523b2a;
+            --accent: #f5b041;
+            --accent-rgb: 245, 176, 65;
+            --text: #fdf6f0;
+            --text-muted: #af9785;
+            --danger: #e74c3c;
+            --card-bg: linear-gradient(135deg, #2c1e16, #1f140e);
+            --glow: rgba(245, 176, 65, 0.25);
+            --window-radius: 24px;
         }
 
         [data-theme="neon-oil"] {
-            --bg: #080f14;
-            --panel: #0f1b24;
-            --border: #1f3a4e;
+            --bg: #060b0e;
+            --panel: #0d161d;
+            --border: #22445e;
             --accent: #00ffcc;
             --accent-rgb: 0, 255, 204;
-            --text: #e2f1f5;
-            --text-muted: #6b8b9c;
+            --text: #e6f7ff;
+            --text-muted: #739bb5;
             --danger: #ff4757;
-            --card-bg: #152633;
-            --glow: rgba(0, 255, 204, 0.25);
+            --card-bg: linear-gradient(135deg, #112332, #0a151f);
+            --glow: rgba(0, 255, 204, 0.3);
         }
 
         [data-theme="rust-belt"] {
-            --bg: #140d0d;
-            --panel: #241616;
-            --border: #4a2727;
+            --bg: #120909;
+            --panel: #221212;
+            --border: #5c2c2c;
             --accent: #ff6b35;
             --accent-rgb: 255, 107, 53;
-            --text: #fcebeb;
-            --text-muted: #a37878;
-            --danger: #ff2e2e;
-            --card-bg: #331e1e;
-            --glow: rgba(255, 107, 53, 0.2);
+            --text: #fff0f0;
+            --text-muted: #b88686;
+            --danger: #ff3838;
+            --card-bg: linear-gradient(135deg, #3d1b1b, #241010);
+            --glow: rgba(255, 107, 53, 0.25);
         }
 
         /* --- MOBILE LAYOUT CORE CONFIGURATION --- */
-        * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        * { 
+            box-sizing: border-box; 
+            transition: background-color 0.25s, border-color 0.25s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            -webkit-tap-highlight-color: transparent;
+        }
         
         body {
             background-color: var(--bg);
@@ -67,75 +72,82 @@
             height: 100%;
             margin: 0 auto;
             background-color: var(--panel);
-            border-left: 2px solid var(--border);
-            border-right: 2px solid var(--border);
+            border-left: 3px solid var(--border);
+            border-right: 3px solid var(--border);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 40px rgba(0,0,0,0.85);
         }
 
-        /* --- HEADER HUD --- */
+        /* --- STYLISH UPPER DECK DASHBOARD HUD --- */
         #top-hud {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            padding: 12px 6px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
-            border-bottom: 2px solid var(--border);
+            padding: 16px 8px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0));
+            border-bottom: 2px dashed var(--border);
             text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
+            gap: 4px;
         }
-        #top-hud div { display: flex; flex-direction: column; gap: 2px; }
-        #top-hud span { color: var(--accent); font-size: 13px; text-shadow: 0 0 6px var(--glow); }
+        #top-hud div { 
+            background: rgba(0,0,0,0.3); 
+            padding: 6px 4px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        #top-hud span { color: var(--accent); font-size: 13px; text-shadow: 0 0 8px var(--glow); font-weight: bold; display: block; margin-top: 2px; }
 
         /* --- SCREEN CONTROLLER CONTAINER --- */
         #screen-container {
             flex-grow: 1;
             overflow-y: auto;
             padding: 15px;
-            padding-bottom: 80px; 
+            padding-bottom: 90px; 
             position: relative;
         }
 
         .screen { display: none; height: 100%; flex-direction: column; }
         .screen.active { display: flex; }
 
-        /* --- GAME METRICS & TYPOGRAPHY --- */
-        h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 2px; text-align: center; color: var(--accent); margin: 0 0 12px 0; text-shadow: 0 0 8px var(--glow); }
-        p { font-size: 12px; line-height: 1.4; color: var(--text-muted); text-align: center; margin: 0 0 15px 0; }
+        /* --- GAMESPACE TYPOGRAPHY & BUTTONS --- */
+        h2 { font-size: 20px; text-transform: uppercase; letter-spacing: 2.5px; text-align: center; color: var(--accent); margin: 0 0 14px 0; text-shadow: 0 0 10px var(--glow); }
+        p { font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: center; margin: 0 0 18px 0; }
 
         .btn {
-            background: rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
             color: var(--text);
             border: 2px solid var(--border);
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 14px 20px;
+            border-radius: 16px;
             font-weight: bold;
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             cursor: pointer;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .btn:active, .btn.selected {
             background: var(--accent);
-            color: #000;
+            color: #111;
             border-color: var(--accent);
-            box-shadow: 0 0 12px var(--glow);
+            box-shadow: 0 0 15px var(--glow);
+            transform: scale(0.97);
         }
         .btn-danger { border-color: var(--danger); color: var(--danger); }
         .btn-danger:active { background: var(--danger); color: #fff; }
 
-        /* --- NEW STYLISH START SCREEN VIEW --- */
+        /* --- IMMERSIVE RETRO-FUTURISTIC START FRAME --- */
         .start-frame {
             display: flex;
             flex-direction: column;
@@ -146,75 +158,93 @@
         }
         .menu-logo-container {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             position: relative;
-            background: rgba(0,0,0,0.2);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, rgba(0,0,0,0.4) 100%);
+            padding: 30px 20px;
+            border-radius: var(--window-radius);
+            border: 2px solid var(--border);
             width: 100%;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
         }
-        .menu-logo { font-size: 32px; font-weight: 900; color: var(--accent); letter-spacing: 3px; margin: 0; text-shadow: 0 0 10px var(--glow); }
-        .menu-sub { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 2px; margin-top: 5px; }
+        .menu-logo { font-size: 34px; font-weight: 900; color: var(--accent); letter-spacing: 4px; margin: 0; text-shadow: 0 0 12px var(--glow); }
+        .menu-sub { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 3px; margin-top: 8px; font-weight: bold; }
         
         .main-menu-actions { width: 100%; margin-bottom: 25px; }
         
         .theme-selector-tray {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            border: 2px solid var(--border);
+            border-radius: var(--window-radius);
+            padding: 16px;
             width: 100%;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
         .theme-dot-btn {
-            background: #111;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 4px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 4px;
             font-size: 9px;
             color: var(--text);
             cursor: pointer;
             text-align: center;
             text-transform: uppercase;
+            font-weight: bold;
         }
-        .theme-dot-btn:active { border-color: var(--accent); color: var(--accent); }
+        .theme-dot-btn:active { border-color: var(--accent); color: var(--accent); transform: scale(0.95); }
 
-        /* --- CHARACTER SELECT SCREEN MODS --- */
+        /* --- DYNAMIC GRID LAYOUT CHARACTER SELECTION --- */
         .char-scroller-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             overflow-y: auto;
-            max-height: 340px;
-            padding-right: 4px;
+            max-height: 360px;
+            padding: 4px;
             margin-bottom: 15px;
         }
         .char-card {
             background: var(--card-bg);
             border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 18px;
+            padding: 14px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 105px;
+            min-height: 115px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
-        .char-card.selected { border-color: var(--accent); box-shadow: 0 0 12px var(--glow); background: rgba(var(--accent-rgb), 0.05); }
+        .char-card.selected { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 16px var(--glow), inset 0 0 10px rgba(var(--accent-rgb), 0.15); 
+            transform: scale(0.98);
+        }
 
-        /* --- INTERACTIVE PROURAL NODE MAP VIEW --- */
+        /* --- ORGANISED MAP NAVIGATION NETWORK ENGINE --- */
+        .map-info-banner {
+            background: rgba(0,0,0,0.4);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 11px;
+            text-align: center;
+            color: var(--text);
+            line-height: 1.4;
+            box-shadow: inset 0 0 10px #000;
+        }
         .map-scroll-pane {
             flex-grow: 1;
             overflow-y: auto;
-            background: #070504;
+            background: radial-gradient(circle at center, #140e0a 0%, #050302 100%);
             border: 2px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--window-radius);
             position: relative;
-            padding: 25px 0;
             min-height: 380px;
-            box-shadow: inset 0 0 20px #000;
+            box-shadow: inset 0 0 30px #000;
         }
         .map-svg-canvas {
             position: absolute;
@@ -223,85 +253,173 @@
             pointer-events: none;
             z-index: 1;
         }
+        .map-nodes-container-div {
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 40px 0;
+            position: relative;
+            z-index: 2;
+        }
         .map-layer-row {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-bottom: 45px;
+            height: 75px; /* Fixed step distance allocation across all 14 segments */
             position: relative;
-            z-index: 2;
         }
-        .map-layer-row:first-child { margin-bottom: 0; }
         
         .node-circle {
-            width: 46px; height: 46px;
+            width: 48px; height: 48px;
             border-radius: 50%;
             background: var(--card-bg);
             border: 2px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.6);
         }
-        .node-circle.available { border-color: var(--accent); box-shadow: 0 0 14px var(--accent); }
-        .node-circle.resolved { opacity: 0.4; background: #000; border-color: #333; }
+        .node-circle.available { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 16px var(--accent);
+            animation: nodePulse 1.8s infinite alternate;
+        }
+        @keyframes nodePulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px var(--accent); }
+            100% { transform: scale(1.08); box-shadow: 0 0 20px var(--accent); }
+        }
+        .node-circle.resolved { opacity: 0.35; background: #000; border-color: #443322; }
 
         .meeple-pawn {
             position: absolute;
-            top: -18px; left: 50%;
+            top: -20px; left: 50%;
             transform: translateX(-50%);
-            background: #ff3838;
+            background: #ff3333;
             color: #fff;
             font-size: 8px;
             font-weight: bold;
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 20px;
             border: 1px solid #fff;
-            box-shadow: 0 0 10px #ff3838;
+            box-shadow: 0 0 12px #ff3333;
             z-index: 5;
             white-space: nowrap;
             letter-spacing: 0.5px;
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { top: -20px; }
+            100% { top: -24px; }
         }
 
-        /* --- DECK COMPONENT DESIGN ARRAYS --- */
-        .card-scroller { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; width: 100%; }
+        /* --- RADIAL HAND-ARCKING COMBAT INTERFACE --- */
+        .combat-arena-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+        
+        /* Tactical HUD Modules */
+        .vital-readout-strip {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--border);
+            border-radius: 18px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
+        }
+        .vital-block { display: flex; flex-direction: column; gap: 3px; width: 48%; }
+        
+        .hp-bar-outer { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; margin-top: 3px; }
+        .hp-bar-inner { height: 100%; background: var(--accent); width: 100%; transition: width 0.3s ease; }
+        .hp-bar-inner.enemy { background: var(--danger); }
+
+        /* Arc Engine Display Frame Allocation */
+        .hand-arc-container {
+            position: relative;
+            height: 220px;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            overflow: visible;
+        }
+        
         .mobile-card {
-            flex: 0 0 115px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 110px;
             height: 160px;
             background: var(--card-bg);
             border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             font-size: 11px;
-            position: relative;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            transform-origin: bottom center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .mobile-card .c-header { display: flex; justify-content: space-between; font-weight: bold; color: var(--accent); }
-        .mobile-card .c-name { font-weight: bold; margin: 5px 0; font-size: 11px; line-height: 1.1; overflow: hidden; letter-spacing: -0.2px; }
-        .mobile-card .c-body { font-size: 9px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
-        .mobile-card.rarity-RARE { border-color: #a55eea; }
-        .mobile-card.rarity-LEGENDARY { border-color: var(--accent); box-shadow: 0 0 8px var(--glow); }
+        .mobile-card .c-name { font-weight: bold; margin: 5px 0; font-size: 11px; line-height: 1.1; overflow: hidden; text-align: center; color: #fff; }
+        .mobile-card .c-body { font-size: 9px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.3; }
+        .mobile-card.rarity-RARE { border-color: #9b59b6; }
+        .mobile-card.rarity-LEGENDARY { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
+        
+        /* Card Action Interactions feedback states */
+        .mobile-card:active {
+            transform: scale(1.1) translateY(-25px) !important;
+            z-index: 100 !important;
+            border-color: var(--accent);
+        }
 
-        /* --- COMBAT CONTROLLER --- */
-        .combat-hud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .combat-stats-box { background: rgba(0,0,0,0.4); border: 2px solid var(--border); padding: 10px; border-radius: 8px; font-size: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.5); }
+        /* --- DETAILED HOVER TELEMETRY PREVIEW OVERLAY FRAME --- */
+        #inspect-modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+        .inspect-window-box {
+            background: var(--panel);
+            border: 3px solid var(--accent);
+            border-radius: var(--window-radius);
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px var(--glow);
+            animation: modalPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        @keyframes modalPop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* --- BOTTOM PERSISTENT NAVIGATION TABS --- */
         #bottom-navigation-bar {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
-            height: 60px;
-            background: #090605;
-            border-top: 2px solid var(--border);
+            height: 68px;
+            background: linear-gradient(to top, #090605 80%, rgba(0,0,0,0));
+            border-top: 2px dashed var(--border);
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             z-index: 100;
+            padding-bottom: 6px;
         }
         .nav-tab-item {
             display: flex;
@@ -311,15 +429,17 @@
             font-size: 9px;
             color: var(--text-muted);
             cursor: pointer;
-            gap: 4px;
+            gap: 2px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: bold;
         }
-        .nav-tab-item span { font-size: 18px; }
-        .nav-tab-item.active { color: var(--accent); font-weight: bold; background: rgba(255,255,255,0.03); text-shadow: 0 0 6px var(--glow); }
+        .nav-tab-item span { font-size: 20px; transition: transform 0.2s; }
+        .nav-tab-item:active span { transform: scale(1.2); }
+        .nav-tab-item.active { color: var(--accent); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, rgba(0,0,0,0) 70%); text-shadow: 0 0 8px var(--glow); }
 
         .settings-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
-        .rules-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 11px; line-height: 1.4; margin-bottom: 10px; }
+        .rules-card { background: rgba(0,0,0,0.25); border: 2px solid var(--border); padding: 14px; border-radius: 18px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -346,12 +466,12 @@
                     
                     <div class="main-menu-actions">
                         <button class="btn" style="border-color: var(--accent);" onclick="app.switchView('view-charselect')">⚙️ Boot New Chassis Run</button>
-                        <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; background: rgba(var(--accent-rgb), 0.1);">💾 Reconnect Safe Session</button>
+                        <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; background: rgba(var(--accent-rgb), 0.12); border-color: var(--accent);">💾 Reconnect Safe Session</button>
                         <button class="btn btn-danger" onclick="app.resetSystemDefault()">Wipe Storage Cache</button>
                     </div>
 
                     <div class="theme-selector-tray">
-                        <div style="font-size: 10px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 1px;">Matrix Visual Core Scheme</div>
+                        <div style="font-size: 10px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 1.2px;">Terminal Visual Core Scheme</div>
                         <div class="theme-grid">
                             <button class="theme-dot-btn" onclick="app.setThemePalette('default')">🍂 Brass</button>
                             <button class="theme-dot-btn" onclick="app.setThemePalette('neon-oil')">🧪 Bio-Oil</button>
@@ -361,10 +481,10 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: RECONFIGURED AUTOMATON CHARACTER SELECT SCREEN -->
+            <!-- VIEW 2: AUTOMATON CHARACTER SELECT SCREEN -->
             <div id="view-charselect" class="screen">
                 <h2>Select Frame Type</h2>
-                <p>Your hardware assembly program determines starting combat matrices.</p>
+                <p>Your hardware assembly program determines starting combat subroutines.</p>
                 
                 <div class="char-scroller-grid" id="character-injection-grid">
                     <!-- 16 Specialized classes injected via code module safely -->
@@ -379,34 +499,48 @@
             <!-- VIEW 3: CAMPAIGN TRAILS NODE MAP MAP VIEW -->
             <div id="view-map" class="screen">
                 <h2>Sector Map Routing</h2>
-                <p>Engage adjacent connected junctions. Track your active locator pawn.</p>
+                <div class="map-info-banner" id="map-target-node-descriptor">
+                    🎯 Scan Feed: Select an adjacent pulsing node linkage terminal to route system propulsion components.
+                </div>
                 <div class="map-scroll-pane" id="map-scroll-view">
                     <svg class="map-svg-canvas" id="map-connections-svg"></svg>
-                    <div id="map-nodes-render-layer" style="display: flex; flex-direction: column-reverse;"></div>
+                    <div class="map-nodes-container-div" id="map-nodes-render-layer"></div>
                 </div>
             </div>
 
             <!-- VIEW 4: COMBAT ENGINE VIEW SCREEN -->
             <div id="view-combat" class="screen">
-                <div class="combat-hud-grid">
-                    <div class="combat-stats-box">
-                        <strong style="color:var(--accent);" id="cb-player-frame-title">Chassis</strong><br>
-                        HP: <span id="cb-player-hp">50</span><br>
-                        Plating: <span id="cb-player-armor">0</span><br>
-                        AP: <span id="cb-player-ap">3/3</span>
+                <div class="combat-arena-wrapper">
+                    
+                    <div class="vital-readout-strip">
+                        <div class="vital-block">
+                            <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                                <span id="cb-player-frame-title" style="color:var(--accent);">Chassis</span>
+                                <span>⚡ <strong id="cb-player-ap" style="color:var(--accent);">3</strong> AP</span>
+                            </div>
+                            <div style="font-size:10px; margin-top:2px; color:var(--text-muted);">
+                                HP: <span id="cb-player-hp">50</span> | PLT: <span id="cb-player-armor">0</span>
+                            </div>
+                            <div class="hp-bar-outer"><div class="hp-bar-inner" id="bar-player-hp-pc"></div></div>
+                        </div>
+                        <div class="vital-block" style="text-align: right;">
+                            <div style="font-weight:bold; color:var(--danger);" id="cb-enemy-name">Rogue Unit</div>
+                            <div style="font-size:10px; margin-top:2px;">
+                                HP: <span id="cb-enemy-hp">25</span>
+                            </div>
+                            <div class="hp-bar-outer"><div class="hp-bar-inner enemy" id="bar-enemy-hp-pc"></div></div>
+                            <div id="cb-enemy-intent" style="font-weight:800; color:#ffb300; font-size:10px; margin-top:2px; letter-spacing:0.3px;">Intent: STRK 6</div>
+                        </div>
                     </div>
-                    <div class="combat-stats-box">
-                        <strong style="color:var(--danger);" id="cb-enemy-name">Rogue Unit</strong><br>
-                        HP: <span id="cb-enemy-hp">25</span><br>
-                        <span id="cb-enemy-intent" style="font-weight:bold; color:#ffb300;">Intent: Strike 6</span>
+
+                    <div style="font-size:10px; font-weight:bold; text-transform: uppercase; text-align:center; letter-spacing:1px; color:var(--text-muted);">
+                        Tap to deploy • Hold down to inspect data
                     </div>
-                </div>
 
-                <div style="font-size:11px; margin-bottom:5px; font-weight:bold; text-transform: uppercase;">Load Program Action Card:</div>
-                <div class="card-scroller" id="combat-hand-render"></div>
+                    <!-- ARCKED CARDS GRAPHICS CONTAINER FRAME -->
+                    <div class="hand-arc-container" id="combat-hand-arc-frame"></div>
 
-                <div style="margin-top:auto; display:flex; gap:10px;">
-                    <button class="btn" onclick="app.endCombatTurn()" style="flex-grow:1; border-color:var(--accent);">Cycle Engine Turn</button>
+                    <button class="btn" onclick="app.endCombatTurn()" style="border-color:var(--accent); margin-bottom: 0;">Cycle Engine Turn</button>
                 </div>
             </div>
 
@@ -435,17 +569,17 @@
             <!-- VIEW 7: CHARACTER TAB SHEETS OVERLAY VIEW -->
             <div id="view-character" class="screen">
                 <h2>Chassis Engineering Data</h2>
-                <div class="char-card" style="text-align:center; min-height: auto;">
-                    <div style="font-size:28px;" id="sheet-avatar">🤖</div>
+                <div class="char-card" style="text-align:center; min-height: auto; border-radius: 24px;">
+                    <div style="font-size:32px;" id="sheet-avatar">🤖</div>
                     <div style="font-size:18px; font-weight:bold; margin-top:5px; text-transform: uppercase;" id="sheet-class-title">Unit</div>
                     <div style="font-size:11px; color:var(--accent); margin-top:2px;">Software Adaptation Level <span id="sheet-level">1</span></div>
                 </div>
 
-                <div class="combat-stats-box" style="margin-top:12px;">
-                    <strong>Mounted Deck Box Model:</strong><br>
+                <div class="rules-card" style="margin-top:14px; border-radius: 24px;">
+                    <strong style="color:var(--accent)">Mounted Deck Box Model:</strong><br>
                     <span id="sheet-box-name">Standard Frame Pouch</span><br>
                     Safety Limit Threshold: <span id="sheet-box-cap">5 Cards</span><br>
-                    <small id="sheet-box-perk" style="color:var(--text-muted);">No modifications detected.</small>
+                    <small id="sheet-box-perk" style="color:var(--text-muted); display:block; margin-top:4px;">No modifications detected.</small>
                 </div>
 
                 <div style="margin-top:auto;">
@@ -481,6 +615,13 @@
 
         </div>
 
+        <!-- TELEMETRY REVEAL MODAL FRAME -->
+        <div id="inspect-modal-overlay" onclick="app.closeInspectTelemetryModal()">
+            <div class="inspect-window-box" id="inspect-modal-content-box">
+                <!-- Data populated dynamically via long-press hook -->
+            </div>
+        </div>
+
         <!-- BOTTOM NAVIGATION GLOBAL FOOTER CONTROLLER TABS BAR -->
         <div id="bottom-navigation-bar" style="display:none;">
             <div class="nav-tab-item active" id="tab-map" onclick="app.handleTabNavigation('view-map', 'tab-map')"><span>🗺️</span>Trail</div>
@@ -502,7 +643,7 @@
             { name: 'Bar Fighter', icon: '👊', desc: 'Reinforced hydraulic heavy chassis optimized for brutal, close-quarters metal impact.' },
             { name: 'Undertaker', icon: '⚰️', desc: 'Recycles scrap plating components from deactivated units to patch internal hulls.' },
             { name: 'Rangler', icon: '🤠', desc: 'Deploys localized electro-magnetic tethers to lock down rogue machines.' },
-            { name: 'Sheriff', icon: '⭐', desc: 'Hosts global targeting drivers to compute defensive lock downs and protocols.' },
+            { name: 'Sheriff', icon: '⭐', desc: 'Hosts global targeting drivers to compute defensive lockdowns and protocols.' },
             { name: 'Harlot', icon: '💋', desc: 'Emits disruptive visual sensor frequencies to spoof target automation hardware.' },
             { name: 'Snake Oil Salesman', icon: '🧪', desc: 'Injects sub-optimal coolant additives to corrosive enemy logic blocks.' },
             { name: 'Preacher', icon: '✝️', desc: 'Broadcasts wide-band carrier waves that harmonize ally network synchronization metrics.' },
@@ -520,7 +661,9 @@
         class WeirdWestEngine {
             constructor() {
                 this.selectedClass = 'Gambler';
-                this.saveKey = 'WeirdWestMobile_SaveSession_v2';
+                this.saveKey = 'WeirdWestMobile_SaveSession_v3';
+                this.inspectTimeoutHook = null;
+                this.isInspectingTriggered = false;
                 
                 this.state = {
                     level: 1, gold: 60, hp: 50, maxHp: 50,
@@ -549,7 +692,7 @@
                     card.id = `char_unit_type_${c.name.replace(/\s+/g, '')}`;
                     card.innerHTML = `
                         <div style="font-weight:bold; color:var(--accent); font-size:12px;">${c.icon} ${c.name} Unit</div>
-                        <div style="font-size:10px; margin-top:4px; line-height:1.2; color:var(--text-muted);">${c.desc}</div>
+                        <div style="font-size:10px; margin-top:4px; line-height:1.3; color:var(--text-muted);">${c.desc}</div>
                     `;
                     card.onclick = () => this.selectCharacterClass(c.name);
                     targetGrid.appendChild(card);
@@ -558,28 +701,18 @@
 
             checkSavedSessionAvailability() {
                 const stored = localStorage.getItem(this.saveKey);
-                if (stored) {
-                    document.getElementById('btn-continue-run').style.display = 'block';
-                } else {
-                    document.getElementById('btn-continue-run').style.display = 'none';
-                }
+                document.getElementById('btn-continue-run').style.display = stored ? 'block' : 'none';
             }
 
             switchView(viewId) {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById(viewId).classList.add('active');
-                
-                const navbar = document.getElementById('bottom-navigation-bar');
-                if (viewId === 'view-start' || viewId === 'view-charselect') {
-                    navbar.style.display = 'none';
-                } else {
-                    navbar.style.display = 'grid';
-                }
+                document.getElementById('bottom-navigation-bar').style.display = 
+                    (viewId === 'view-start' || viewId === 'view-charselect') ? 'none' : 'grid';
             }
 
             handleTabNavigation(viewId, tabId) {
-                const combatScreenActive = document.getElementById('view-combat').classList.contains('active');
-                if (combatScreenActive && viewId !== 'view-combat') {
+                if (document.getElementById('view-combat').classList.contains('active') && viewId !== 'view-combat') {
                     alert("Emergency Warning: System cannot decouple from live combat encounter fields!");
                     return;
                 }
@@ -607,9 +740,7 @@
                 this.selectedClass = className;
                 this.state.characterClass = className;
                 document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
-                
-                const cleanId = `char_unit_type_${className.replace(/\s+/g, '')}`;
-                const targetCard = document.getElementById(cleanId);
+                const targetCard = document.getElementById(`char_unit_type_${className.replace(/\s+/g, '')}`);
                 if(targetCard) targetCard.classList.add('selected');
             }
 
@@ -618,8 +749,8 @@
                 this.state.activeBoxId = 'b1';
                 
                 this.state.activeDeck = [
-                    { id: 'str_1', name: 'Laser Carbine Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
-                    { id: 'str_2', name: 'Laser Carbine Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
+                    { id: 'str_1', name: 'Laser Beam Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
+                    { id: 'str_2', name: 'Laser Beam Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
                     { id: 'str_3', name: 'Deploy Iron Plating', rarity: 'BASIC', cost: 1, effect: 'Gain 5 PLATING.' },
                     { id: 'str_4', name: 'Deploy Iron Plating', rarity: 'BASIC', cost: 1, effect: 'Gain 5 PLATING.' },
                     { id: 'str_5', name: 'Coolant Purge', rarity: 'BASIC', cost: 1, effect: 'Heal 4 HP.' }
@@ -630,9 +761,9 @@
                     { id: 'safe_2', name: 'Heavy Titanium Wall', rarity: 'RARE', cost: 2, effect: 'Gain 12 PLATING.' }
                 ];
 
-                this.generateProceduralMobileMap();
                 this.state.currentMeepleNodeId = null;
                 this.state.currentDepth = -1;
+                this.generateProceduralMobileMap();
 
                 this.saveCurrentSessionToDisk();
                 this.updateGlobalHudDisplay();
@@ -660,6 +791,7 @@
                 document.getElementById('cb-player-frame-title').innerText = `${matchedClass.name} Bot`;
             }
 
+            // --- 14 DEPTH LAYER FULL PROCEDURAL MAP DATA ARRAYS GENERATOR ---
             generateProceduralMobileMap() {
                 this.state.mapNodes = [];
                 const depthTarget = 14; 
@@ -670,13 +802,26 @@
                     
                     for (let l = 0; l < nodesInThisRow; l++) {
                         let type = 'BASIC_BATTLE';
-                        if (d === 0) type = 'CAMPFIRE';
-                        else if (d === depthTarget - 1) type = 'ELITE_BATTLE';
-                        else {
+                        let summary = 'A hostile rogue machine blocks transport infrastructure corridors.';
+                        
+                        if (d === 0) {
+                            type = 'CAMPFIRE';
+                            summary = 'Safe-zone diagnostic engine maintenance terminal. Restructure memory files safely here.';
+                        } else if (d === depthTarget - 1) {
+                            type = 'ELITE_BATTLE';
+                            summary = 'Warning: Over-clocked Mech-Behemoth guarding exit gateway interface protocols.';
+                        } else {
                             const r = Math.random();
-                            if (r < 0.20) type = 'CAMPFIRE';
-                            else if (r < 0.35) type = 'GENERAL_STORE';
-                            else if (r < 0.50) type = 'ELITE_BATTLE';
+                            if (r < 0.22) {
+                                type = 'CAMPFIRE';
+                                summary = 'Safe-zone diagnostic engine maintenance terminal. Restructure memory files safely here.';
+                            } else if (r < 0.40) {
+                                type = 'GENERAL_STORE';
+                                summary = 'Fueling Port Retail Vendor. Exchange scrap assets for advanced storage modules.';
+                            } else if (r < 0.55) {
+                                type = 'ELITE_BATTLE';
+                                summary = 'High concentration of weaponised data nodes detected. Threat metrics: Severe.';
+                            }
                         }
 
                         this.state.mapNodes.push({
@@ -685,12 +830,14 @@
                             laneIndex: l,
                             totalLanes: nodesInThisRow,
                             type: type,
+                            desc: summary,
                             resolved: false,
                             connections: []
                         });
                     }
                 }
 
+                // UNIFIED LAYER PATH-LINK ENGINE ACROSS ALL 14 TIERS FIXED
                 for (let d = 0; d < depthTarget - 1; d++) {
                     const currentRows = this.state.mapNodes.filter(n => n.depthIndex === d);
                     const nextRows = this.state.mapNodes.filter(n => n.depthIndex === d + 1);
@@ -711,6 +858,7 @@
                 const layerGroupTarget = document.getElementById('map-nodes-render-layer');
                 layerGroupTarget.innerHTML = '';
 
+                // Build mapping arrays using structured column layouts
                 for (let d = 0; d < 14; d++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'map-layer-row';
@@ -731,16 +879,30 @@
                         if (node.resolved) circle.classList.add('resolved');
 
                         const isValidStart = (this.state.currentDepth === -1 && node.depthIndex === 0);
+                        let isLinkable = false;
+                        
                         if (this.state.currentMeepleNodeId) {
                             const currNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
                             if (currNode && currNode.connections.includes(node.id) && node.depthIndex === this.state.currentDepth + 1) {
                                 circle.classList.add('available');
+                                isLinkable = true;
                             }
                         } else if (isValidStart) {
                             circle.classList.add('available');
+                            isLinkable = true;
                         }
 
-                        circle.onclick = () => this.processMeepleMovementRouting(node);
+                        // Attach hover logs updating structural scanning readout banners
+                        circle.onmouseenter = () => this.displayNodeContextFeed(node);
+                        
+                        circle.onclick = () => {
+                            this.displayNodeContextFeed(node);
+                            if (isLinkable || this.state.currentMeepleNodeId === node.id) {
+                                this.processMeepleMovementRouting(node);
+                            } else {
+                                document.getElementById('map-target-node-descriptor').innerText = `⚠️ Link Unavailable: ${node.desc}`;
+                            }
+                        };
 
                         if (this.state.currentMeepleNodeId === node.id) {
                             const meepleToken = document.createElement('div');
@@ -755,7 +917,14 @@
                     layerGroupTarget.appendChild(rowDiv);
                 }
 
-                setTimeout(() => this.drawVectorConnectionLinesMap(), 100);
+                // Recalculate SVG vectors after dimensions scale
+                setTimeout(() => this.drawVectorConnectionLinesMap(), 150);
+            }
+
+            displayNodeContextFeed(node) {
+                const typesMapLabels = { 'CAMPFIRE': '🔥 MAINTENANCE POINT', 'GENERAL_STORE': '🏪 RETAIL VENDOR PORT', 'BASIC_BATTLE': '⚔️ ROGUE MACHINE OUTPOST', 'ELITE_BATTLE': '💀 BEHEMOTH CORE' };
+                const label = typesMapLabels[node.type] || 'NODE TERMINAL';
+                document.getElementById('map-target-node-descriptor').innerHTML = `<strong>${label} (Sector Layer ${node.depthIndex + 1})</strong><br>${node.desc}`;
             }
 
             drawVectorConnectionLinesMap() {
@@ -768,6 +937,7 @@
                 svg.setAttribute('width', paneRect.width);
                 svg.setAttribute('height', scrollPane.scrollHeight);
 
+                // Run tracing sweeps spanning all 14 programmatic levels
                 this.state.mapNodes.forEach(currNode => {
                     const currEl = document.getElementById(`ui_node_id_${currNode.id}`);
                     if (!currEl) return;
@@ -787,9 +957,16 @@
                         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                         line.setAttribute('x1', x1); line.setAttribute('y1', y1);
                         line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-                        line.setAttribute('stroke', currNode.resolved ? 'var(--accent)' : 'var(--border)');
-                        line.setAttribute('stroke-width', '2');
-                        if (!currNode.resolved) line.setAttribute('stroke-dasharray', '4,4');
+                        
+                        // Style traces based on completion metrics
+                        if (currNode.resolved) {
+                            line.setAttribute('stroke', 'var(--accent)');
+                            line.setAttribute('stroke-width', '2.5');
+                        } else {
+                            line.setAttribute('stroke', 'var(--border)');
+                            line.setAttribute('stroke-width', '1.5');
+                            line.setAttribute('stroke-dasharray', '5,5');
+                        }
 
                         svg.appendChild(line);
                     });
@@ -807,10 +984,7 @@
                     }
                 }
 
-                if (!checkValid) {
-                    alert("Routing Error: Selected structural link coordinates are unavailable.");
-                    return;
-                }
+                if (!checkValid) return;
 
                 if (this.state.currentMeepleNodeId) {
                     const prevNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
@@ -835,6 +1009,7 @@
                 }, 250);
             }
 
+            // --- RADIAL COMBAT HAND ARC ENGINE & TOUCH TELEMETRY INTERFACES ---
             launchCombatLoopEngine(isElite) {
                 this.switchView('view-combat');
                 const enemyScaleFactor = 1 + (this.state.level * 0.2);
@@ -851,7 +1026,7 @@
                 this.combat.hand = [];
 
                 this.generateEnemyIntentAction();
-                this.drawCardsToCombatHand(3);
+                this.drawCardsToCombatHand(4); // Draw expanded deck pool to amplify visual layout arcs
                 this.renderCombatArenaUi();
             }
 
@@ -871,19 +1046,103 @@
             }
 
             renderCombatArenaUi() {
-                document.getElementById('cb-player-hp').innerText = `${this.state.hp}/${this.state.maxHp}`;
+                // Handle stat displays
+                document.getElementById('cb-player-hp').innerText = this.state.hp;
                 document.getElementById('cb-player-armor').innerText = this.combat.playerArmor;
                 document.getElementById('cb-player-ap').innerText = this.combat.playerAp;
-                document.getElementById('cb-enemy-hp').innerText = `${this.combat.enemyHp}/${this.combat.enemyMaxHp}`;
+                document.getElementById('cb-enemy-hp').innerText = this.combat.enemyHp;
 
-                const handScroller = document.getElementById('combat-hand-render');
-                handScroller.innerHTML = '';
+                // Render matching HUD graphic components
+                const pPc = (this.state.hp / this.state.maxHp) * 100;
+                const ePc = (this.combat.enemyHp / this.combat.enemyMaxHp) * 100;
+                document.getElementById('bar-player-hp-pc').style.width = `${pPc}%`;
+                document.getElementById('bar-enemy-hp-pc').style.width = `${ePc}%`;
 
+                const arcContainer = document.getElementById('combat-hand-arc-frame');
+                arcContainer.innerHTML = '';
+
+                const totalCards = this.combat.hand.length;
+                
+                // Math conversion variables mapping cards along radial fan trajectories
                 this.combat.hand.forEach((card, idx) => {
                     const cardUi = this.generateMobileCardComponent(card);
-                    cardUi.onclick = () => this.executeCardResolution(idx);
-                    handScroller.appendChild(cardUi);
+                    
+                    // Arc math parameters for mobile viewports
+                    let angle = 0;
+                    let rotateDeg = 0;
+                    let yOffset = 0;
+                    let xOffset = 0;
+
+                    if (totalCards > 1) {
+                        const mid = (totalCards - 1) / 2;
+                        angle = (idx - mid) * (40 / (totalCards - 1)); // Bounds arc rotation sweep
+                        rotateDeg = angle;
+                        yOffset = Math.abs(idx - mid) * 6; // Sagittal depth displacement mapping
+                        xOffset = (idx - mid) * 28; // Spread distribution across screen coordinates
+                    }
+
+                    cardUi.style.transform = `translateX(calc(-50% + ${xOffset}px)) translateY(${yOffset}px) rotate(${rotateDeg}deg)`;
+                    cardUi.style.zIndex = idx + 10;
+
+                    // Bind interactive touch listeners to manage previews and taps
+                    this.attachInteractiveTouchListeners(cardUi, card, idx);
+                    
+                    arcContainer.appendChild(cardUi);
                 });
+            }
+
+            attachInteractiveTouchListeners(element, card, idx) {
+                // Clear any leftover interaction variables
+                const clearHooks = () => {
+                    if (this.inspectTimeoutHook) clearTimeout(this.inspectTimeoutHook);
+                };
+
+                // Trigger item modal if user maintains touch down parameters for 450ms
+                const startHook = (e) => {
+                    this.isInspectingTriggered = false;
+                    clearHooks();
+                    this.inspectTimeoutHook = setTimeout(() => {
+                        this.isInspectingTriggered = true;
+                        this.openInspectTelemetryModal(card);
+                    }, 450);
+                };
+
+                const endHook = (e) => {
+                    clearHooks();
+                    if (!this.isInspectingTriggered) {
+                        // Treat as tap if no long press was registered
+                        this.executeCardResolution(idx);
+                    }
+                    this.isInspectingTriggered = false;
+                };
+
+                element.addEventListener('touchstart', startHook, { passive: true });
+                element.addEventListener('touchend', endHook, { passive: true });
+                
+                // Mirror mouse hooks to allow desktop browser processing fallback
+                element.addEventListener('mousedown', startHook);
+                element.addEventListener('mouseup', endHook);
+                element.addEventListener('mouseleave', clearHooks);
+            }
+
+            openInspectTelemetryModal(card) {
+                const overlay = document.getElementById('inspect-modal-overlay');
+                const box = document.getElementById('inspect-modal-content-box');
+                
+                box.innerHTML = `
+                    <div style="font-size: 11px; font-weight: bold; color: var(--accent); letter-spacing: 1px; text-transform: uppercase;">📡 SUBROUTINE INSPECT FEED</div>
+                    <div style="font-size: 20px; font-weight: bold; margin: 12px 0 6px 0; color: #fff;">${card.name}</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px;">Memory Bandwidth: ${card.cost} AP • Tier: ${card.rarity}</div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid var(--border); font-size: 13px; line-height: 1.4;">
+                        ${card.effect}
+                    </div>
+                    <div style="font-size: 10px; margin-top: 16px; color: var(--accent); opacity: 0.8;">[ Tap anywhere to return to field ]</div>
+                `;
+                overlay.style.display = 'flex';
+            }
+
+            closeInspectTelemetryModal() {
+                document.getElementById('inspect-modal-overlay').style.display = 'none';
             }
 
             executeCardResolution(idx) {
@@ -952,7 +1211,7 @@
                 this.combat.discard.push(...this.combat.hand);
                 this.combat.hand = [];
                 this.combat.playerAp = 3;
-                this.drawCardsToCombatHand(3);
+                this.drawCardsToCombatHand(4);
                 this.generateEnemyIntentAction();
                 this.renderCombatArenaUi();
                 this.updateGlobalHudDisplay();
@@ -1008,13 +1267,14 @@
                     row.className = 'char-card';
                     row.style.borderColor = 'var(--accent)';
                     row.style.minHeight = 'auto';
+                    row.style.borderRadius = '20px';
                     row.innerHTML = `
                         <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent);">
                             <span>💼 ${box.name}</span>
                             <span style="color:#fff;">🪙 ${box.cost} Oil</span>
                         </div>
                         <div style="font-size:10px; margin-top:5px; color:var(--text-muted);">Allocates ${box.capacity} compilation files. <br><strong>Mod:</strong> ${box.desc}</div>
-                        <button class="btn" style="margin-top:8px; padding:6px; font-size:10px;">Buy Integration</button>
+                        <button class="btn" style="margin-top:10px; padding:8px; font-size:10px; border-radius:12px;">Buy Integration</button>
                     `;
 
                     row.querySelector('button').onclick = () => {
@@ -1040,7 +1300,6 @@
                 this.saveCurrentSessionToDisk();
                 this.updateGlobalHudDisplay();
                 this.handleTabNavigation('view-map', 'tab-map');
-                setTimeout(() => this.drawVectorConnectionLinesMap(), 50);
             }
 
             saveCurrentSessionToDisk() {
@@ -1054,7 +1313,6 @@
                     this.state = JSON.parse(raw);
                     this.updateGlobalHudDisplay();
                     this.handleTabNavigation('view-map', 'tab-map');
-                    setTimeout(() => this.drawVectorConnectionLinesMap(), 100);
                 }
             }
 
@@ -1066,7 +1324,7 @@
 
             resetSystemDefault() {
                 localStorage.removeItem(this.saveKey);
-                alert("Local system sector caches thoroughly expunged.");
+                alert("Local system caches thoroughly expunged.");
                 location.reload();
             }
 
