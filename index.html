@@ -2,724 +2,550 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silicon Frontier: Blood & Rust v10.2</title>
+    <title>Weird West Deckbuilder v1.3</title>
     <style>
-        /* DESIGN SYSTEM CONFIGURATION ROOT */
         :root {
-            --bg-dark: #070504;
-            --panel-deep: #16100d;
-            --panel-brighter: #2c201a;
-            --neon-amber: #ff6b35;
-            --neon-cyan: #00f5d4;
-            --neon-gold: #fee440;
-            --neon-purple: #9b5de5;
-            --neon-red: #ff0054;
-            --text-light: #f7ede2;
-            --glow: 0 0 12px rgba(255, 107, 53, 0.35);
+            --bg-dark: #120d0a;
+            --panel-bg: #211914;
+            --accent-gold: #e5a93b;
+            --text-light: #ece4db;
+            --border-color: #543f2e;
+            --danger-red: #9e2a2b;
         }
 
-        body.theme-cyber {
-            --bg-dark: #040112; --panel-deep: #16002c; --panel-brighter: #390066;
-            --neon-amber: #ec38bc; --neon-cyan: #00f5d4; --neon-gold: #fde24f;
-            --glow: 0 0 12px rgba(236, 56, 188, 0.4);
-        }
-        body.theme-toxic {
-            --bg-dark: #080c04; --panel-deep: #141c0e; --panel-brighter: #2a3b1d;
-            --neon-amber: #70e000; --neon-cyan: #ccff33; --neon-gold: #38b000;
-            --glow: 0 0 12px rgba(112, 224, 0, 0.4);
-        }
-        body.theme-obsidian {
-            --bg-dark: #000000; --panel-deep: #111111; --panel-brighter: #2a2a2a;
-            --neon-amber: #ffffff; --neon-cyan: #999999; --neon-gold: #cccccc;
-            --glow: 0 0 12px rgba(255,255,255,0.2);
-        }
-        body.theme-crimson {
-            --bg-dark: #120000; --panel-deep: #260000; --panel-brighter: #4d0000;
-            --neon-amber: #ff3333; --neon-cyan: #ff6666; --neon-gold: #ffcc00;
-            --glow: 0 0 12px rgba(255, 51, 51, 0.4);
-        }
-
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            /* FIXES SYSTEM HIGHLIGHT SELECTING ON PHONES */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        
         body {
-            background-color: var(--bg-dark); color: var(--text-light);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden;
-            background-image: radial-gradient(circle at 50% 15%, var(--panel-deep) 0%, var(--bg-dark) 75%);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .app-window {
-            width: 100%; max-width: 480px; height: calc(100vh - 60px);
-            background-color: rgba(22, 16, 13, 0.85); border: 2px solid var(--neon-amber);
-            box-shadow: var(--glow); padding: 16px; overflow-y: auto; position: relative;
-            backdrop-filter: blur(8px); display: flex; flex-direction: column;
+        #app-frame {
+            width: 1050px;
+            background: var(--panel-bg);
+            border: 3px double var(--accent-gold);
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.8);
         }
 
-        .screen-view { display: none; width: 100%; height: 100%; animation: slideIn 0.2s cubic-bezier(0.1, 0.8, 0.3, 1); }
-        .screen-view.active { display: flex; flex-direction: column; }
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { display: none; min-height: 480px; }
+        .screen.active { display: block; }
 
-        h1 { font-size: 18px; color: var(--neon-amber); text-align: center; margin: 0 0 14px 0; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-shadow: var(--glow); }
-        h3 { font-size: 13px; text-align: center; margin: 12px 0 6px 0; color: #fff; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        h4 { font-size: 13px; margin: 2px 0; color: var(--neon-cyan); letter-spacing: 0.5px; }
-        p { font-size: 11.5px; line-height: 1.5; margin: 4px 0; color: #d6c6bc; }
+        /* Dynamic Map Trails Grid View */
+        .map-canvas-container {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #0d0907;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .map-depth-row {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 6px 0;
+            position: relative;
+        }
+
+        .node-btn {
+            background: #2e221a;
+            color: var(--text-light);
+            border: 2px solid var(--border-color);
+            padding: 10px 14px;
+            cursor: pointer;
+            font-family: inherit;
+            border-radius: 4px;
+            position: relative;
+            font-size: 0.85em;
+        }
+
+        .node-btn.available {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(229, 169, 59, 0.4);
+        }
+
+        /* The Player Meeple Element Styling */
+        .meeple-token {
+            position: absolute;
+            top: -12px;
+            right: -10px;
+            background: #ff0055;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 50%;
+            border: 1px solid white;
+            box-shadow: 0 0 8px #ff0055;
+            z-index: 10;
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-4px); }
+        }
+
+        /* Items Layout Utility Classes */
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .game-card {
+            width: 150px;
+            height: 200px;
+            background: #2b2017;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .game-card:hover { border-color: var(--accent-gold); }
+        .rarity-BASIC { border-color: #7d6b5c; }
+        .rarity-COMMON { border-color: #3a7bd5; }
+        .rarity-RARE { border-color: #8e44ad; }
+        .rarity-LEGENDARY { border-color: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
+
+        .combat-arena {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel-box {
+            border: 2px solid var(--border-color);
+            background: #1a130f;
+            padding: 15px;
+            border-radius: 4px;
+        }
 
         .btn {
-            background: linear-gradient(135deg, var(--neon-amber) 0%, #d44d1c 100%); color: #000; border: none; padding: 12px 14px;
-            font-weight: 800; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 8px;
-            margin: 6px 0; width: 100%; display: block; text-transform: uppercase; letter-spacing: 1.2px;
-            box-shadow: 0 3px 0px rgba(0,0,0,0.4); text-align: center; position: relative; transition: all 0.1s;
+            background: #c28728;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
         }
-        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0px rgba(0,0,0,0.4); filter: brightness(1.2); }
-        .btn-danger { background: linear-gradient(135deg, var(--neon-red) 0%, #b3003b 100%); color: white; }
-        .btn-blue { background: linear-gradient(135deg, var(--neon-cyan) 0%, #00b39b 100%); color: black; }
-        .btn-gold { background: linear-gradient(135deg, var(--neon-gold) 0%, #cca300 100%); color: black; }
-        .btn-outline { background: transparent; color: var(--neon-amber); border: 1px solid var(--neon-amber); box-shadow: none; }
-        .btn-outline:active { background: rgba(255, 107, 53, 0.1); color: #fff; }
-
-        .top-hud {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: rgba(0,0,0,0.6);
-            padding: 10px 6px; border-radius: 10px; margin-bottom: 14px; font-size: 9px;
-            border: 1px solid var(--panel-brighter); text-align: center; font-weight: 600;
-        }
-        .top-hud div:not(:last-child) { border-right: 1px solid var(--panel-brighter); }
-
-        .tab-nav-bar {
-            position: fixed; bottom: 0; width: 100%; max-width: 480px; height: 60px;
-            background: #000; border-top: 2px solid var(--neon-amber); display: grid;
-            grid-template-columns: repeat(3, 1fr); z-index: 999; box-shadow: 0 -4px 15px rgba(0,0,0,0.6);
-        }
-        .nav-tab {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #7c6d64; font-size: 9.5px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; transition: color 0.15s;
-        }
-        .nav-tab.active { color: var(--neon-cyan); background: var(--panel-deep); text-shadow: 0 0 6px rgba(0,245,212,0.3); }
-
-        .title-screen-logo { text-align: center; margin: 40px 0 20px 0; font-size: 26px; font-weight: 900; color: var(--neon-amber); letter-spacing: 3px; text-shadow: var(--glow); line-height: 1.1; }
-        .title-backdrop { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--panel-brighter); padding: 20px; border-radius: 12px; text-align: center; }
-
-        .chassis-row { border: 1px solid var(--panel-brighter); background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
-        .chassis-row:hover { border-color: var(--neon-cyan); background: var(--panel-brighter); }
-
-        .region-banner { background: #000; padding: 10px; text-align: center; font-weight: 800; font-size: 11px; margin-bottom: 14px; border-radius: 6px; color: var(--neon-gold); border: 1px solid var(--panel-brighter); letter-spacing: 1px; }
-        .map-timeline { display: flex; flex-direction: column; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 10px; border-radius: 12px; border: 1px solid var(--panel-brighter); }
-        .map-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
-        .map-node {
-            width: 56px; height: 56px; border-radius: 50%; background: var(--panel-deep);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 18px; border: 2px solid var(--panel-brighter); cursor: pointer; position: relative; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .map-node.active { border-color: var(--neon-cyan); background: var(--panel-brighter); box-shadow: 0 0 14px rgba(0,245,212,0.4); }
-        .map-node.cleared { opacity: 0.35; filter: grayscale(50%); }
-        .map-node.locked { opacity: 0.15; pointer-events: none; }
-        .node-tag { position: absolute; bottom: -16px; font-size: 8px; color: #b5a8a0; font-weight: 700; white-space: nowrap; text-transform: uppercase; }
-
-        .combat-arena { display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: space-between; }
-        .combatant-capsule { background: rgba(0,0,0,0.2); padding: 6px 0; position: relative; }
-        
-        .meter { background: #000; height: 12px; border-radius: 6px; overflow: hidden; margin: 4px 0; border: 1px solid var(--panel-brighter); }
-        .meter-fill-hp { background: linear-gradient(90deg, var(--neon-red), #c7003e); height: 100%; width: 100%; transition: width 0.2s; }
-        .meter-fill-en { background: linear-gradient(90deg, var(--neon-cyan), #00b4d8); height: 100%; width: 100%; transition: width 0.2s; }
-        
-        .combat-log { background: #000; height: 80px; overflow-y: auto; padding: 10px; font-family: 'Courier New', monospace; font-size: 10px; color: var(--neon-cyan); border-radius: 8px; border: 1px solid var(--panel-brighter); margin: 4px 0; line-height: 1.3; }
-        .deck-view-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 20px; }
-
-        .combat-hand-fan-container {
-            position: relative; height: 160px; margin-top: 10px; margin-bottom: 5px;
-            display: flex; justify-content: center; width: 100%; overflow: visible;
-        }
-        
-        /* CARD COMPONENT - FIXES OVERLAPPING AND SIZE THRESHOLDS */
-        .card-item {
-            background: linear-gradient(145deg, #140f0d 0%, #000000 100%); border: 2px solid #55443d; border-radius: 12px; padding: 8px; 
-            width: 100px; height: 145px; display: flex; flex-direction: column; justify-content: space-between; 
-            position: absolute; text-align: left; transition: transform 0.15s ease-out, top 0.15s ease-out, box-shadow 0.15s; cursor: pointer;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.6); transform-origin: bottom center;
-        }
-        .card-item.card-attack { border-color: var(--neon-red); box-shadow: 0 2px 8px rgba(255, 0, 84, 0.15); }
-        .card-item.card-defense { border-color: var(--neon-cyan); box-shadow: 0 2px 8px rgba(0, 245, 212, 0.15); }
-        .card-item.card-utility { border-color: var(--neon-gold); box-shadow: 0 2px 8px rgba(254, 228, 100, 0.15); }
-        
-        /* TOP ROW CONTAINER FOR INTERNAL COMPONENT SPACING */
-        .card-header-wrapper {
-            display: flex; justify-content: space-between; align-items: center;
-            width: 100%; border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 4px; margin-bottom: 4px;
-        }
-
-        .card-item .badge { 
-            background: #fff; color: #000; border-radius: 50%; 
-            width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; 
-            font-size: 10px; font-weight: 900; box-shadow: 0 1px 3px rgba(0,0,0,0.4); flex-shrink: 0;
-        }
-        .card-item .title { 
-            font-weight: 800; color: #fff; font-size: 8.5px; 
-            text-transform: uppercase; letter-spacing: 0.2px; text-align: right;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; margin-left: 4px;
-        }
-        
-        /* DYNAMIC BODY TEXT - ADJUSTED TO PREVENT WRAP OVERLAPPING */
-        .card-item .body-text { 
-            font-size: 8px; color: #c4b5ac; line-height: 1.25; 
-            flex-grow: 1; display: block; margin-top: 2px; font-weight: 500;
-            overflow: hidden; text-overflow: ellipsis;
-            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
-        }
-        .card-item .type-tag { font-size: 7px; text-transform: uppercase; font-weight: 700; color: #7c6d64; text-align: right; margin-top: auto; }
-
-        .theme-select-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px; }
-        .theme-dot { font-size: 9px; padding: 6px; text-align: center; background: #000; border: 1px solid var(--panel-brighter); border-radius: 6px; cursor: pointer; color: #fff; z-index: 10; font-weight: bold; }
-        
-        .encounter-overlay { background: rgba(18, 12, 9, 0.96); border: 2px solid var(--neon-gold); padding: 18px; border-radius: 14px; margin-top: 8px; position: relative; z-index: 20; box-shadow: 0 0 25px rgba(254, 228, 64, 0.25); backdrop-filter: blur(10px); }
-        .dialogue-text { font-style: italic; font-size: 12px; color: #f2e4dc; padding: 12px; background: rgba(0,0,0,0.4); border-left: 4px solid var(--neon-gold); margin-bottom: 14px; line-height: 1.5; border-radius: 0 8px 8px 0; }
-        .dialogue-options-box { display: flex; flex-direction: column; gap: 8px; }
-
-        .inspect-card-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); z-index: 10000; display: none;
-            align-items: center; justify-content: center; flex-direction: column;
-            backdrop-filter: blur(12px); animation: fadeInOverlay 0.15s ease-out;
-        }
-        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-
-        .large-card-display {
-            background: linear-gradient(145deg, #1c1512 0%, #050404 100%);
-            width: 240px; height: 340px; border-radius: 20px; border: 4px solid #fff;
-            padding: 20px; display: flex; flex-direction: column; justify-content: space-between;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.8); position: relative;
-            transform: scale(1); animation: popCard 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        }
-        @keyframes popCard { from { transform: scale(0.85); } to { transform: scale(1); } }
-
-        .large-card-display .large-badge { position: absolute; top: -12px; left: -12px; background: #fff; color: #000; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; border: 2px solid currentColor; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
-        .large-card-display .large-title { font-size: 16px; font-weight: 800; color: #fff; border-bottom: 2px solid var(--panel-brighter); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; margin-top: 10px; }
-        .large-card-display .large-body { font-size: 13px; color: #ebdcd3; line-height: 1.5; text-align: center; padding: 20px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
-        .large-card-display .large-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; text-align: center; color: #8c7c73; }
-
-        .hint-text-hold { text-align: center; font-size: 9px; color: #8c7c73; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; }
+        .btn:hover { background: var(--accent-gold); }
+        .btn-danger { background: var(--danger-red); color: white;}
     </style>
 </head>
 <body>
 
-    <div class="app-window">
-        <div id="central-hud" class="top-hud hidden">
-            <div>POSSE:<br><b id="hud-char-name" style="color:var(--neon-cyan);">---</b></div>
-            <div>GOLD:<br><b id="hud-gold-val" style="color:var(--neon-gold);">0g</b></div>
-            <div>TRAIL:<br><b id="hud-stage-val" style="color:var(--neon-amber);">Row 1</b></div>
-            <div>STAGE:<br><b id="hud-level-val" style="color:var(--neon-purple);">LV1</b></div>
+    <div id="app-frame">
+        <!-- Persistent HUD View -->
+        <div id="hud">
+            <div>🗺️ TRAILS ID: <span id="hud-map-id">0</span></div>
+            <div>🎒 BOX: <span id="hud-box-name">Pouch</span> (<span id="hud-deck-count">0/5</span>)</div>
+            <div>🪙 COINS: <span id="hud-gold">100</span></div>
+            <div>❤️ LIFE: <span id="hud-hp">50/50</span></div>
         </div>
 
-        <div id="screen-main-menu" class="screen-view active">
-            <div class="title-screen-logo">SILICON FRONTIER<br><span style="font-size:12px; color:#fff; letter-spacing:5px; font-weight: 400;">BLOOD & RUST</span></div>
-            <div class="title-backdrop">
-                <p style="font-size:10px; margin-bottom: 16px; color:#a3948c; font-family: monospace;">System Initialization Routine Build v10.2</p>
-                <button class="btn" onclick="initiateNewGameSetup()">⚡ ENGAGE MOTORS ⚡</button>
-                <button id="main-menu-continue-btn" class="btn btn-outline hidden" onclick="loadActiveRunData()">CONTINUE ACTIVE CHANNELS</button>
-                
-                <h3 style="margin-top:20px;">🎨 GRAPHICS CORE STYLES</h3>
-                <div class="theme-select-panel">
-                    <div class="theme-dot" onclick="setMatrixTheme('rust')">Solar Rust</div>
-                    <div class="theme-dot" onclick="setMatrixTheme('cyber')">Cyber Neon</div>
-                    <div class="theme-dot" onclick="setMatrixTheme('toxic')">Toxic Green</div>
-                    <div class="theme-dot" onclick="setMatrixTheme('obsidian')">Obsidian</div>
-                    <div class="theme-dot" onclick="setMatrixTheme('crimson')">Crimson</div>
-                </div>
-            </div>
+        <!-- SCREEN: CAMPAIGN MAP -->
+        <div id="screen-map" class="screen active">
+            <h2>Frontier Trails Branching Grid</h2>
+            <p style="text-align: center; font-size: 0.9em; opacity: 0.8;">Move your pink 🔴 **Meeple** token onto consecutive adjacent connecting paths.</p>
+            <div class="map-canvas-container" id="map-render-element"></div>
         </div>
 
-        <div id="screen-setup" class="screen-view">
-            <h1>🌵 AUTHORIZE SYSTEM ASSET 🌾</h1>
-            <p style="text-align: center; font-size: 10px; margin-bottom: 12px; color: #a3948c;">Select an outlaw chassis module to bind to the upcoming expedition trail:</p>
-            <div id="chassis-selection-list" style="flex-grow: 1; overflow-y: auto; padding-right: 4px;"></div>
-            <button class="btn btn-outline" style="margin-top:10px;" onclick="returnToMainMenu()">⬅️ REVERT BACK TO START</button>
-        </div>
-
-        <div id="screen-world-map" class="screen-view">
-            <div class="region-banner" id="current-region-title">REGION FRAME INDEX</div>
-            <div class="map-timeline" id="generated-map-nodes"></div>
-            <div id="encounter-notification" class="encounter-overlay hidden"></div>
-        </div>
-
-        <div id="screen-inventory-deck" class="screen-view">
-            <h3>🤠 CORE OUTLAW SYSTEM HARDWARE</h3>
-            <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-size:11px; border:1px solid var(--panel-brighter); line-height: 1.6;">
-                • Core Name: <span id="deck-stats-name" style="color:var(--neon-cyan); font-weight:bold;">---</span><br>
-                • Level Tier: <span id="deck-stats-level" style="color:var(--neon-purple); font-weight:bold;">1</span> (XP: <span id="deck-stats-xp">0/100</span>)<br>
-                • Frame Stability: <span id="deck-stats-hp" style="color:var(--neon-red); font-weight: bold;">0/0</span><br>
-                • Loop Capacity: <span id="deck-stats-energy" style="color:var(--neon-gold); font-weight: bold;">0</span> Energy Units
+        <!-- SCREEN: THE CAMPFIRE SAFE ARRANGEMENT VAULT -->
+        <div id="screen-campfire" class="screen">
+            <h2>🔥 Campfire Gathering & Storage Safe</h2>
+            <p>You are safe from the elements here. Open your **Storage Safe** vault to swap cards in and out of your active Deck Box.</p>
+            
+            <div class="panel-box">
+                <h3>Active Armed Holster Arrangement (<span id="camp-active-count">0</span> Equipped)</h3>
+                <div class="card-grid" id="camp-active-cards"></div>
             </div>
             
-            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                <button class="btn btn-outline" style="margin:0;" onclick="returnToMainMenu()">🛑 PAUSE RUN</button>
-                <button class="btn btn-danger" style="margin:0;" onclick="hardResetActiveRun()">⚠️ WIPE PROFILE</button>
+            <div class="panel-box" style="margin-top: 15px;">
+                <h3>The Secure Storage Safe (Vault Inventory)</h3>
+                <div class="card-grid" id="camp-safe-cards"></div>
             </div>
 
-            <h3 style="margin-top:16px;">📜 INSTALLED ARSENAL MODULES (<span id="deck-count-num">0</span>)</h3>
-            <div class="deck-view-grid" id="deck-display-scroll-area"></div>
+            <div style="text-align:center; margin-top: 20px;">
+                <button class="btn" onclick="game.leaveNode()">Quench Fire & Pack Up</button>
+            </div>
         </div>
 
-        <div id="screen-battle-engine" class="screen-view">
+        <!-- SCREEN: COMBAT CONTEXT -->
+        <div id="screen-combat" class="screen">
+            <h2>🤠 Gunfight Encounter</h2>
             <div class="combat-arena">
-                <div class="combatant-capsule" style="border-bottom: 1px dashed var(--panel-brighter); padding-bottom: 8px;">
-                    <h4 style="color:var(--neon-red); font-weight: 800;" id="combat-enemy-title">HOSTILE RADAR SIGNATURE</h4>
-                    <div style="font-size:10px; display:flex; justify-content:space-between; width:100%; margin-bottom: 2px;">
-                        <span>Frame Integrity:</span> <b id="combat-enemy-hp-text">0/0</b>
-                    </div>
-                    <div class="meter"><div class="meter-fill-hp" id="combat-enemy-hp-bar"></div></div>
-                    <div style="font-size:10.5px; background:rgba(0,0,0,0.5); padding:8px; border-radius:6px; border:1px dashed var(--neon-red); margin-top:4px; color:#fff; font-style: italic;">
-                        <span id="combat-enemy-intent-text">Scanning telemetry tracks...</span>
-                    </div>
+                <div class="panel-box">
+                    <h3>Posse (Player)</h3>
+                    <p>HP: <span id="cb-player-hp">50</span></p>
+                    <p>Armor: <span id="cb-player-armor">0</span></p>
+                    <p>AP: <span id="cb-player-ap">3/3</span></p>
+                    <p style="font-size:0.8em; color:var(--accent-gold);">Box Passive active: <span id="cb-passive-lbl">None</span></p>
                 </div>
-
-                <div class="combat-log" id="combat-event-logger">COOLING CYLINDER READY...</div>
-
-                <div class="combatant-capsule" style="border-top: 1px dashed var(--panel-brighter); padding-top: 4px;">
-                    <h4 id="combat-player-title" style="font-weight: 800;">ACTIVE EXPEDITION PILOT</h4>
-                    <div style="font-size:10px; display:flex; justify-content:space-between; margin-bottom: 2px;">
-                        <span>Chassis Core Integrity: <b id="combat-player-hp-text">0/0</b></span>
-                        <span style="color:var(--neon-cyan); font-weight: bold;" id="combat-player-shield-text">Plating: 0</span>
-                    </div>
-                    <div class="meter"><div class="meter-fill-hp" id="combat-player-hp-bar"></div></div>
-                    <div style="font-size:10px; margin-top: 4px;">Action Engine Throttles: <b id="combat-player-en-text" style="color:var(--neon-cyan);">0/0</b></div>
-                    <div class="meter"><div class="meter-fill-en" id="combat-player-en-bar"></div></div>
-                    <button class="btn btn-gold" style="padding:8px; font-size:10px; border-radius:6px; margin-top:6px;" id="combat-active-tech-btn" onclick="fireActiveChassisTech()">DISCHARGE UTILITY MATRIX</button>
+                <div class="panel-box">
+                    <h3 id="cb-enemy-title">Outlaw</h3>
+                    <p>Enemy HP: <span id="cb-enemy-hp">20</span></p>
+                    <p id="cb-enemy-intent" style="color: #f77f00; font-weight:bold;">Intent: Reloading</p>
                 </div>
-
-                <div>
-                    <div class="combat-hand-fan-container" id="combat-current-hand-slots"></div>
-                    <div class="hint-text-hold">💡 Tap to trigger module • Hold down to inspect details</div>
-                </div>
-
-                <button class="btn btn-danger" style="margin-top:2px;" onclick="processHostileTurnSequence()">CONCEDE STRATEGIC STEP (END TURN)</button>
+            </div>
+            <div class="card-grid" id="cb-hand"></div>
+            <div style="text-align:center; margin-top:15px;">
+                <button class="btn" onclick="game.endTurn()">End Turn</button>
             </div>
         </div>
-    </div>
 
-    <div class="inspect-card-overlay" id="global-inspect-modal-window" onclick="closeCardInspectionModal()">
-        <div class="large-card-display" id="large-card-frame-target" onclick="event.stopPropagation()">
-            <div class="large-badge" id="large-card-cost">0</div>
-            <div class="large-title" id="large-card-title">MODULE MODULE</div>
-            <div class="large-body" id="large-card-desc">System specification text description renders right inside this framework panel area block.</div>
-            <div class="large-type" id="large-card-type">CLASSIFICATION</div>
+        <!-- SCREEN: GENERAL RETAIL STORE -->
+        <div id="screen-shop" class="screen">
+            <h2>🏪 Frontier General Store</h2>
+            <p>Invest your gold in specialized leather storage modifications and deck box equipment upgrades.</p>
+            <div class="card-grid" id="shop-boxes-grid"></div>
+            <div style="text-align:center; margin-top:20px;">
+                <button class="btn btn-danger" onclick="game.leaveNode()">Leave Shop</button>
+            </div>
         </div>
-        <button class="btn btn-gold" style="width:180px; margin-top:20px; border-radius: 20px;" onclick="closeCardInspectionModal()">Return to Combat</button>
-    </div>
-
-    <div class="tab-nav-bar hidden" id="persistent-app-navigation">
-        <div class="nav-tab active" id="tab-btn-map" onclick="switchActiveTab('world-map')">TRAIL MAP</div>
-        <div class="nav-tab" id="tab-btn-deck" onclick="switchActiveTab('inventory-deck')">SADDLEBAG</div>
-        <div class="nav-tab" id="tab-btn-battle" onclick="switchActiveTab('battle-engine')">SHOOTOUT</div>
     </div>
 
     <script>
-        // GLOBAL DATA DESIGN REPOSITORIES
-        const GLOBAL_COMMON_CARDS = {
-            1: { id: 1, title: "Iron Shot", type: "Attack", cost: 1, desc: "Loads dynamic solid slug ammo into chambers. Fires to deal 6 structural damage.", run: () => damageHostileTarget(6) },
-            2: { id: 2, title: "Quick Snap", type: "Attack", cost: 0, desc: "An instantaneous reflex snapshot discharge. Bypasses latency constraints to deal 4 kinetic damage.", run: () => damageHostileTarget(4) },
-            3: { id: 3, title: "Take Cover", type: "Defense", cost: 1, desc: "Drops chassis posture behind scrap structure. Grants +6 defensive armor plating sheets.", run: () => shieldPlayerTarget(6) },
-            4: { id: 4, title: "Brace Frame", type: "Defense", cost: 2, desc: "Anchors hydraulic stabiliser pistons. Secures +13 heavy industrial protection lines.", run: () => shieldPlayerTarget(13) },
-            5: { id: 5, title: "Ration Pack", type: "Utility", cost: 1, desc: "Injects synthetic emergency fluids. Restores 10 damaged chassis health points.", run: () => { userState.hp = Math.min(userState.maxHp, userState.hp + 10); logCombatMessage("Consumed ration pack lines. Repaired 10 HP."); } }
-        };
-
-        const CLASS_UNIQUE_CARDS = {
-            101: { id: 101, title: "Desperado Heat", type: "Attack", cost: 3, desc: "OUTLAW EXCLUSIVE: Dumps reactor cells down barrels. Deals 26 heavy scaling damage.", run: () => damageHostileTarget(26) },
-            102: { id: 102, title: "Loaded Draw", type: "Utility", cost: 1, desc: "GAMBLER EXCLUSIVE: Risks 20 gold pieces to redial and pull a completely fresh hand of modules.", run: () => { if(userState.gold>=20){ userState.gold-=20; fillHandArray(); logCombatMessage("Gambled 20g on a complete hand redial."); syncGlobalHUD(); } else { alert("Insufficient gold holdings to cover the bet!"); } } },
-            103: { id: 103, title: "Molotov Mix", type: "Attack", cost: 2, desc: "BARTENDER EXCLUSIVE: Smashes volatile compounds, igniting the battlefield grid for 14 fire damage.", run: () => damageHostileTarget(14) },
-            104: { id: 104, title: "Looping Melody", type: "Utility", cost: 1, desc: "RAGTIME EXCLUSIVE: Loops sonic disruption waves. Resets turn energy metrics back to maximum.", run: () => { activeCombatState.currentEnergy = userState.maxEnergy; logCombatMessage("Musical rhythm reset available turn energy!"); } },
-            105: { id: 105, title: "Blasting Cap", type: "Attack", cost: 2, desc: "PROSPECTOR EXCLUSIVE: Detonates mineral charges under covers to deal 18 shield-piercing damage.", run: () => damageHostileTarget(18) },
-            106: { id: 106, title: "Iron Warrant", type: "Defense", cost: 1, desc: "SHERIFF EXCLUSIVE: Grants 8 armor plating and primes immediate ballistic counter-fire protocols.", run: () => { shieldPlayerTarget(8); logCombatMessage("Warrant issued: Counter-defences fully primed."); } },
-            107: { id: 107, title: "Toxic Liniment", type: "Attack", cost: 1, desc: "SALESMAN EXCLUSIVE: Drops high-corrosive mixtures that liquify pathways for 12 poison damage.", run: () => damageHostileTarget(12) },
-            108: { id: 108, title: "Zealous Fury", type: "Attack", cost: 2, desc: "PREACHER EXCLUSIVE: Overloads heretic logical filters to deal 16 points of systematic blast damage.", run: () => damageHostileTarget(16) },
-            109: { id: 109, title: "Lasso Snare", type: "Utility", cost: 1, desc: "WRANGLER EXCLUSIVE: Throws magnetic ropes, locking targets down and completely canceling active actions.", run: () => { if(activeCombatState.enemy) { activeCombatState.enemy.intent = "Snared and structural movement bound fast"; activeCombatState.enemy.dmg = 0; renderCombatScreenInterfaceValues(); logCombatMessage("Lassoed target safely, disrupting hostile intent tracks!"); } } },
-            110: { id: 110, title: "Homestead Wall", type: "Defense", cost: 2, desc: "PIONEER EXCLUSIVE: Drops fortifying dynamic barricade barriers to gain an elite +20 shield armor blocks.", run: () => shieldPlayerTarget(20) },
-            111: { id: 111, title: "Surgical Lance", type: "Attack", cost: 2, desc: "DOCTOR EXCLUSIVE: Drives high-frequency laser slices into micro-lines for 18 targeted laser damage.", run: () => damageHostileTarget(18) },
-            112: { id: 112, title: "Box Harvest", type: "Utility", cost: 0, desc: "UNDERTAKER EXCLUSIVE: Patently tears down spent frames, converting scrap to 15 currency instantly.", run: () => { userState.gold += 15; syncGlobalHUD(); logCombatMessage("Scavenged 15g from structural grid trash."); } }
-        };
-
-        const OUTLAW_CHASSIS_REGISTRY = [
-            { name: "The Outlaw", hp: 100, energy: 3, desc: "Aggressive front-line asset. Weapon systems convert missing health blocks into heavy ballistic output metrics.", baseDeck: [1, 2, 3, 4, 101], techName: "Desperado Discharge (12 Dmg)" },
-            { name: "The Gambler", hp: 80, energy: 3, desc: "Fortune system manipulator. Sacrifices gold funds to reroll software layouts and force critical output returns.", baseDeck: [1, 2, 3, 5, 102], techName: "Cardsharp Rig (12 Dmg)" },
-            { name: "The Bartender", hp: 110, energy: 3, desc: "Crowd disruption specialist. Employs heavy material barriers to suppress multi-angle hostile engagement plans.", baseDeck: [1, 3, 4, 5, 103], techName: "Bouncer Slam (12 Dmg)" },
-            { name: "The Ragtime", hp: 85, energy: 4, desc: "Acoustic battlefield engine. Dictates core initiative timelines and reshapes mechanical speed limits.", baseDeck: [1, 2, 3, 5, 104], techName: "Honky-Tonk Sync (12 Dmg)" },
-            { name: "The Prospector", hp: 105, energy: 3, desc: "Demolition asset. Drops volatile mineral nodes into combat configurations to bypass enemy line armor.", baseDeck: [1, 2, 3, 4, 105], techName: "Dynamite Chunk (12 Dmg)" },
-            { name: "The Sheriff", hp: 115, energy: 3, desc: "Reactive protection armor node. Applies target tracking locks to intercept enemies during their own action turns.", baseDeck: [1, 3, 4, 5, 106], techName: "Iron Law Execution (12 Dmg)" },
-            { name: "The Snake Oil Salesman", hp: 90, energy: 3, desc: "Subterfuge master. Distributes volatile corrosive compounds that slowly liquify internal wiring grids.", baseDeck: [1, 2, 3, 5, 107], techName: "Corrosive Acid Spray (12 Dmg)" },
-            { name: "The Preacher", hp: 95, energy: 3, desc: "Ideological dampener. Infuses target logic blocks with systemic errors, breaking down moral cohesion metrics.", baseDeck: [1, 2, 3, 4, 108], techName: "Condemnation Aura (12 Dmg)" },
-            { name: "The Wrangler", hp: 100, energy: 3, desc: "Tactical positioning control. Uses electromagnetic grappling links to yank hostiles clear out of defensive structures.", baseDeck: [1, 2, 3, 4, 109], techName: "Whip Crack Pull (12 Dmg)" },
-            { name: "The Pioneer", hp: 125, energy: 3, desc: "Heavy baseline bunker. Configures high-density dynamic shields to safely absorb major ballistic impact surges.", baseDeck: [1, 3, 4, 4, 110], techName: "Rail Spike Drive (12 Dmg)" },
-            { name: "The Doctor", hp: 95, energy: 3, desc: "Triage frame. Conducts accurate surgical cutting operations while executing self-repair protocols.", baseDeck: [1, 2, 3, 5, 111], techName: "Surgical Scalpel (12 Dmg)" },
-            { name: "The Gambler", hp: 110, energy: 3, desc: "Scrap collection engine. Generates continuous financial resources by breaking down scrap components.", baseDeck: [1, 2, 3, 4, 112], techName: "Grave Dirt Shield (12 Dmg)" }
-        ];
-
-        const FRONTIER_CAMPAIGN_MAPS = [
-            {
-                name: "STAGE I: THE RUSTWOOD SECTOR",
-                rows: [
-                    [{ type: "Combat", label: "Gulch Sentry Drone", icon: "⚙️", id: "c1" }],
-                    [
-                        { type: "Dialogue", label: "Blackwood Saloon", icon: "🥃", id: "d1" }, 
-                        { type: "Dialogue", label: "Scrap Junk Pile", icon: "🔩", id: "d2" }
-                    ],
-                    [{ type: "Combat", label: "Iron-Rail Outrider", icon: "🏇", id: "c2" }],
-                    [{ type: "Combat", label: "Bounty Hunter Vance", icon: "👹", id: "b1", isBoss: true }]
-                ]
-            }
-        ];
-
-        const DIALOGUE_EVENT_DATABASE = {
-            "d1": {
-                title: "The Smoldering Counter - Blackwood Saloon",
-                text: "You push open the rusted swinging doors. A hooded synthetic bartender looks up while wiping an oily glass with a filthy rag. 'We don't get your type around here. Buy a drink, drop some information, or step back into the storm.'",
-                options: [
-                    { label: "💳 Spend 20g on high-grade coolant oil (+15 HP)", effect: () => { if(userState.gold>=20){ userState.gold-=20; userState.hp = Math.min(userState.maxHp, userState.hp + 15); advanceStoryAfterChoice("The chemical fluids coat your internal processing conduits smoothly. Heavy repair executed."); } else { alert("Insufficient gold resources!"); } } },
-                    { label: "👁️ Intimidate him for town database keys (+40 XP)", effect: () => { advanceStoryAfterChoice("You slam your kinetic frame heavy onto the metal bar counter. He cows down, tossing you backdoor diagnostic parameters."); awardExperiencePoints(40); } },
-                    { label: "🚶 Slip quietly back into the dust storm", effect: () => { advanceStoryAfterChoice("You turn and leave without purchasing fluids, sliding safely into shadows before trouble builds."); } }
-                ]
-            },
-            "d2": {
-                title: "The Junk Grid - Heap Overload",
-                text: "An ancient mechanised scrapper stands inside an expanse of shattered chassis frames holding an active arc cutter. 'Hey traveler, care to pitch a heavy wager on these blind component piles? Or are you just out here hunting for trouble?'",
-                options: [
-                    { label: "🎲 Risk 30 Gold on a blind crate pull (50% Chance)", effect: () => {
-                        if(userState.gold>=30) {
-                            userState.gold -= 30;
-                            if(Math.random() > 0.5) {
-                                userState.deck.push(4); 
-                                advanceStoryAfterChoice("Success! You fish out an untouched structural 'Brace Frame' module blueprint.");
-                            } else {
-                                advanceStoryAfterChoice("Nothing but fried wiring components and heavy ash blocks inside. Asset lost.");
-                            }
-                        } else { alert("Insufficient gold!"); }
-                    } },
-                    { label: "🔧 Salvage stray terminal power links (+10 Gold)", effect: () => { userState.gold += 10; advanceStoryAfterChoice("You calmly strip core wiring nodes, discovering 10 intact gold currency tokens."); } }
-                ]
-            }
-        };
-
-        // ENGINE RUNTIME STATE POOLS
-        let userState = { name: "", maxHp: 100, hp: 100, maxEnergy: 3, gold: 60, level: 1, xp: 0, deck: [] };
-        let activeRegionIndex = 0; let activeRowIndex = 0; let activeChoiceColumn = 0; 
-        let activeCombatState = { enemy: null, currentEnergy: 3, playerShield: 0, abilityAvailable: true, liveHand: [] };
-        
-        let holdTimerReference = null;
-        let isHoldExecutionTriggered = false;
-        const HOLD_DURATION_THRESHOLD_MS = 400;
-
-        window.addEventListener("DOMContentLoaded", () => { 
-            if(localStorage.getItem("frontier_save_v10")) {
-                document.getElementById("main-menu-continue-btn").classList.remove("hidden");
-            } 
-        });
-
-        function setMatrixTheme(theme) {
-            document.body.className = "";
-            if(theme !== 'rust') document.body.classList.add(`theme-${theme}`);
-        }
-
-        function returnToMainMenu() {
-            document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
-            document.getElementById("screen-main-menu").classList.add("active");
-            document.getElementById("central-hud").classList.add("hidden");
-            document.getElementById("persistent-app-navigation").classList.add("hidden");
-        }
-
-        function initiateNewGameSetup() {
-            document.getElementById("screen-main-menu").classList.remove("active");
-            document.getElementById("screen-setup").classList.add("active");
-            renderOutlawSelectionList();
-        }
-
-        function renderOutlawSelectionList() {
-            const listContainer = document.getElementById("chassis-selection-list"); listContainer.innerHTML = "";
-            OUTLAW_CHASSIS_REGISTRY.forEach((ch, idx) => {
-                const row = document.createElement("div"); row.className = "chassis-row";
-                row.onclick = () => instantiateSelectedChassis(idx);
-                row.innerHTML = `<h4 style="color:var(--neon-amber); font-weight:800;">${ch.name} <span style="font-size:10px; color:var(--neon-gold); float:right;">HP: ${ch.hp} | EN: ${ch.energy}</span></h4>
-                                 <p style="margin-top:4px; font-size:11px;">${ch.desc}</p>
-                                 <span style="font-size:8px; color: var(--neon-cyan); font-weight:700;">🎁 UNLOCKED UNIQUE CARD INTEGRATED AVAILABLE</span>`;
-                listContainer.appendChild(row);
-            });
-        }
-
-        function instantiateSelectedChassis(index) {
-            const chosen = OUTLAW_CHASSIS_REGISTRY[index];
-            userState.name = chosen.name; userState.maxHp = userState.hp = chosen.hp; userState.maxEnergy = chosen.energy;
-            userState.deck = [...chosen.baseDeck]; userState.gold = 60; userState.level = 1; userState.xp = 0;
-            activeRegionIndex = 0; activeRowIndex = 0; saveActiveRunData(); enterTheFrontierWorld();
-        }
-
-        function enterTheFrontierWorld() {
-            document.getElementById("screen-setup").classList.add("hidden");
-            document.getElementById("screen-main-menu").classList.remove("active");
-            document.getElementById("central-hud").classList.remove("hidden");
-            document.getElementById("persistent-app-navigation").classList.remove("hidden");
-            switchActiveTab("world-map"); syncGlobalHUD(); buildFrontierMapUi();
-        }
-
-        function saveActiveRunData() { localStorage.setItem("frontier_save_v10", JSON.stringify({ userState, activeRegionIndex, activeRowIndex, activeChoiceColumn })); }
-        function loadActiveRunData() { const cache = JSON.parse(localStorage.getItem("frontier_save_v10")); userState = cache.userState; activeRegionIndex = cache.activeRegionIndex; activeRowIndex = cache.activeRowIndex; enterTheFrontierWorld(); }
-        function hardResetActiveRun() { if(confirm("Permanently wipe your outlaw's active channel records?")) { localStorage.removeItem("frontier_save_v10"); location.reload(); } }
-
-        function switchActiveTab(targetTabId) {
-            document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
-            document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
-            if(targetTabId === 'world-map') { document.getElementById("screen-world-map").classList.add("active"); document.getElementById("tab-btn-map").classList.add("active"); }
-            if(targetTabId === 'inventory-deck') { document.getElementById("screen-inventory-deck").classList.add("active"); document.getElementById("tab-btn-deck").classList.add("active"); refreshDeckInspectorTab(); }
-            if(targetTabId === 'battle-engine') { document.getElementById("screen-battle-engine").classList.add("active"); document.getElementById("tab-btn-battle").classList.add("active"); }
-        }
-
-        function syncGlobalHUD() {
-            document.getElementById("hud-char-name").innerText = userState.name; document.getElementById("hud-gold-val").innerText = userState.gold + "g";
-            document.getElementById("hud-stage-val").innerText = `Row ${activeRowIndex + 1}`; document.getElementById("hud-level-val").innerText = `LV ${userState.level}`;
-        }
-
-        function buildFrontierMapUi() {
-            const currentMapData = FRONTIER_CAMPAIGN_MAPS[activeRegionIndex];
-            document.getElementById("current-region-title").innerText = currentMapData.name;
-            const timeline = document.getElementById("generated-map-nodes"); timeline.innerHTML = "";
-
-            currentMapData.rows.forEach((rowNodes, rowIndex) => {
-                const rowEl = document.createElement("div"); rowEl.className = "map-row";
-                rowNodes.forEach((node, colIndex) => {
-                    let s = "locked"; if(rowIndex === activeRowIndex) s = "active"; if(rowIndex < activeRowIndex) s = "cleared";
-                    const btn = document.createElement("div"); btn.className = `map-node ${s}`; btn.innerHTML = `${node.icon} <div class="node-tag">${node.label}</div>`;
-                    if(rowIndex === activeRowIndex) btn.onclick = () => { activeChoiceColumn = colIndex; handleNodeInteractionGate(node); };
-                    rowEl.appendChild(btn);
+        // --- 100 UNIQUE PROCEDURAL CARD SEED DATASET ---
+        function buildCardPool() {
+            const arr = [
+                { id: 'c1', name: 'Colt Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 5 DMG.' },
+                { id: 'c2', name: 'Iron Guard', rarity: 'BASIC', cost: 1, effect: 'Gain 5 ARMOR.' },
+                { id: 'c3', name: 'Snake Oil', rarity: 'BASIC', cost: 1, effect: 'Heal 5 HP.' },
+                { id: 'c4', name: 'Fan Hammer', rarity: 'COMMON', cost: 2, effect: 'Deal 12 DMG.' },
+                { id: 'c5', name: 'Bunker Down', rarity: 'RARE', cost: 2, effect: 'Gain 14 ARMOR.' }
+            ];
+            for (let i = 6; i <= 100; i++) {
+                let rarity = i > 85 ? 'LEGENDARY' : i > 60 ? 'RARE' : 'COMMON';
+                let cost = Math.floor(Math.random() * 3) + 1;
+                arr.push({
+                    id: `c_${i}`,
+                    name: `Frontier Card #${i}`,
+                    rarity: rarity,
+                    cost: cost,
+                    effect: `Deal ${cost * 6} DMG & Gain ${cost * 2} ARMOR.`
                 });
-                timeline.appendChild(rowEl);
-            });
-        }
-
-        function handleNodeInteractionGate(node) {
-            const overlay = document.getElementById("encounter-notification"); overlay.classList.remove("hidden");
-            if(node.type === "Dialogue") {
-                const data = DIALOGUE_EVENT_DATABASE[node.id];
-                overlay.innerHTML = `<h4>💬 LOCAL EVENT ROUTINE: ${data.title}</h4>
-                                     <div class="dialogue-text">${data.text}</div>
-                                     <div class="dialogue-options-box" id="dialogue-options-target"></div>`;
-                const box = document.getElementById("dialogue-options-target");
-                data.options.forEach(opt => {
-                    const b = document.createElement("button"); b.className = "btn btn-outline"; b.innerText = opt.label; b.onclick = opt.effect; box.appendChild(b);
-                });
-            } else {
-                let isBoss = node.isBoss || false;
-                let enemyBlueprint = isBoss ? 
-                    { name: "BOUNTY HUNTER VANCE [BOSS]", hp: 75, dmg: 10, intent: "Fanning blazing core projectile streams down center cover grids." } :
-                    { name: node.label, hp: 42, dmg: 6, intent: "Locking old kinetic rifle lines onto structural joints." };
-
-                overlay.innerHTML = `<h4>⚠️ BALISTIC TRACK IDENTIFIED: ${node.label}</h4>
-                                     <div class="dialogue-text">"Drop weapon cards and yield your saddlebag items right here, pilot."</div>
-                                     <button class="btn btn-danger" onclick="setupCombatMatrix('${enemyBlueprint.name}', ${enemyBlueprint.hp}, ${enemyBlueprint.dmg}, '${enemyBlueprint.intent}')">Engage Systems Matrix</button>`;
             }
+            return arr;
         }
 
-        function advanceStoryAfterChoice(resolutionText) {
-            const overlay = document.getElementById("encounter-notification");
-            overlay.innerHTML = `<h4>📋 SECTOR METRIC RESOLUTION</h4>
-                                 <div class="dialogue-text">${resolutionText}</div>
-                                 <button class="btn btn-gold" onclick="exitEncounterNode()">Resume Trail Sequence</button>`;
-        }
+        // --- GAME CONTROLLER APPLICATION ---
+        class GameEngineWrapper {
+            constructor() {
+                this.cardsPool = buildCardPool();
+                this.mapId = 0;
+                this.playerLevel = 2;
+                this.gold = 180;
+                this.hp = 50;
+                this.maxHp = 50;
+                this.activeBoxIndex = 0;
 
-        function exitEncounterNode() {
-            document.getElementById("encounter-notification").classList.add("hidden"); activeRowIndex++;
-            if(activeRowIndex >= FRONTIER_CAMPAIGN_MAPS[activeRegionIndex].rows.length) { alert("Sector clear! Re-shuffling sector array path..."); activeRegionIndex = 0; activeRowIndex = 0; }
-            saveActiveRunData(); syncGlobalHUD(); buildFrontierMapUi();
-        }
+                this.activeDeck = [ { ...this.cardsPool[0] }, { ...this.cardsPool[1] }, { ...this.cardsPool[2] }, { ...this.cardsPool[3] }, { ...this.cardsPool[4] } ];
+                this.safeStorage = [ { ...this.cardsPool[5] }, { ...this.cardsPool[6] }, { ...this.cardsPool[7] } ];
 
-        function setupCombatMatrix(eName, eHp, eDmg, eIntent) {
-            activeCombatState.enemy = { name: eName, hp: eHp, maxHp: eHp, dmg: eDmg, intent: eIntent, baseDmg: eDmg, baseIntent: eIntent };
-            activeCombatState.currentEnergy = userState.maxEnergy; activeCombatState.playerShield = 0; activeCombatState.abilityAvailable = true; activeCombatState.liveHand = [];
-            document.getElementById("encounter-notification").classList.add("hidden"); switchActiveTab("battle-engine");
-            document.getElementById("combat-active-tech-btn").innerText = OUTLAW_CHASSIS_REGISTRY.find(c => c.name === userState.name).techName;
-            document.getElementById("combat-event-logger").innerHTML = ">> REVOLVER SYSTEM RE-CYCLED. ROUND INITIATED.";
-            fillHandArray(); renderCombatScreenInterfaceValues();
-        }
+                this.mapNodes = [];
+                this.currentMeepleId = null;
+                this.currentDepth = -1;
 
-        function fillHandArray() {
-            let deckPool = [...userState.deck]; activeCombatState.liveHand = [];
-            for(let i=0; i<4; i++) {
-                if(deckPool.length === 0) break;
-                let rawId = deckPool.splice(Math.floor(Math.random() * deckPool.length), 1)[0];
-                let cardTemplate = GLOBAL_COMMON_CARDS[rawId] || CLASS_UNIQUE_CARDS[rawId];
-                if(cardTemplate) activeCombatState.liveHand.push({ ...cardTemplate, instanceId: Math.random() });
+                this.combat = { enemyHp: 20, enemyIntent: 6, playerArmor: 0, playerAp: 3, hand: [], draw: [], discard: [] };
             }
-            renderArcedHandInterface();
-        }
 
-        function renderArcedHandInterface() {
-            const tray = document.getElementById("combat-current-hand-slots"); tray.innerHTML = "";
-            const total = activeCombatState.liveHand.length;
+            get activeBox() { return DECK_BOX_TIERS[this.activeBoxIndex]; }
 
-            activeCombatState.liveHand.forEach((card, idx) => {
-                const item = document.createElement("div");
-                let typeStyle = "card-attack"; if(card.type === "Defense") typeStyle = "card-defense"; if(card.type === "Utility") typeStyle = "card-utility";
-                item.className = `card-item ${typeStyle}`;
-                
-                const angle = total > 1 ? ((idx / (total - 1)) - 0.5) * 24 : 0;
-                const shiftX = total > 1 ? ((idx / (total - 1)) - 0.5) * 130 : 0;
-                const shiftY = total > 1 ? Math.abs((idx / (total - 1)) - 0.5) * 8 : 0;
+            start() {
+                this.generateNewMapLayer();
+                this.updateGlobalHud();
+            }
 
-                item.style.transform = `translateX(${shiftX}px) translateY(${shiftY}px) rotate(${angle}deg)`;
-                item.style.zIndex = idx + 10;
-                
-                // CLEAN INTERNAL STRUCTURAL PACKING
-                item.innerHTML = `
-                    <div class="card-header-wrapper">
-                        <div class="badge">${card.cost}</div>
-                        <div class="title">${card.title}</div>
-                    </div>
-                    <div class="body-text">${card.desc}</div>
-                    <div class="type-tag">${card.type}</div>
-                `;
+            updateGlobalHud() {
+                document.getElementById('hud-map-id').innerText = this.mapId;
+                document.getElementById('hud-box-name').innerText = this.activeBox.name;
+                document.getElementById('hud-deck-count').innerText = `${this.activeDeck.length}/${this.activeBox.maxCapacity}`;
+                document.getElementById('hud-gold').innerText = this.gold;
+                document.getElementById('hud-hp').innerText = `${this.hp}/${this.maxHp}`;
+            }
 
-                const initiateHoldAction = (e) => {
-                    isHoldExecutionTriggered = false;
-                    holdTimerReference = setTimeout(() => {
-                        isHoldExecutionTriggered = true;
-                        launchCardInspectionModal(card);
-                    }, HOLD_DURATION_THRESHOLD_MS);
-                };
+            generateNewMapLayer() {
+                this.mapNodes = [];
+                const depth = 14; // Meets core target specification threshold
+                let counter = 0;
 
-                const closeHoldAction = (e) => {
-                    clearTimeout(holdTimerReference);
-                    if (!isHoldExecutionTriggered) {
-                        executeCardCompilationProcess(card.instanceId);
+                for (let d = 0; d < depth; d++) {
+                    // Procedural layout logic shifts row properties based on active map sequence IDs
+                    const laneCount = (d === 0 || d === depth - 1) ? 1 : (2 + ((d + this.mapId) % 2));
+                    
+                    for (let l = 0; l < laneCount; l++) {
+                        let type = 'BASIC_BATTLE';
+                        if (d === 0) type = 'CAMPFIRE';
+                        else if (d === depth - 1) type = 'ELITE_BATTLE';
+                        else if ((d + l) % 5 === 0) type = 'CAMPFIRE';
+                        else if ((d + l) % 4 === 1) type = 'GENERAL_STORE';
+
+                        this.mapNodes.push({
+                            id: `node_${d}_${l}_${counter++}`,
+                            depthIndex: d,
+                            laneIndex: l,
+                            type: type,
+                            resolved: false
+                        });
                     }
-                    isHoldExecutionTriggered = false;
-                };
+                }
+                this.currentMeepleId = null;
+                this.currentDepth = -1;
+                this.renderMapInterface();
+            }
 
-                const cancelHoldAction = () => { clearTimeout(holdTimerReference); };
+            renderMapInterface() {
+                const container = document.getElementById('map-render-element');
+                container.innerHTML = '';
 
-                item.addEventListener("mousedown", initiateHoldAction);
-                item.addEventListener("mouseup", closeHoldAction);
-                item.addEventListener("mouseleave", cancelHoldAction);
+                for (let d = 0; d < 14; d++) {
+                    const row = document.createElement('div');
+                    row.className = 'map-depth-row';
+                    
+                    const nodes = this.mapNodes.filter(n => n.depthIndex === d);
+                    nodes.forEach(node => {
+                        const btn = document.createElement('button');
+                        btn.className = 'node-btn';
+                        btn.innerText = `[${node.type.replace('_', ' ')}]`;
 
-                item.addEventListener("touchstart", initiateHoldAction);
-                item.addEventListener("touchend", closeHoldAction);
-                item.addEventListener("touchmove", cancelHoldAction);
+                        const isNextRow = (node.depthIndex === this.currentDepth + 1);
+                        const isStart = (this.currentDepth === -1 && node.depthIndex === 0);
 
-                tray.appendChild(item);
-            });
-        }
+                        if (isStart || isNextRow) {
+                            btn.classList.add('available');
+                            btn.onclick = () => this.executeMeepleMovement(node);
+                        } else {
+                            btn.disabled = true;
+                        }
 
-        function launchCardInspectionModal(cardData) {
-            const overlay = document.getElementById("global-inspect-modal-window");
-            const innerFrame = document.getElementById("large-card-frame-target");
-            
-            let targetColor = "var(--neon-red)";
-            if(cardData.type === "Defense") targetColor = "var(--neon-cyan)";
-            if(cardData.type === "Utility") targetColor = "var(--neon-gold)";
-            innerFrame.style.borderColor = targetColor;
+                        // Attach the player visual Meeple token directly onto the active path location
+                        if (this.currentMeepleId === node.id) {
+                            const meeple = document.createElement('span');
+                            meeple.className = 'meeple-token';
+                            meeple.innerText = '🔴 MEEPLE';
+                            btn.appendChild(meeple);
+                        }
 
-            document.getElementById("large-card-cost").innerText = cardData.cost;
-            document.getElementById("large-card-cost").style.color = targetColor;
-            document.getElementById("large-card-title").innerText = cardData.title;
-            document.getElementById("large-card-desc").innerText = cardData.desc;
-            document.getElementById("large-card-type").innerText = cardData.type;
-            document.getElementById("large-card-type").style.color = targetColor;
+                        row.appendChild(btn);
+                    });
+                    container.appendChild(row);
+                }
+            }
 
-            overlay.style.display = "flex";
-        }
+            executeMeepleMovement(node) {
+                this.currentMeepleId = node.id;
+                this.currentDepth = node.depthIndex;
+                this.renderMapInterface();
 
-        function closeCardInspectionModal() {
-            document.getElementById("global-inspect-modal-window").style.display = "none";
-        }
+                setTimeout(() => {
+                    if (node.type === 'CAMPFIRE') this.openCampfireScreen();
+                    else if (node.type === 'GENERAL_STORE') this.openStoreScreen();
+                    else this.launchCombat();
+                }, 300);
+            }
 
-        function executeCardCompilationProcess(instanceId) {
-            const targetIdx = activeCombatState.liveHand.findIndex(c => c.instanceId === instanceId);
-            if(targetIdx === -1) return;
-            const card = activeCombatState.liveHand[targetIdx];
+            switchContext(id) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            }
 
-            if(activeCombatState.currentEnergy < card.cost) { alert("Insufficient action throttling energy!"); return; }
-            activeCombatState.currentEnergy -= card.cost;
-            
-            logCombatMessage(`Launched system: ${card.title}`);
-            card.run();
-            activeCombatState.liveHand.splice(targetIdx, 1);
-            
-            renderCombatScreenInterfaceValues();
-            renderArcedHandInterface();
-        }
+            // --- CAMPFIRE LOGIC SCREEN ---
+            openCampfireScreen() {
+                this.switchContext('screen-campfire');
+                this.renderCampSafePanel();
+            }
 
-        function damageHostileTarget(amount) {
-            let t = activeCombatState.enemy; t.hp = Math.max(0, t.hp - amount);
-            logCombatMessage(`Dealt ${amount} point kinetic impact to target structures.`);
-            if(t.hp <= 0) { 
-                alert("Target core exploded. Recovery protocols completed!"); 
-                userState.gold += 30; awardExperiencePoints(50); 
-                switchActiveTab("world-map"); exitEncounterNode(); 
+            renderCampSafePanel() {
+                document.getElementById('camp-active-count').innerText = `${this.activeDeck.length}/${this.activeBox.maxCapacity}`;
+                
+                const actGrid = document.getElementById('camp-active-cards');
+                actGrid.innerHTML = '';
+                this.activeDeck.forEach((c, idx) => {
+                    const cardUi = this.createCardUi(c);
+                    cardUi.onclick = () => {
+                        if (this.activeDeck.length <= 1) return;
+                        this.safeStorage.push(this.activeDeck.splice(idx, 1)[0]);
+                        this.renderCampSafePanel();
+                        this.updateGlobalHud();
+                    };
+                    actGrid.appendChild(cardUi);
+                });
+
+                const safeGrid = document.getElementById('camp-safe-cards');
+                safeGrid.innerHTML = '';
+                this.safeStorage.forEach((c, idx) => {
+                    const cardUi = this.createCardUi(c);
+                    cardUi.onclick = () => {
+                        if (this.activeDeck.length >= this.activeBox.maxCapacity) {
+                            alert("Deck Box full! Upgrade storage space at General Stores.");
+                            return;
+                        }
+                        this.activeDeck.push(this.safeStorage.splice(idx, 1)[0]);
+                        this.renderCampSafePanel();
+                        this.updateGlobalHud();
+                    };
+                    safeGrid.appendChild(cardUi);
+                });
+            }
+
+            // --- COMBAT ENCOUNTER SCENE ---
+            launchCombat() {
+                this.switchContext('screen-combat');
+                this.combat.enemyHp = 25 + (this.mapId * 10);
+                this.combat.playerAp = 3;
+                this.combat.playerArmor = this.activeBox.passive === 'FORTIFIED_IRON' ? 3 : 0;
+                
+                document.getElementById('cb-passive-lbl').innerText = `${this.activeBox.passive} (${this.activeBox.description})`;
+                this.combat.draw = [...this.activeDeck].sort(() => Math.random() - 0.5);
+                this.combat.discard = [];
+                this.combat.hand = [];
+                
+                const drawCount = this.activeBox.passive === 'DESPERADO_RELOAD' ? 4 : 3;
+                this.drawCardsToHand(drawCount);
+                this.updateCombatDashboard();
+            }
+
+            drawCardsToHand(num) {
+                for(let i=0; i<num; i++) {
+                    if(this.combat.draw.length === 0) {
+                        this.combat.draw = [...this.combat.discard].sort(() => Math.random() - 0.5);
+                        this.combat.discard = [];
+                    }
+                    if(this.combat.draw.length > 0) this.combat.hand.push(this.combat.draw.pop());
+                }
+            }
+
+            updateCombatDashboard() {
+                document.getElementById('cb-player-hp').innerText = this.hp;
+                document.getElementById('cb-player-armor').innerText = this.combat.playerArmor;
+                document.getElementById('cb-player-ap').innerText = this.combat.playerAp;
+                document.getElementById('cb-enemy-hp').innerText = this.combat.enemyHp;
+                
+                const handEl = document.getElementById('cb-hand');
+                handEl.innerHTML = '';
+                this.combat.hand.forEach((c, idx) => {
+                    const el = this.createCardUi(c);
+                    el.onclick = () => {
+                        if (this.combat.playerAp < c.cost) return;
+                        this.combat.playerAp -= c.cost;
+                        this.combat.hand.splice(idx, 1);
+                        this.combat.discard.push(c);
+                        
+                        this.combat.enemyHp = Math.max(0, this.combat.enemyHp - 6); // Simple static damage rule evaluation
+                        if (this.combat.enemyHp <= 0) {
+                            alert("Enemy cleared out! Proceed down trails.");
+                            this.gold += 30;
+                            if (this.currentDepth === 13) {
+                                alert("🎉 Trail completed! Moving onto next map layout grid layer.");
+                                this.mapId++;
+                                this.generateNewMapLayer();
+                            }
+                            this.leaveNode();
+                            return;
+                        }
+                        this.updateCombatDashboard();
+                    };
+                    handEl.appendChild(el);
+                });
+            }
+
+            endTurn() {
+                this.hp = Math.max(0, this.hp - 6);
+                if (this.hp <= 0) {
+                    alert("☠️ Defeated. Restarting run sequence.");
+                    location.reload();
+                    return;
+                }
+                this.combat.discard.push(...this.combat.hand);
+                this.combat.hand = [];
+                this.combat.playerAp = 3;
+                this.drawCardsToHand(3);
+                this.updateCombatDashboard();
+            }
+
+            // --- STORE SYSTEM MODULE ---
+            openStoreScreen() {
+                this.switchContext('screen-shop');
+                const grid = document.getElementById('shop-boxes-grid');
+                grid.innerHTML = '';
+
+                DECK_BOX_TIERS.forEach((box, index) => {
+                    if (index <= this.activeBoxIndex) return; // Hide already owned boxes
+                    
+                    const el = document.createElement('div');
+                    el.className = 'game-card rarity-LEGENDARY';
+                    el.style.width = '210px';
+                    el.innerHTML = `
+                        <div class="card-name">${box.name}</div>
+                        <div style="font-size:0.75em; padding:5px 0;">Max Deck size: <strong>${box.maxCapacity} cards</strong></div>
+                        <div style="font-size:0.7em; color:var(--accent-gold); flex-grow:1;">Perk: ${box.description}</div>
+                        <button class="btn" style="width:100%; font-size:11px;">Buy: ${box.cost} Gold</button>
+                    `;
+                    el.querySelector('button').onclick = () => {
+                        if(this.gold >= box.cost) {
+                            this.gold -= box.cost;
+                            this.activeBoxIndex = index;
+                            alert(`Equipped new Holster Base: ${box.name}`);
+                            this.leaveNode();
+                        } else {
+                            alert("Insolvent asset wallet depth. Collect more gold on the trail.");
+                        }
+                    };
+                    grid.appendChild(el);
+                });
+            }
+
+            leaveNode() {
+                this.updateGlobalHud();
+                this.renderMapInterface();
+                this.switchContext('screen-map');
+            }
+
+            createCardUi(card) {
+                const d = document.createElement('div');
+                d.className = `game-card rarity-${card.rarity}`;
+                d.innerHTML = `<div>⚡ ${card.cost}</div><div class="card-name">${card.name}</div><div style="font-size:0.75em; text-align:center;">${card.effect}</div>`;
+                return d;
             }
         }
-        
-        function shieldPlayerTarget(amount) { activeCombatState.playerShield += amount; logCombatMessage(`Assembled +${amount} protective shielding plating.`); }
-        function logCombatMessage(msg) { const logger = document.getElementById("combat-event-logger"); logger.innerHTML += `<br>>> ${msg}`; logger.scrollTop = logger.scrollHeight; }
 
-        function processHostileTurnSequence() {
-            let dmg = activeCombatState.enemy.dmg;
-            let finalHit = Math.max(0, dmg - activeCombatState.playerShield);
-            userState.hp -= finalHit;
-            logCombatMessage(`Hostile returns fire for ${dmg}. Plating blocked ${activeCombatState.playerShield}. Took ${finalHit} internal core damage.`);
-            
-            activeCombatState.playerShield = 0; activeCombatState.currentEnergy = userState.maxEnergy;
-            activeCombatState.enemy.dmg = activeCombatState.enemy.baseDmg;
-            activeCombatState.enemy.intent = activeCombatState.enemy.baseIntent;
+        const DECK_BOX_TIERS = [
+            { id: 't1', name: 'Battered Pouch', maxCapacity: 5, cost: 0, passive: 'NONE', description: 'No passives applied.' },
+            { id: 't2', name: 'Ammo Case', maxCapacity: 8, cost: 60, passive: 'FORTIFIED_IRON', description: '+3 Armor at combat start.' },
+            { id: 't3', name: 'Bandolier Strap', maxCapacity: 12, cost: 120, passive: 'QUICK_DRAW_RETAIN', description: 'Retain cards easily.' }
+        ];
 
-            if(userState.hp <= 0) { alert("Chassis structure reached fatal status limits. System reset required."); location.reload(); return; }
-            fillHandArray(); renderCombatScreenInterfaceValues();
-        }
-
-        function renderCombatScreenInterfaceValues() {
-            const e = activeCombatState.enemy; if(!e) return;
-            document.getElementById("combat-enemy-title").innerText = e.name;
-            document.getElementById("combat-enemy-hp-text").innerText = `${e.hp}/${e.maxHp}`;
-            document.getElementById("combat-enemy-hp-bar").style.width = `${(e.hp / e.maxHp)*100}%`;
-            document.getElementById("combat-enemy-intent-text").innerText = `${e.intent} [Projecting: ${e.dmg} Dmg]`;
-
-            document.getElementById("combat-player-title").innerText = userState.name;
-            document.getElementById("combat-player-hp-text").innerText = `${userState.hp}/${userState.maxHp}`;
-            document.getElementById("combat-player-shield-text").innerText = `Armor Plate: ${activeCombatState.playerShield}`;
-            document.getElementById("combat-player-hp-bar").style.width = `${(userState.hp / userState.maxHp)*100}%`;
-            document.getElementById("combat-player-en-text").innerText = `${activeCombatState.currentEnergy}/${userState.maxEnergy}`;
-            document.getElementById("combat-player-en-bar").style.width = `${(activeCombatState.currentEnergy / userState.maxEnergy)*100}%`;
-        }
-
-        function awardExperiencePoints(amount) { userState.xp += amount; if(userState.xp>=100){ userState.level++; userState.xp=0; userState.maxHp+=12; userState.hp=userState.maxHp; alert("System baseline hardware evolution initialized!"); } syncGlobalHUD(); saveActiveRunData(); }
-        
-        function refreshDeckInspectorTab() {
-            document.getElementById("deck-stats-name").innerText = userState.name; document.getElementById("deck-stats-hp").innerText = `${userState.hp}/${userState.maxHp}`;
-            document.getElementById("deck-stats-energy").innerText = userState.maxEnergy; document.getElementById("deck-stats-level").innerText = userState.level;
-            document.getElementById("deck-stats-xp").innerText = `${userState.xp}/100`; document.getElementById("deck-count-num").innerText = userState.deck.length;
-            
-            const grid = document.getElementById("deck-display-scroll-area"); grid.innerHTML = "";
-            userState.deck.forEach(cid => { 
-                const d = GLOBAL_COMMON_CARDS[cid] || CLASS_UNIQUE_CARDS[cid]; 
-                if(d) { 
-                    const i = document.createElement("div"); 
-                    let ts = "card-attack"; if(d.type === "Defense") ts = "card-defense"; if(d.type === "Utility") ts = "card-utility";
-                    i.className=`card-item ${ts}`; i.style.position="relative"; 
-                    i.innerHTML=`
-                        <div class="card-header-wrapper">
-                            <div class="badge">${d.cost}</div>
-                            <div class="title">${d.title}</div>
-                        </div>
-                        <div class="body-text">${d.desc}</div>
-                        <div class="type-tag">${d.type}</div>
-                    `; 
-                    grid.appendChild(i); 
-                } 
-            });
-        }
-        
-        function fireActiveChassisTech() { if(!activeCombatState.abilityAvailable) return; damageHostileTarget(12); activeCombatState.abilityAvailable = false; renderCombatScreenInterfaceValues(); }
+        const game = new GameEngineWrapper();
+        window.onload = () => game.start();
     </script>
 </body>
 </html>
