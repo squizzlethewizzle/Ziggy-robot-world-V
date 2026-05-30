@@ -3,314 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Dust & Iron: A Weird West Tale</title>
+    <title>Dust & Iron: Frontier Tales</title>
     <style>
-        /* --- THEMATIC PALETTE DEFINITIONS --- */
         :root {
-            --bg: #0f0b08;
-            --panel: #1c140f;
-            --border: #5c3e2b;
+            --bg: #0d0907;
+            --panel: #1a110b;
+            --border: #4d3322;
             --accent: #e67e22;
             --accent-rgb: 230, 126, 34;
-            --text: #f5ebe0;
-            --text-muted: #8c7361;
+            --text: #fdf6ee;
+            --text-muted: #8c715e;
             --danger: #c0392b;
-            --card-bg: linear-gradient(135deg, #2e1f16, #1a110b);
-            --glow: rgba(230, 126, 34, 0.3);
-            --window-radius: 12px;
+            --card-bg: linear-gradient(135deg, #2b1a11, #140d08);
+            --glow: rgba(230, 126, 34, 0.35);
+            --window-radius: 10px;
+            
+            /* Rarities */
+            --rarity-basic: #8c715e;
+            --rarity-rare: #2980b9;
+            --rarity-epic: #8e44ad;
+            --rarity-legendary: #d35400;
         }
 
         [data-theme="neon-oil"] {
-            --bg: #050b0e;
-            --panel: #0d171e;
-            --border: #224960;
+            --bg: #04080b;
+            --panel: #0a1218;
+            --border: #1a364a;
             --accent: #00ffcc;
             --accent-rgb: 0, 255, 204;
-            --text: #e6f7ff;
-            --text-muted: #5d87a1;
-            --danger: #ff3344;
-            --card-bg: linear-gradient(135deg, #112532, #08131b);
-            --glow: rgba(0, 255, 204, 0.3);
+            --text: #e1f5fe;
+            --text-muted: #547b94;
+            --danger: #ff2a4b;
+            --card-bg: linear-gradient(135deg, #0e1e29, #050a0e);
+            --glow: rgba(0, 255, 204, 0.35);
         }
 
         [data-theme="rust-belt"] {
-            --bg: #140808;
-            --panel: #241111;
-            --border: #662929;
-            --accent: #ff4500;
-            --accent-rgb: 255, 69, 0;
-            --text: #ffebeb;
-            --text-muted: #995c5c;
-            --danger: #ff0000;
-            --card-bg: linear-gradient(135deg, #3d1c1c, #240f0f);
-            --glow: rgba(255, 69, 0, 0.3);
+            --bg: #120606;
+            --panel: #200d0d;
+            --border: #591e1e;
+            --accent: #ff3c00;
+            --accent-rgb: 255, 60, 0;
+            --text: #fff0f0;
+            --text-muted: #945454;
+            --danger: #e74c3c;
+            --card-bg: linear-gradient(135deg, #381414, #1a0606);
+            --glow: rgba(255, 60, 0, 0.35);
         }
 
-        * { 
-            box-sizing: border-box; 
-            transition: background-color 0.2s, border-color 0.2s, transform 0.15s ease-out;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; transition: background-color 0.2s, border-color 0.2s; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); font-family: "Georgia", serif; margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: "Georgia", serif;
-            margin: 0; padding: 0;
-            width: 100vw; height: 100vh;
-            overflow: hidden;
-            display: flex; justify-content: center;
-        }
-
-        #viewport {
-            width: 100%; max-width: 480px; height: 100%;
-            background-color: var(--panel);
-            border-left: 3px solid var(--border);
-            border-right: 3px solid var(--border);
-            display: flex; flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-        }
+        #viewport { width: 100%; max-width: 480px; height: 100%; background-color: var(--panel); border-left: 2px solid var(--border); border-right: 2px solid var(--border); display: flex; flex-direction: column; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        
+        /* --- BOTTOM NAVIGATION FOOTER BAR --- */
+        #bottom-navigation-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: #120c08; border-top: 2px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); z-index: 100; }
+        .nav-tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; color: var(--text-muted); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-tab-item span { font-size: 16px; margin-bottom: 2px; }
+        .nav-tab-item.active { color: var(--accent); background: rgba(255,255,255,0.02); font-weight: bold; }
 
         /* --- SALOON HUD BAR --- */
-        #top-hud {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            padding: 12px 6px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.3));
-            border-bottom: 2px solid var(--border);
-            text-align: center; font-size: 9px; font-weight: bold; letter-spacing: 1px;
-            text-transform: uppercase; gap: 4px;
-            z-index: 10;
-        }
-        #top-hud div { 
-            background: rgba(0,0,0,0.5); padding: 6px 2px; 
-            border-radius: 6px; border: 1px solid rgba(255,255,255,0.03);
-        }
-        #top-hud span { color: var(--accent); font-size: 13px; font-weight: bold; display: block; margin-top: 2px; }
+        #top-hud { display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 4px; background: linear-gradient(to bottom, #000, rgba(0,0,0,0.4)); border-bottom: 2px solid var(--border); text-align: center; font-size: 9px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; gap: 4px; z-index: 10; }
+        #top-hud div { background: rgba(0,0,0,0.4); padding: 5px 2px; border-radius: 4px; }
+        #top-hud span { color: var(--accent); font-size: 12px; font-weight: bold; display: block; margin-top: 2px; }
 
-        /* --- BASE CONTAINERS --- */
-        #screen-container {
-            flex-grow: 1; overflow-y: auto;
-            padding: 16px; padding-bottom: 80px; 
-            position: relative;
-        }
+        #screen-container { flex-grow: 1; overflow-y: auto; padding: 14px; padding-bottom: 76px; position: relative; }
         .screen { display: none; height: 100%; flex-direction: column; }
         .screen.active { display: flex; }
 
-        h2 { font-size: 22px; font-weight: normal; text-align: center; color: var(--accent); margin: 0 0 6px 0; letter-spacing: 1px; }
-        .subtitle { font-size: 12px; font-style: italic; color: var(--text-muted); text-align: center; margin: 0 0 16px 0; }
+        h2 { font-size: 20px; font-weight: normal; text-align: center; color: var(--accent); margin: 0 0 4px 0; letter-spacing: 0.5px; }
+        .subtitle { font-size: 11px; font-style: italic; color: var(--text-muted); text-align: center; margin: 0 0 12px 0; }
 
-        .btn {
-            background: linear-gradient(to bottom, #3a261a, #241710);
-            color: var(--text); border: 2px solid var(--border);
-            padding: 12px 16px; border-radius: 8px;
-            font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; width: 100%; margin-bottom: 8px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-        }
-        .btn:active, .btn.selected {
-            background: var(--accent); color: #0f0b08; border-color: var(--accent);
-            box-shadow: 0 0 10px var(--glow); transform: translateY(1px);
-        }
-        .btn-danger { border-color: var(--danger); color: #e74c3c; background: linear-gradient(to bottom, #2c1111, #1a0a0a); }
+        .btn { background: linear-gradient(to bottom, #331f14, #1f130c); color: var(--text); border: 2px solid var(--border); padding: 10px 14px; border-radius: 6px; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; width: 100%; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn:active, .btn.selected { background: var(--accent); color: #0d0907; border-color: var(--accent); box-shadow: 0 0 8px var(--glow); }
+        .btn-danger { border-color: var(--danger); color: #fc5c65; background: linear-gradient(to bottom, #2a0f0f, #150808); }
         .btn-danger:active { background: var(--danger); color: #fff; }
 
-        /* --- MAIN TITLE SCREEN --- */
-        .start-frame { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
-        .menu-logo-container {
-            text-align: center; margin-bottom: 24px; width: 100%;
-            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.12) 0%, rgba(0,0,0,0.6) 100%);
-            padding: 30px 16px; border-radius: var(--window-radius);
-            border: 2px solid var(--border); box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-        .menu-logo { font-size: 36px; font-weight: bold; color: var(--accent); letter-spacing: 2px; margin: 0; }
-        .menu-sub { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 3px; margin-top: 8px; font-weight: bold; }
+        /* --- CHARACTER SELECT --- */
+        .char-scroller-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; flex-grow: 1; max-height: 340px; margin-bottom: 10px; padding: 2px; }
+        .char-card { background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; padding: 10px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+        .char-card.selected { border-color: var(--accent); box-shadow: 0 0 8px var(--glow); background: rgba(var(--accent-rgb), 0.05); }
+        .char-card-title { font-weight: bold; color: var(--accent); font-size: 12px; }
+        .char-card-desc { font-size: 10px; margin-top: 4px; color: var(--text-muted); line-height: 1.2; font-style: italic; }
+
+        /* --- FRONTIER TRAIL MAP SYSTEM --- */
+        .map-legend-banner { background: #110a07; border: 2px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 10px; font-size: 11px; text-align: center; color: var(--text); line-height: 1.3; min-height: 58px; display: flex; flex-direction: column; justify-content: center; }
+        .map-scroll-pane { flex-grow: 1; overflow-y: auto; background: radial-gradient(circle at center, #1f130c 0%, #060403 100%); border: 2px solid var(--border); border-radius: var(--window-radius); position: relative; }
+        .map-svg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .map-nodes-container-div { display: flex; flex-direction: column-reverse; padding: 24px 0; position: relative; z-index: 2; }
+        .map-layer-row { display: flex; justify-content: space-around; align-items: center; height: 80px; position: relative; width: 100%; }
         
-        .tray-box {
-            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
-            border-radius: var(--window-radius); padding: 12px; width: 100%;
-        }
-        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
-        .theme-dot-btn {
-            background: #241710; border: 1px solid var(--border); border-radius: 4px;
-            padding: 6px 2px; font-size: 10px; color: var(--text); cursor: pointer; text-align: center;
-        }
+        .node-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; position: relative; z-index: 5; box-shadow: 0 3px 5px rgba(0,0,0,0.5); }
+        .node-circle.available { border-color: var(--accent); animation: nodePulse 1.4s infinite alternate; }
+        @keyframes nodePulse { 0% { transform: scale(1); } 100% { transform: scale(1.06); box-shadow: 0 0 10px var(--accent); } }
+        .node-circle.resolved { opacity: 0.25; background: #000; border-color: #24140a; }
+        .meeple-pawn { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; border: 1px solid #fff; white-space: nowrap; z-index: 10; }
 
-        /* --- CHARACTER SELECT EXPANSION --- */
-        .char-scroller-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            overflow-y: auto; flex-grow: 1; max-height: 360px; margin-bottom: 12px; padding: 4px;
-            border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.3);
-        }
-        .char-card {
-            background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px;
-            padding: 10px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 100px;
-        }
-        .char-card.selected { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); background: rgba(var(--accent-rgb), 0.1); }
-        .char-card-title { font-weight: bold; color: var(--accent); font-size: 13px; display: flex; align-items: center; gap: 4px; }
-        .char-card-desc { font-size: 11px; margin-top: 4px; line-height: 1.2; color: var(--text-muted); font-style: italic; }
-
-        /* --- SEGMENTED ACTION AP BAR --- */
-        .ap-container-bar { display: flex; gap: 4px; margin-top: 6px; width: 80px; height: 12px; }
-        .ap-segment { flex-grow: 1; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 2px; }
-        .ap-segment.filled { background: var(--accent); box-shadow: 0 0 6px var(--glow); border-color: transparent; }
-
-        /* --- TRAIL MAP SCREEN --- */
-        .map-legend-banner {
-            background: #140d0a; border: 2px solid var(--border); border-radius: 8px;
-            padding: 10px; margin-bottom: 12px; font-size: 12px; text-align: center;
-            color: var(--text); line-height: 1.3; box-shadow: inset 0 0 10px #000; min-height: 68px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .map-scroll-pane {
-            flex-grow: 1; overflow-y: auto;
-            background: radial-gradient(circle at center, #241710 0%, #0a0705 100%);
-            border: 2px solid var(--border); border-radius: var(--window-radius);
-            position: relative; box-shadow: inset 0 0 30px #000;
-        }
-        .map-svg-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
-        }
-        .map-nodes-container-div { display: flex; flex-direction: column-reverse; padding: 30px 0; position: relative; z-index: 2; }
-        .map-layer-row { display: flex; justify-content: space-around; align-items: center; height: 85px; position: relative; }
-        
-        .node-circle {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: var(--card-bg); border: 2px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; cursor: pointer; position: relative;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.6); z-index: 5;
-        }
-        .node-circle.available { border-color: var(--accent); animation: nodePulse 1.5s infinite alternate; }
-        @keyframes nodePulse {
-            0% { transform: scale(1); box-shadow: 0 0 4px var(--accent); }
-            100% { transform: scale(1.08); box-shadow: 0 0 12px var(--accent); }
-        }
-        .node-circle.resolved { opacity: 0.3; background: #000; border-color: #2b1a11; }
-
-        .meeple-pawn {
-            position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: #000; font-size: 8px; font-weight: bold;
-            padding: 1px 5px; border-radius: 4px; border: 1px solid #fff;
-            box-shadow: 0 0 6px #000; z-index: 10; white-space: nowrap;
-        }
-
-        /* --- PLAYING CARD SYSTEM --- */
-        .mobile-card {
-            width: 105px; height: 145px; background: var(--card-bg);
-            border: 2px solid var(--border); border-radius: 8px; padding: 10px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            font-size: 11px; box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            user-select: none; -webkit-user-select: none;
-        }
+        /* --- THE PLAYING CARD LAYER --- */
+        .mobile-card { width: 100px; height: 140px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 6px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; font-size: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.6); user-select: none; -webkit-user-select: none; }
         .mobile-card .c-header { display: flex; justify-content: space-between; font-weight: bold; color: var(--accent); font-family: monospace; }
-        .mobile-card .c-name { font-weight: bold; margin: 4px 0; font-size: 11px; line-height: 1.1; text-align: center; color: #fff; }
-        .mobile-card .c-body { font-size: 10px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; font-style: italic; }
-        .mobile-card.rarity-RARE { border-color: #d35400; box-shadow: 0 4px 8px rgba(211, 84, 0, 0.2); }
-        .mobile-card.rarity-LEGENDARY { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
+        .mobile-card .c-name { font-weight: bold; margin: 2px 0; font-size: 10px; text-align: center; color: #fff; line-height: 1.1; }
+        .mobile-card .c-body { font-size: 9px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; font-style: italic; }
+        
+        .mobile-card.rarity-BASIC { border-color: var(--rarity-basic); }
+        .mobile-card.rarity-RARE { border-color: var(--rarity-rare); box-shadow: 0 0 6px rgba(41, 128, 185, 0.4); }
+        .mobile-card.rarity-EPIC { border-color: var(--rarity-epic); box-shadow: 0 0 8px rgba(142, 68, 173, 0.5); }
+        .mobile-card.rarity-LEGENDARY { border-color: var(--rarity-legendary); box-shadow: 0 0 12px rgba(211, 84, 0, 0.7); }
 
-        /* --- SHOWDOWN ARENA --- */
+        /* --- THE SHOWDOWN ARENA --- */
         .combat-arena-wrapper { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
-        .vital-readout-strip {
-            display: flex; justify-content: space-between; background: rgba(0,0,0,0.5);
-            border: 2px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 12px;
-        }
+        .vital-readout-strip { display: flex; justify-content: space-between; background: rgba(0,0,0,0.4); border: 2px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 11px; }
         .vital-block { display: flex; flex-direction: column; gap: 2px; width: 48%; }
-        .hp-bar-outer { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; margin-top: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .hp-bar-outer { width: 100%; height: 6px; background: #000; border-radius: 3px; overflow: hidden; margin-top: 4px; }
         .hp-bar-inner { height: 100%; background: var(--accent); width: 100%; }
         .hp-bar-inner.enemy { background: var(--danger); }
+        .ap-container-bar { display: flex; gap: 3px; margin-top: 4px; width: 70px; height: 10px; }
+        .ap-segment { flex-grow: 1; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 1px; }
+        .ap-segment.filled { background: var(--accent); box-shadow: 0 0 4px var(--glow); border-color: transparent; }
+        .hand-arc-container { position: relative; height: 170px; width: 100%; margin-top: 6px; }
+        .hand-arc-container .mobile-card { position: absolute; bottom: 10px; left: 50%; transform-origin: bottom center; cursor: pointer; }
 
-        .hand-arc-container { position: relative; height: 180px; width: 100%; margin-top: 10px; overflow: visible; }
-        .hand-arc-container .mobile-card { position: absolute; bottom: 15px; left: 50%; transform-origin: bottom center; cursor: pointer; }
-        .hand-arc-container .mobile-card:active { transform: scale(1.15) translateY(-15px) !important; z-index: 200 !important; border-color: var(--accent); }
-
-        /* --- CAMP / VAULT MANAGEMENT --- */
-        .camp-scroll-dock {
-            background: rgba(0,0,0,0.4); border: 2px solid var(--border); border-radius: var(--window-radius);
-            padding: 12px; margin-bottom: 12px; box-shadow: inset 0 0 10px #000;
-        }
-        .card-flex-row-layout {
-            display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px;
-            min-height: 165px; align-items: center;
-        }
+        /* --- STASH SLOTS LAYOUTS --- */
+        .camp-scroll-dock { background: rgba(0,0,0,0.3); border: 2px solid var(--border); border-radius: var(--window-radius); padding: 10px; margin-bottom: 10px; }
+        .card-flex-row-layout { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; min-height: 155px; align-items: center; }
         .card-flex-row-layout .mobile-card { flex-shrink: 0; cursor: pointer; }
 
-        /* --- INSPECT MODAL OVERLAY --- */
-        #inspect-modal-overlay {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-            z-index: 500; align-items: center; justify-content: center; padding: 20px;
-        }
-        .inspect-window-box {
-            background: var(--panel); border: 2px solid var(--accent); border-radius: var(--window-radius);
-            padding: 20px; width: 100%; max-width: 300px; text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.9);
-        }
-
-        /* --- BOTTOM CONTROL TRACKS --- */
-        #bottom-navigation-bar {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
-            background: #140d0a; border-top: 2px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); z-index: 100;
-        }
-        .nav-tab-item {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 9px; color: var(--text-muted); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .nav-tab-item span { font-size: 16px; margin-bottom: 1px; }
-        .nav-tab-item.active { color: var(--accent); background: rgba(255,255,255,0.02); font-weight: bold; }
-
-        .rules-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.4; margin-bottom: 8px; }
+        /* --- MODAL INSPECT FRAME OVERLAYS --- */
+        #inspect-modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(2px); z-index: 500; align-items: center; justify-content: center; padding: 16px; }
+        .inspect-window-box { background: var(--panel); border: 2px solid var(--accent); border-radius: var(--window-radius); padding: 16px; width: 100%; max-width: 290px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        .rules-card { background: rgba(0,0,0,0.25); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-size: 11px; line-height: 1.3; margin-bottom: 6px; }
     </style>
 </head>
 <body>
 
     <div id="viewport">
+        <!-- HEADER METRICS PANEL -->
         <div id="top-hud">
-            <div>Grit & Hull <span id="hud-hp">50/50</span></div>
-            <div>Scrap Oil <span id="hud-gold">100</span></div>
+            <div>Integrity <span id="hud-hp">50/50</span></div>
+            <div>Oil Scrap <span id="hud-gold">60</span></div>
             <div>Holster <span id="hud-deck-capacity">0/5</span></div>
-            <div>Territory <span id="hud-map-index">1-1</span></div>
+            <div>Territory <span id="hud-map-index">M1-LV1</span></div>
         </div>
 
         <div id="screen-container">
+            <!-- VIEW 1: SALOON DASHBOARD -->
             <div id="view-start" class="screen active">
-                <div class="start-frame">
-                    <div class="menu-logo-container">
-                        <div class="menu-logo">DUST & IRON</div>
-                        <div class="menu-sub">🌵 A Weird West Saloon Tale 🌵</div>
+                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%;">
+                    <div style="text-align:center; margin-bottom:20px; width:100%; border:2px solid var(--border); padding:24px 12px; border-radius:var(--window-radius); background:radial-gradient(circle, rgba(var(--accent-rgb),0.08) 0%, transparent 100%);">
+                        <div style="font-size:32px; font-weight:bold; color:var(--accent); letter-spacing:1px;">DUST & IRON</div>
+                        <div style="font-size:10px; text-transform:uppercase; color:var(--text-muted); letter-spacing:2px; margin-top:6px;">Weird West Sandbox</div>
                     </div>
-                    <div style="width: 100%; margin-bottom: 20px;">
-                        <button class="btn" style="border-color: var(--accent);" onclick="app.switchView('view-charselect')">🤠 Build a New Gunslinger</button>
-                        <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; border-color: var(--accent);">💾 Ride into Saved Session</button>
-                        <button class="btn btn-danger" onclick="app.resetSystemDefault()">Clear Local Memory</button>
-                    </div>
-                    <div class="tray-box">
-                        <div style="font-size: 10px; font-weight: bold; text-align: center; text-transform: uppercase; color: var(--text-muted);">Saloon Paint Scheme</div>
-                        <div class="theme-grid">
-                            <button class="theme-dot-btn" onclick="app.setThemePalette('default')">🍂 Brass</button>
-                            <button class="theme-dot-btn" onclick="app.setThemePalette('neon-oil')">🧪 Bio-Oil</button>
-                            <button class="theme-dot-btn" onclick="app.setThemePalette('rust-belt')">🔴 Corrosion</button>
-                        </div>
-                    </div>
+                    <button class="btn" style="border-color:var(--accent);" onclick="app.switchView('view-charselect')">🤠 Build New Gunslinger</button>
+                    <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; border-color:var(--accent);">💾 Re-enter Active Run</button>
+                    <button class="btn btn-danger" style="margin-top:20px;" onclick="app.resetSystemDefault()">Wipe Memory Core</button>
                 </div>
             </div>
 
+            <!-- VIEW 2: CHARACTER REGISTRY -->
             <div id="view-charselect" class="screen">
-                <h2>Choose Your Fighter</h2>
-                <div class="subtitle">Pick a robotic drifter built for the lawless wastes.</div>
+                <h2>Assemble Chassis</h2>
+                <div class="subtitle">Select a frame variant configured for wild frontier scouting.</div>
                 <div class="char-scroller-grid" id="character-injection-grid"></div>
                 <div style="margin-top:auto;">
-                    <button class="btn" style="border-color: var(--accent);" onclick="app.confirmCharacterSelection()">Head Out to the Trail</button>
-                    <button class="btn btn-danger" onclick="app.switchView('view-start')">Back to Menu</button>
+                    <button class="btn" style="border-color:var(--accent);" onclick="app.confirmCharacterSelection()">Lock Options & Roll Wagon</button>
+                    <button class="btn btn-danger" onclick="app.switchView('view-start')">Cancel</button>
                 </div>
             </div>
 
+            <!-- VIEW 3: PATHWAYS RADIAL TRAIL -->
             <div id="view-map" class="screen">
-                <h2>The Frontier Trail</h2>
+                <h2>Frontier Horizon</h2>
                 <div class="map-legend-banner" id="map-target-node-descriptor">
-                    🤠 Tap a trail symbol below to steer your cowboy wagon forward. Hover or press to inspect symbols.
+                    Select an open trail node at the bottom row to advance. Drag map to scroll vertically.
                 </div>
                 <div class="map-scroll-pane" id="map-scroll-view">
                     <svg class="map-svg-canvas" id="map-connections-svg"></svg>
@@ -318,96 +182,103 @@
                 </div>
             </div>
 
+            <!-- VIEW 4: ARENA CONFLICT INTERFACE -->
             <div id="view-combat" class="screen">
                 <div class="combat-arena-wrapper">
                     <div class="vital-readout-strip">
                         <div class="vital-block">
-                            <div style="display:flex; flex-direction:column; justify-content: flex-start;">
-                                <span id="cb-player-frame-title" style="color:var(--accent); font-weight: bold;">Gunslinger</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span id="cb-player-frame-title" style="color:var(--accent); font-weight:bold;">Drifter</span>
                                 <div class="ap-container-bar" id="cb-player-ap-bar"></div>
                             </div>
-                            <div style="font-size:10px; margin-top:6px; color:var(--text-muted);">
-                                HP: <span id="cb-player-hp">50</span> | Armor: <span id="cb-player-armor">0</span>
-                            </div>
+                            <div style="font-size:10px; margin-top:4px;">HP: <span id="cb-player-hp">50</span> | Shield: <span id="cb-player-armor">0</span></div>
                             <div class="hp-bar-outer"><div class="hp-bar-inner" id="bar-player-hp-pc"></div></div>
                         </div>
-                        <div class="vital-block" style="text-align: right;">
-                            <div style="font-weight:bold; color:var(--danger);" id="cb-enemy-name">Outlaw Drone</div>
-                            <div style="font-size:10px; margin-top:2px;">HP: <span id="cb-enemy-hp">25</span></div>
+                        <div class="vital-block" style="text-align:right;">
+                            <div style="font-weight:bold; color:var(--danger);" id="cb-enemy-name">Rustler</div>
+                            <div style="font-size:10px;">HP: <span id="cb-enemy-hp">20</span></div>
                             <div class="hp-bar-outer"><div class="hp-bar-inner enemy" id="bar-enemy-hp-pc"></div></div>
-                            <div id="cb-enemy-intent" style="font-weight:bold; color:#ffb300; font-size:10px; margin-top:4px;">Intent: Aiming Pistol (6 Dmg)</div>
+                            <div id="cb-enemy-intent" style="font-weight:bold; color:#f39c12; font-size:9px; margin-top:4px;">Aiming...</div>
                         </div>
                     </div>
-                    <div style="font-size:11px; text-align:center; color:var(--text-muted); font-style: italic;">
-                        Tap card to play • Hold down to read closely
-                    </div>
+                    <div style="font-size:10px; text-align:center; color:var(--text-muted); font-style:italic;">Tap to Play • Hold down to Inspect</div>
                     <div class="hand-arc-container" id="combat-hand-arc-frame"></div>
-                    <button class="btn" onclick="app.endCombatTurn()" style="border-color:var(--accent); margin-bottom: 0;">End Your Turn</button>
+                    <button class="btn" onclick="app.endCombatTurn()" style="border-color:var(--accent); margin-bottom:0;">End Action Phase</button>
                 </div>
             </div>
 
+            <!-- VIEW 5: MAINTENANCE CAMPFIRE -->
             <div id="view-campfire" class="screen">
-                <h2>🔥 Campfire Maintenance</h2>
-                <div class="subtitle">Swap trick cards out of your active holster and stash them into your cargo vault safely.</div>
-                
+                <h2>🔥 Campfire Tuning</h2>
+                <div class="subtitle">Organize your loadout below. Cards inside your active belt go into battle with you.</div>
                 <div class="camp-scroll-dock">
-                    <div style="font-size:11px; font-weight:bold; color: var(--accent); margin-bottom: 4px; text-transform: uppercase;">Ready Holster Deck (<span id="camp-active-count">0/5</span>)</div>
+                    <div style="font-size:10px; font-weight:bold; color:var(--accent); margin-bottom:4px;">ACTIVE BELT HARNESS (<span id="camp-active-count">0/5</span>)</div>
                     <div class="card-flex-row-layout" id="camp-active-scroller"></div>
                 </div>
-
                 <div class="camp-scroll-dock">
-                    <div style="font-size:11px; font-weight:bold; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">Secure Cargo Vault Stash</div>
+                    <div style="font-size:10px; font-weight:bold; color:var(--text-muted); margin-bottom:4px;">BACKUP CARGO VAULT</div>
                     <div class="card-flex-row-layout" id="camp-safe-scroller"></div>
                 </div>
-
-                <button class="btn" onclick="app.exitNodeToTrails()" style="margin-top:auto; border-color: var(--accent);">Pack Up Camp & Ride</button>
+                <button class="btn" onclick="app.exitNodeToTrails()" style="margin-top:auto; border-color:var(--accent);">Extinguish Fire & Ride</button>
             </div>
 
+            <!-- VIEW 6: TRAIL OUTFITTERS EMPORIUM -->
             <div id="view-shop" class="screen">
-                <h2>🏪 Trail Outfitters Shop</h2>
-                <div class="subtitle">Trade away spare gold oil barrels to hitch larger card holsters onto your frame.</div>
-                <div id="shop-catalog-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-                <button class="btn btn-danger" onclick="app.exitNodeToTrails()" style="margin-top:auto;">Leave Shop</button>
+                <h2>🏪 Outfit Vendor Port</h2>
+                <div class="subtitle">Trade barrel oil scraps for high-tier action components or advanced mechanical belts.</div>
+                <div style="overflow-y:auto; flex-grow:1; display:flex; flex-direction:column; gap:8px;" id="shop-catalog-list"></div>
+                <button class="btn btn-danger" onclick="app.exitNodeToTrails()" style="margin-top:8px;">Exit Storefront</button>
             </div>
 
+            <!-- VIEW 7: WILDERNESS EVENT MODULES -->
+            <div id="view-encounter" class="screen">
+                <h2 id="enc-title">Desert Encounter</h2>
+                <div class="char-card" style="padding:14px; text-align:center; min-height:100px; justify-content:center; margin-bottom:14px;">
+                    <div id="enc-icon" style="font-size:32px; margin-bottom:6px;">🌵</div>
+                    <div id="enc-text" style="font-size:12px; line-height:1.4;">An unpredictable crossroad splits the sand dunes...</div>
+                </div>
+                <div id="enc-choices-frame" style="display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+
+            <!-- VIEW 8: ENGINE SPECIFICATIONS SHEET -->
             <div id="view-character" class="screen">
-                <h2>Gunslinger Sheet</h2>
-                <div class="char-card" style="text-align:center; min-height: auto; border-radius: 12px; padding: 16px;">
-                    <div style="font-size:36px;" id="sheet-avatar">🤠</div>
-                    <div style="font-size:18px; font-weight:bold; margin-top:4px;" id="sheet-class-title">Drifter</div>
-                    <div style="font-size:12px; color:var(--accent); margin-top:2px; font-style: italic;">Level <span id="sheet-level">1</span> Wanderer</div>
+                <h2>Gunslinger Core Metrics</h2>
+                <div class="char-card" style="text-align:center; padding:12px; margin-bottom:10px;">
+                    <div style="font-size:32px;" id="sheet-avatar">🤠</div>
+                    <div style="font-size:16px; font-weight:bold;" id="sheet-class-title">Drifter Framework</div>
+                    <div style="font-size:11px; color:var(--accent); margin-top:2px;">Level <span id="sheet-level">1</span> Platform • <span id="sheet-xp">0/100</span> XP</div>
                 </div>
-                <div class="rules-card" style="margin-top:12px;">
-                    <strong style="color:var(--accent)">Equipped Holster Gear:</strong><br>
-                    <span id="sheet-box-name">Standard Leather Belt</span><br>
-                    Max Capacity: <span id="sheet-box-cap">5 Cards</span><br>
-                    <small id="sheet-box-perk" style="color:var(--text-muted); display:block; margin-top:4px; font-style: italic;">No extra modifications built in.</small>
+                <div class="rules-card">
+                    <strong style="color:var(--accent)">Equipped Chassis Storage:</strong><br>
+                    <span id="sheet-box-name">-</span><br>
+                    Sleeve Threshold: <span id="sheet-box-cap">5 Cards</span><br>
+                    <small id="sheet-box-perk" style="color:var(--text-muted); display:block; margin-top:2px;"></small>
                 </div>
-                <div style="margin-top:auto;">
-                    <button class="btn btn-danger" onclick="app.saveAndQuitToMain()">💾 Save Game & Rest</button>
-                </div>
+                <button class="btn btn-danger" style="margin-top:auto;" onclick="app.saveAndQuitToMain()">💾 Save Blueprint & Exit</button>
             </div>
 
+            <!-- VIEW 9: GAMEPLAY DOCUMENTATION -->
             <div id="view-rules" class="screen">
-                <h2>Rules of the Badlands</h2>
-                <div class="rules-card"><strong>1. Gun Belt Holster Limit</strong><br>Your active fighting deck is limited by your belt size. Extra cards earned go directly to your backup vault cargo crates.</div>
-                <div class="rules-card"><strong>2. Campfire Maintenance</strong><br>Stopping at a campfire allows you to sit down and cycle cards out of your active holster and stash them away safely.</div>
-                <div class="rules-card"><strong>3. Branching Trails</strong><br>The road spans 14 steps. Conquering the 14th row lets you break through onto a whole new map territory.</div>
+                <h2>Frontier Manual</h2>
+                <div class="rules-card"><strong>Chassis Upgrade Paths</strong><br>Earning Experience Points (XP) triggers automatic frame tune-ups that increase your maximum integrity threshold permanently.</div>
+                <div class="rules-card"><strong>Territory Scaling Matrices</strong><br>Defeating a border Apex Boss drops codes to jump to subsequent territories. Each prospective territory scales enemy computing matrices, boosting their overall armor tolerances and bullet output.</div>
             </div>
 
+            <!-- VIEW 10: CONFIGURABLE VISUAL SCHEMES -->
             <div id="view-themes" class="screen">
-                <h2>Saloon Lighting Options</h2>
-                <div class="subtitle">Swap out visual optics to track trail pathways better in dark canyons.</div>
+                <h2>Optics Calibrator</h2>
                 <button class="btn" onclick="app.setThemePalette('default')">🍂 Brass Finish (Standard Wood & Copper)</button>
                 <button class="btn" onclick="app.setThemePalette('neon-oil')">🧪 Bio-Electric Fluid (Glow Cyan)</button>
                 <button class="btn" onclick="app.setThemePalette('rust-belt')">🔴 Corrosion Scraps (Deep Iron Crimson)</button>
             </div>
         </div>
 
+        <!-- MODAL FLOATING DESCRIPTOR HOVER BOX -->
         <div id="inspect-modal-overlay" onclick="app.closeInspectTelemetryModal()">
             <div class="inspect-window-box" id="inspect-modal-content-box"></div>
         </div>
 
+        <!-- BOTTOM TAB NAV HOOK -->
         <div id="bottom-navigation-bar" style="display:none;">
             <div class="nav-tab-item active" id="tab-map" onclick="app.handleTabNavigation('view-map', 'tab-map')"><span>🗺️</span>Trail</div>
             <div class="nav-tab-item" id="tab-char" onclick="app.handleTabNavigation('view-character', 'tab-char')"><span>🤠</span>Specs</div>
@@ -418,121 +289,112 @@
     </div>
 
     <script>
-        // --- CHASSIS CHARACTER REGISTRY MATRIX ---
-        const WEST_BOT_CLASSES = [
-            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Slashes safety protocols to deal heavier gun damage but strips away armor shields.' },
-            { name: 'Harlot', icon: '💃', desc: 'Emits blinding lens flashes to scramble incoming enemy weapon targets.' },
-            { name: 'Bank Robber', icon: '💰', desc: 'Equipped with heavy hydraulic hooks to fish bonus oil scrap directly out of strongboxes.' },
-            { name: 'Gambler', icon: '🎲', desc: 'Reroutes core luck registers to randomly trigger devastating high-stakes damage spikes.' },
-            { name: 'Bartender', icon: '🍺', desc: 'Vents steam coolant onto rusted joints to dramatically boost card action speed.' },
-            { name: 'Drunk', icon: '🍾', desc: 'Leaks vital grease fuel causing staggered, entirely unpredictable dodging lines.' },
-            { name: 'Prospector', icon: '⛏️', desc: 'Carries built-in ground scanners to locate valuable gold ore fragments buried down the trail.' },
-            { name: 'Snake Oil Salesman', icon: '🧪', desc: 'Fires corrupted fluid darts to corrode enemy circuitry and melt armor values over time.' },
-            { name: 'Preacher', icon: '✝️', desc: 'Plays low-frequency organ hums to re-weld frame fractures right mid-fight.' },
-            { name: 'Doctor', icon: '🥼', desc: 'Uses micro-circular bone saws to patch up metallic hulls cleanly under heavy crossfire.' },
-            { name: 'Inventor', icon: '🛠️', desc: 'Constantly throws together temporary mechanical trap rigs on the fly during showdowns.' },
-            { name: 'Sheriff', icon: '⭐', desc: 'Fires heavy localized anchor chains to tie targets down and block their attack turns.' },
-            { name: 'Undertaker', icon: '⚰️', desc: 'Strips dead enemy scrap metal away to add thick secondary plates onto your own chassis.' },
-            { name: 'Frontiersman', icon: '🧭', desc: 'Built with wide landscape sensory lenses to chart out extra pathways across hidden trail paths.' },
-            { name: 'Wrangler', icon: '🤠', desc: 'Lassoes rogue runaway mechanical bulls to keep them from hitting back during showdowns.' }
+        // --- MASTER COMBAT COMPONENT ENGINE POOL ---
+        const GAME_ACTION_CARDS_POOL = [
+            { name: 'Lead Shot Pepper', rarity: 'BASIC', cost: 1, effect: 'Deal 6 Damage.' },
+            { name: 'Hitch Iron Plates', rarity: 'BASIC', cost: 1, effect: 'Gain 5 Shield Plating.' },
+            { name: 'Grease Leak Patch', rarity: 'BASIC', cost: 1, effect: 'Repair 4 Integrity HP.' },
+            { name: 'Six-Shooter Burst', rarity: 'RARE', cost: 2, effect: 'Deal 13 Damage.' },
+            { name: 'Overcharge Dynamo', rarity: 'RARE', cost: 1, effect: 'Deal 4 Damage. Gain 4 Shield Plating.' },
+            { name: 'Heavy Alloy Barricade', rarity: 'RARE', cost: 2, effect: 'Gain 12 Shield Plating.' },
+            { name: 'Corrosion Drip Dart', rarity: 'EPIC', cost: 1, effect: 'Deal 9 Shield-Piercing Damage.' },
+            { name: 'Re-Weld Spark Arc', rarity: 'EPIC', cost: 2, effect: 'Repair 12 Integrity HP.' },
+            { name: 'Gatling Cascade Barrel', rarity: 'LEGENDARY', cost: 3, effect: 'Deal 25 Heavy Damage.' },
+            { name: 'Scrap Metal Recycler', rarity: 'LEGENDARY', cost: 0, effect: 'Gain 4 Shield Plating. Gain 15 Oil Scrap.' }
         ];
 
-        const BOX_UPGRADES_CATALOG = [
-            { id: 'b1', name: 'Standard Leather Belt', capacity: 5, cost: 0, perk: 'NONE', desc: 'Basic frontier holster. Holds 5 active action cards.' },
-            { id: 'b2', name: 'Strap-Iron Gun Pouch', capacity: 8, cost: 50, perk: 'SHIELD_START', desc: 'Reinforced plating gives you +4 Armor automatic at the start of every showdown.' },
-            { id: 'b3', name: 'Cylinder Bandolier Rig', capacity: 12, cost: 110, perk: 'BONUS_AP', desc: 'Roomy 12-slot belt layout. Grants you +1 Action Point on your first combat turn.' }
-        ];
-
-        const NODE_DICTIONARY = {
-            'CAMPFIRE': { label: '🔥 Trailside Campfire', definition: 'A safe place to rest up. Let you sort through your card holster and move tricks to your cargo vault stash.' },
-            'GENERAL_STORE': { label: '🏪 Frontier Outfitters Shop', definition: 'A small settlement merchant. Spend your gathered oil gold here to buy larger ammunition gun holsters.' },
-            'BASIC_BATTLE': { label: '⚔️ Scrap Vagrant Scuffle', definition: 'A rogue mechanical drone blocking the pass. Deal with them to pick up fresh cards and scrap oil.' },
-            'ELITE_BATTLE': { label: '💀 Wanted Behemoth Showdown', definition: 'A massive bounty target blocking the border gate. Dangerous, but drops top-tier legendary loot.' }
+        const ENEMY_NPC_REGISTRY = {
+            BASIC: [
+                { name: 'Rustler Drone', baseHp: 16, intentPattern: () => ({ dmg: 6, desc: 'Fires rusted revolver.' }) },
+                { name: 'Scrap Scavenger Hound', baseHp: 14, intentPattern: () => ({ dmg: 8, desc: 'Snaps mechanical jaws.' }) },
+                { name: 'Stray Rivet Brawler', baseHp: 20, intentPattern: () => ({ dmg: 5, desc: 'Swings pressurized piston fists.' }) }
+            ],
+            ELITE: [
+                { name: 'High-Velocity Outlaw Heavy', baseHp: 32, intentPattern: () => ({ dmg: 12, desc: 'Spooling internal chaingun.' }) },
+                { name: 'Corrupted Quarry Hauler', baseHp: 45, intentPattern: () => ({ dmg: 9, desc: 'Dumping hot furnace exhaust.' }) }
+            ],
+            BOSS: [
+                { name: 'APEX MINE-TYRANT PRIME', baseHp: 75, intentPattern: (turn) => ({ dmg: turn % 3 === 0 ? 22 : 14, desc: turn % 3 === 0 ? 'Firing high-explosive demolition charges!' : 'Sweeping structural drill beams.' }) }
+            ]
         };
 
-        class WeirdWestEngine {
+        const MAP_NODE_CATALOG_DICTIONARY = {
+            'CAMPFIRE': { icon: '🔥', title: 'Trailside Campfire', desc: 'Sort through your card loadout and adjust your equipped active belt.' },
+            'GENERAL_STORE': { icon: '🏪', title: 'Outfit Vendor Port', desc: 'Spend your oil scrap on new components or durable gun belts.' },
+            'BASIC_BATTLE': { icon: '⚔️', title: 'Frontier Conflict', desc: 'Engage low-level rogue drones to claim oil scrap and components.' },
+            'ELITE_BATTLE': { icon: '💀', title: 'Wanted Target Showdown', desc: 'Face down high-threat targets for premium loot.' },
+            'MINING_NODE': { icon: '⛏️', title: 'Sub-Surface Outcrop', desc: 'Excavate structural raw deposits for resource extractions.' },
+            'GAMBLE_NODE': { icon: '🎲', title: 'Saloon Hazard Table', desc: 'Risk oil scraps on high-stakes games of chance.' },
+            'SALVAGE_NODE': { icon: '⚙️', title: 'Wreckage Stripping Yard', desc: 'Melt down unneeded combat cards to salvage raw oil scraps.' },
+            'BOSS_BATTLE': { icon: '👑', title: 'Apex Territory Gatekeeper', desc: 'Defeat the zone commander to unlock the subsequent territory border.' }
+        };
+
+        class FrontierAdventureEngine {
             constructor() {
-                this.selectedClass = 'Outlaw';
-                this.saveKey = 'WeirdWestMobile_SaveSession_v6';
+                this.saveKey = 'DustAndIron_EngineSave_v8';
+                this.isCombatCurrentlyActive = false;
                 this.inspectTimeoutHook = null;
                 this.isInspectingTriggered = false;
-                this.isCombatCurrentlyActive = false; // Rigid fix for screen block bug
-                
+                this.combatTurnCount = 0;
+
                 this.state = {
-                    level: 1, gold: 60, hp: 50, maxHp: 50, activeBoxId: 'b1',
+                    level: 1, xp: 0, gold: 80, hp: 55, maxHp: 55, activeBoxId: 'b1',
                     activeDeck: [], safeStorage: [], mapNodes: [],
                     currentMeepleNodeId: null, currentDepth: -1, mapId: 1, characterClass: 'Outlaw'
                 };
-                this.combat = { enemyHp: 0, enemyMaxHp: 0, enemyIntentDmg: 0, playerArmor: 0, maxAp: 3, playerAp: 3, hand: [], draw: [], discard: [] };
+                this.combat = { enemyName: '', enemyHp: 0, enemyMaxHp: 0, enemyIntentDmg: 0, playerArmor: 0, maxAp: 3, playerAp: 3, hand: [], draw: [], discard: [] };
             }
 
             init() {
-                this.injectCharacterClassesUi();
+                this.injectCharacterRegistryUi();
                 this.checkSavedSessionAvailability();
                 this.setThemePalette('default');
-                
+
                 const scrollView = document.getElementById('map-scroll-view');
                 if (scrollView) {
-                    scrollView.addEventListener('scroll', () => {
-                        if (document.getElementById('view-map').classList.contains('active')) {
-                            this.drawVectorConnectionLinesMap();
-                        }
-                    });
+                    scrollView.addEventListener('scroll', () => { if (this.isViewActive('view-map')) this.drawVectorConnectionLinesMap(); });
                 }
-                window.addEventListener('resize', () => {
-                    if (document.getElementById('view-map').classList.contains('active')) {
-                        this.drawVectorConnectionLinesMap();
-                    }
-                });
+                window.addEventListener('resize', () => { if (this.isViewActive('view-map')) this.drawVectorConnectionLinesMap(); });
             }
 
-            injectCharacterClassesUi() {
+            isViewActive(id) { return document.getElementById(id).classList.contains('active'); }
+
+            injectCharacterRegistryUi() {
                 const grid = document.getElementById('character-injection-grid');
                 grid.innerHTML = '';
                 WEST_BOT_CLASSES.forEach((c, idx) => {
                     const card = document.createElement('div');
                     card.className = `char-card ${idx === 0 ? 'selected' : ''}`;
-                    card.id = `char_unit_type_${c.name.replace(/\s+/g, '')}`;
-                    card.innerHTML = `
-                        <div class="char-card-title">${c.icon} ${c.name}</div>
-                        <div class="char-card-desc">${c.desc}</div>
-                    `;
-                    card.onclick = () => this.selectCharacterClass(c.name);
+                    card.id = `char_chassis_${c.name}`;
+                    card.innerHTML = `<div class="char-card-title">${c.icon} ${c.name}</div><div class="char-card-desc">${c.desc}</div>`;
+                    card.onclick = () => {
+                        this.state.characterClass = c.name;
+                        document.querySelectorAll('.char-card').forEach(cc => cc.classList.remove('selected'));
+                        card.classList.add('selected');
+                    };
                     grid.appendChild(card);
                 });
             }
 
             checkSavedSessionAvailability() {
-                const stored = localStorage.getItem(this.saveKey);
-                document.getElementById('btn-continue-run').style.display = stored ? 'block' : 'none';
+                document.getElementById('btn-continue-run').style.display = localStorage.getItem(this.saveKey) ? 'block' : 'none';
             }
 
             switchView(viewId) {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById(viewId).classList.add('active');
-                document.getElementById('bottom-navigation-bar').style.display = 
-                    (viewId === 'view-start' || viewId === 'view-charselect') ? 'none' : 'grid';
-                
-                if (viewId === 'view-map') {
-                    setTimeout(() => { this.drawVectorConnectionLinesMap(); }, 50);
-                }
+                document.getElementById('bottom-navigation-bar').style.display = (viewId === 'view-start' || viewId === 'view-charselect') ? 'none' : 'grid';
+                if (viewId === 'view-map') setTimeout(() => this.drawVectorConnectionLinesMap(), 40);
             }
 
             handleTabNavigation(viewId, tabId) {
                 if (this.isCombatCurrentlyActive) {
-                    alert("No running away! Finish your active showdown before walking away.");
+                    alert("Showdown in progress! You cannot retreat until the threat is neutralized.");
                     return;
-                }
-                if (viewId === 'view-campfire') {
-                    const node = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
-                    if (!node || node.type !== 'CAMPFIRE') {
-                        alert("You can only manage your holster stash while parked right on top of a Campfire node.");
-                        return;
-                    }
-                    this.renderCampfireVaultPanels();
                 }
                 document.querySelectorAll('.nav-tab-item').forEach(t => t.classList.remove('active'));
                 document.getElementById(tabId).classList.add('active');
+                if (viewId === 'view-campfire') this.renderCampfireVaultPanels();
                 this.switchView(viewId);
             }
 
@@ -541,28 +403,16 @@
                 else document.body.setAttribute('data-theme', themeName);
             }
 
-            selectCharacterClass(className) {
-                this.selectedClass = className;
-                this.state.characterClass = className;
-                document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
-                const targetCard = document.getElementById(`char_unit_type_${className.replace(/\s+/g, '')}`);
-                if(targetCard) targetCard.classList.add('selected');
-            }
-
             confirmCharacterSelection() {
-                this.state.level = 1; this.state.gold = 75; this.state.hp = 50; this.state.maxHp = 50; this.state.activeBoxId = 'b1';
+                this.state.level = 1; this.state.xp = 0; this.state.gold = 70; this.state.hp = 50; this.state.maxHp = 50; this.state.activeBoxId = 'b1'; this.state.mapId = 1;
                 this.state.activeDeck = [
-                    { id: 'str_1', name: 'Lead Shot Pepper', rarity: 'BASIC', cost: 1, effect: 'Deal 6 Damage.' },
-                    { id: 'str_2', name: 'Lead Shot Pepper', rarity: 'BASIC', cost: 1, effect: 'Deal 6 Damage.' },
-                    { id: 'str_3', name: 'Hitch Iron Plates', rarity: 'BASIC', cost: 1, effect: 'Gain 5 Armor Plating.' },
-                    { id: 'str_4', name: 'Hitch Iron Plates', rarity: 'BASIC', cost: 1, effect: 'Gain 5 Armor Plating.' },
-                    { id: 'str_5', name: 'Grease Leak Patch', rarity: 'BASIC', cost: 1, effect: 'Repair 4 Hull HP.' }
+                    { name: 'Lead Shot Pepper', rarity: 'BASIC', cost: 1, effect: 'Deal 6 Damage.' },
+                    { name: 'Lead Shot Pepper', rarity: 'BASIC', cost: 1, effect: 'Deal 6 Damage.' },
+                    { name: 'Hitch Iron Plates', rarity: 'BASIC', cost: 1, effect: 'Gain 5 Shield Plating.' },
+                    { name: 'Hitch Iron Plates', rarity: 'BASIC', cost: 1, effect: 'Gain 5 Shield Plating.' },
+                    { name: 'Grease Leak Patch', rarity: 'BASIC', cost: 1, effect: 'Repair 4 Integrity HP.' }
                 ];
-                this.state.safeStorage = [
-                    { id: 'safe_1', name: 'Dynamite Toss', rarity: 'RARE', cost: 2, effect: 'Deal 14 Heavy Damage.' },
-                    { id: 'safe_2', name: 'Bunker Down Shell', rarity: 'RARE', cost: 2, effect: 'Gain 12 Armor Plating.' }
-                ];
-                this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
+                this.state.safeStorage = []; this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
                 this.isCombatCurrentlyActive = false;
                 this.generateProceduralMobileMap();
                 this.saveCurrentSessionToDisk();
@@ -576,46 +426,49 @@
                 document.getElementById('hud-hp').innerText = `${this.state.hp}/${this.state.maxHp}`;
                 document.getElementById('hud-gold').innerText = this.state.gold;
                 document.getElementById('hud-deck-capacity').innerText = `${this.state.activeDeck.length}/${this.activeBoxSpec.capacity}`;
-                document.getElementById('hud-map-index').innerText = `${this.state.mapId}-${this.state.currentDepth + 1}`;
-
+                document.getElementById('hud-map-index').innerText = `T${this.state.mapId}-S${this.state.currentDepth + 1}`;
                 document.getElementById('sheet-level').innerText = this.state.level;
+                document.getElementById('sheet-xp').innerText = `${this.state.xp}/100`;
                 document.getElementById('sheet-box-name').innerText = this.activeBoxSpec.name;
-                document.getElementById('sheet-box-cap').innerText = `${this.activeBoxSpec.capacity} Actions`;
-                document.getElementById('sheet-box-perk').innerText = `Description: ${this.activeBoxSpec.desc}`;
-                
-                const matchedClass = WEST_BOT_CLASSES.find(c => c.name === this.state.characterClass) || WEST_BOT_CLASSES[0];
-                document.getElementById('sheet-class-title').innerText = `${matchedClass.name} Drifter`;
-                document.getElementById('sheet-avatar').innerText = matchedClass.icon;
-                document.getElementById('cb-player-frame-title').innerText = `${matchedClass.name}`;
+                document.getElementById('sheet-box-cap').innerText = `${this.activeBoxSpec.capacity} Slots`;
+                document.getElementById('sheet-box-perk').innerText = `Bonus Modification: ${this.activeBoxSpec.desc}`;
             }
 
             generateProceduralMobileMap() {
                 this.state.mapNodes = [];
-                const depthTarget = 14; 
-                let nodeGlobalId = 0;
+                // Dynamic Map Generation Matrix Scaling rules
+                const depthRowsTarget = 8 + (this.state.mapId * 3); 
+                let uniqueNodeIdCounter = 0;
 
-                for (let d = 0; d < depthTarget; d++) {
-                    const nodesInThisRow = (d === 0 || d === depthTarget - 1) ? 1 : Math.floor(Math.random() * 2) + 2; 
-                    for (let l = 0; l < nodesInThisRow; l++) {
-                        let type = 'BASIC_BATTLE';
-                        if (d === 0) type = 'CAMPFIRE';
-                        else if (d === depthTarget - 1) type = 'ELITE_BATTLE';
+                for (let r = 0; r < depthRowsTarget; r++) {
+                    let totalLanesInRow = Math.floor(Math.random() * 2) + 2; 
+                    if (r === 0 || r === depthRowsTarget - 1) totalLanesInRow = 1;
+
+                    for (let l = 0; l < totalLanesInRow; l++) {
+                        let nodeType = 'BASIC_BATTLE';
+                        if (r === 0) nodeType = 'CAMPFIRE';
+                        else if (r === depthRowsTarget - 1) nodeType = 'BOSS_BATTLE';
                         else {
-                            const r = Math.random();
-                            if (r < 0.25) type = 'CAMPFIRE';
-                            else if (r < 0.45) type = 'GENERAL_STORE';
-                            else if (r < 0.60) type = 'ELITE_BATTLE';
+                            const rand = Math.random();
+                            if (rand < 0.15) nodeType = 'CAMPFIRE';
+                            else if (rand < 0.30) nodeType = 'GENERAL_STORE';
+                            else if (rand < 0.45) nodeType = 'MINING_NODE';
+                            else if (rand < 0.58) nodeType = 'GAMBLE_NODE';
+                            else if (rand < 0.70) nodeType = 'SALVAGE_NODE';
+                            else if (rand < 0.85) nodeType = 'ELITE_BATTLE';
                         }
+
                         this.state.mapNodes.push({
-                            id: `n_global_${nodeGlobalId++}`, depthIndex: d, laneIndex: l,
-                            totalLanes: nodesInThisRow, type: type, resolved: false, connections: []
+                            id: `map_node_${uniqueNodeIdCounter++}`, depthIndex: r, laneIndex: l,
+                            totalLanes: totalLanesInRow, type: nodeType, resolved: false, connections: []
                         });
                     }
                 }
 
-                for (let d = 0; d < depthTarget - 1; d++) {
-                    const currentRows = this.state.mapNodes.filter(n => n.depthIndex === d);
-                    const nextRows = this.state.mapNodes.filter(n => n.depthIndex === d + 1);
+                // Connect paths down the map layers
+                for (let r = 0; r < depthRowsTarget - 1; r++) {
+                    const currentRows = this.state.mapNodes.filter(n => n.depthIndex === r);
+                    const nextRows = this.state.mapNodes.filter(n => n.depthIndex === r + 1);
                     currentRows.forEach(curr => {
                         nextRows.forEach(nxt => {
                             if (currentRows.length === 1 || nextRows.length === 1 || Math.abs(curr.laneIndex - nxt.laneIndex) <= 1) {
@@ -628,198 +481,179 @@
             }
 
             renderMobileNetworkMap() {
-                const layerGroupTarget = document.getElementById('map-nodes-render-layer');
-                layerGroupTarget.innerHTML = '';
+                const targetLayer = document.getElementById('map-nodes-render-layer');
+                targetLayer.innerHTML = '';
+                const maxDepthRows = Math.max(...this.state.mapNodes.map(n => n.depthIndex)) + 1;
 
-                for (let d = 0; d < 14; d++) {
+                for (let r = 0; r < maxDepthRows; r++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'map-layer-row';
-                    rowDiv.id = `map-row-depth-${d}`;
+                    rowDiv.id = `map-row-layer-${r}`;
 
-                    const layerNodes = this.state.mapNodes.filter(n => n.depthIndex === d);
-                    layerNodes.forEach(node => {
+                    const rowNodes = this.state.mapNodes.filter(n => n.depthIndex === r);
+                    rowNodes.forEach(node => {
                         const circle = document.createElement('div');
                         circle.className = 'node-circle';
-                        circle.id = `ui_node_id_${node.id}`;
-
-                        let icon = '⚙️';
-                        if (node.type === 'CAMPFIRE') icon = '🔥';
-                        if (node.type === 'GENERAL_STORE') icon = '🏪';
-                        if (node.type === 'ELITE_BATTLE') icon = '💀';
-                        circle.innerText = icon;
+                        circle.id = `node_dom_${node.id}`;
+                        
+                        const spec = MAP_NODE_CATALOG_DICTIONARY[node.type] || { icon: '⚙️', title: 'Uncharted Path' };
+                        circle.innerText = spec.icon;
 
                         if (node.resolved) circle.classList.add('resolved');
 
-                        const isValidStart = (this.state.currentDepth === -1 && node.depthIndex === 0);
-                        let isLinkable = false;
-                        
+                        let navigationOptionValid = false;
                         if (this.state.currentMeepleNodeId) {
-                            const currNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
-                            if (currNode && currNode.connections.includes(node.id) && node.depthIndex === this.state.currentDepth + 1) {
+                            const originNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
+                            if (originNode && originNode.connections.includes(node.id) && node.depthIndex === this.state.currentDepth + 1) {
                                 circle.classList.add('available');
-                                isLinkable = true;
+                                navigationOptionValid = true;
                             }
-                        } else if (isValidStart) {
+                        } else if (node.depthIndex === 0) {
                             circle.classList.add('available');
-                            isLinkable = true;
+                            navigationOptionValid = true;
                         }
 
-                        // Unified tap/hover descriptor action
-                        const triggerDesc = () => this.displayNodeContextFeed(node);
-                        circle.onmouseenter = triggerDesc;
-                        
+                        const updateTextLegend = () => {
+                            document.getElementById('map-target-node-descriptor').innerHTML = `
+                                <strong>${spec.title} (Step ${node.depthIndex + 1} of ${maxDepthRows})</strong><br>
+                                <span style="color:var(--text-muted); font-size:11px;">${spec.desc}</span>
+                            `;
+                        };
+                        circle.onmouseenter = updateTextLegend;
                         circle.onclick = () => {
-                            triggerDesc();
-                            if (isLinkable || this.state.currentMeepleNodeId === node.id) {
+                            updateTextLegend();
+                            if (navigationOptionValid || this.state.currentMeepleNodeId === node.id) {
                                 this.processMeepleMovementRouting(node);
                             }
                         };
 
                         if (this.state.currentMeepleNodeId === node.id) {
-                            const meepleToken = document.createElement('div');
-                            meepleToken.className = 'meeple-pawn';
-                            meepleToken.innerText = '🤠 YOU';
-                            circle.appendChild(meepleToken);
+                            const token = document.createElement('div');
+                            token.className = 'meeple-pawn';
+                            token.innerText = '🤠 YOU';
+                            circle.appendChild(token);
                         }
                         rowDiv.appendChild(circle);
                     });
-                    layerGroupTarget.appendChild(rowDiv);
+                    targetLayer.appendChild(rowDiv);
                 }
-                setTimeout(() => this.drawVectorConnectionLinesMap(), 50);
+                setTimeout(() => this.drawVectorConnectionLinesMap(), 60);
             }
 
-            displayNodeContextFeed(node) {
-                const config = NODE_DICTIONARY[node.type] || { label: '🗺️ Unknown Road', definition: 'An unmapped shortcut into the canyons.' };
-                document.getElementById('map-target-node-descriptor').innerHTML = `
-                    <strong>${config.label} (Step ${node.depthIndex + 1} of 14)</strong><br>
-                    <span style="color: var(--text-muted); font-size:11px;">${config.definition}</span>
-                `;
-            }
-
-            // --- LOCKED RUSTIC VECTOR LINES ---
             drawVectorConnectionLinesMap() {
                 const svg = document.getElementById('map-connections-svg');
-                if(!svg) return;
+                if (!svg) return;
                 svg.innerHTML = '';
-                
-                const scrollPane = document.getElementById('map-scroll-view');
-                const paneWidth = scrollPane.clientWidth;
-                const paneHeight = scrollPane.scrollHeight;
-                
-                svg.setAttribute('width', paneWidth);
-                svg.setAttribute('height', paneHeight);
 
-                this.state.mapNodes.forEach(currNode => {
-                    const currEl = document.getElementById(`ui_node_id_${currNode.id}`);
-                    if (!currEl) return;
+                const viewPane = document.getElementById('map-scroll-view');
+                svg.setAttribute('width', viewPane.clientWidth);
+                svg.setAttribute('height', viewPane.scrollHeight);
+                
+                const masterRect = viewPane.getBoundingClientRect();
+
+                this.state.mapNodes.forEach(node => {
+                    const elStart = document.getElementById(`node_dom_${node.id}`);
+                    if (!elStart) return;
                     
-                    // Fixed tracking avoids offset shifts by computing values relative to layer-rows
-                    const parentRow = currEl.parentElement;
-                    const x1 = currEl.offsetLeft + (currEl.offsetWidth / 2);
-                    const y1 = parentRow.offsetTop + currEl.offsetTop + (currEl.offsetHeight / 2);
+                    const rStart = elStart.getBoundingClientRect();
+                    const x1 = rStart.left - masterRect.left + (rStart.width / 2);
+                    const y1 = rStart.top - masterRect.top + (rStart.height / 2) + viewPane.scrollTop;
 
-                    currNode.connections.forEach(targetId => {
-                        const targetEl = document.getElementById(`ui_node_id_${targetId}`);
-                        if (!targetEl) return;
+                    node.connections.forEach(targetId => {
+                        const elEnd = document.getElementById(`node_dom_${targetId}`);
+                        if (!elEnd) return;
 
-                        const targetRow = targetEl.parentElement;
-                        const x2 = targetEl.offsetLeft + (targetEl.offsetWidth / 2);
-                        const y2 = targetRow.offsetTop + targetEl.offsetTop + (targetEl.offsetHeight / 2);
+                        const rEnd = elEnd.getBoundingClientRect();
+                        const x2 = rEnd.left - masterRect.left + (rEnd.width / 2);
+                        const y2 = rEnd.top - masterRect.top + (rEnd.height / 2) + viewPane.scrollTop;
 
                         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                         line.setAttribute('x1', x1); line.setAttribute('y1', y1);
                         line.setAttribute('x2', x2); line.setAttribute('y2', y2);
                         
-                        if (currNode.resolved) {
+                        if (node.resolved) {
                             line.setAttribute('stroke', 'var(--accent)');
                             line.setAttribute('stroke-width', '2.5');
                         } else {
                             line.setAttribute('stroke', 'var(--border)');
                             line.setAttribute('stroke-width', '1.5');
-                            line.setAttribute('stroke-dasharray', '5,4');
+                            line.setAttribute('stroke-dasharray', '4,4');
                         }
                         svg.appendChild(line);
                     });
                 });
             }
 
-            processMeepleMovementRouting(targetNode) {
-                let checkValid = false;
-                if (this.state.currentDepth === -1 && targetNode.depthIndex === 0) checkValid = true;
+            processMeepleMovementRouting(node) {
                 if (this.state.currentMeepleNodeId) {
-                    const currentActiveNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
-                    if (currentActiveNode && currentActiveNode.connections.includes(targetNode.id) && targetNode.depthIndex === this.state.currentDepth + 1) {
-                        checkValid = true;
-                    }
+                    const prev = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
+                    if (prev) prev.resolved = true;
                 }
-                if (!checkValid) return;
-
-                if (this.state.currentMeepleNodeId) {
-                    const prevNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
-                    if (prevNode) prevNode.resolved = true;
-                }
-
-                this.state.currentMeepleNodeId = targetNode.id;
-                this.state.currentDepth = targetNode.depthIndex;
+                this.state.currentMeepleNodeId = node.id;
+                this.state.currentDepth = node.depthIndex;
 
                 this.saveCurrentSessionToDisk();
                 this.updateGlobalHudDisplay();
                 this.renderMobileNetworkMap();
 
                 setTimeout(() => {
-                    if (targetNode.type === 'BASIC_BATTLE' || targetNode.type === 'ELITE_BATTLE') {
-                        this.launchCombatLoopEngine(targetNode.type === 'ELITE_BATTLE');
-                    } else if (targetNode.type === 'CAMPFIRE') {
+                    if (node.type === 'BASIC_BATTLE' || node.type === 'ELITE_BATTLE' || node.type === 'BOSS_BATTLE') {
+                        this.launchCombatLoopEngine(node.type);
+                    } else if (node.type === 'CAMPFIRE') {
                         this.handleTabNavigation('view-campfire', 'tab-items');
-                    } else if (targetNode.type === 'GENERAL_STORE') {
+                    } else if (node.type === 'GENERAL_STORE') {
                         this.setupShopNodeScreen();
+                    } else {
+                        this.launchWildernessEncounterScreen(node);
                     }
-                }, 200);
+                }, 150);
             }
 
-            launchCombatLoopEngine(isElite) {
-                this.isCombatCurrentlyActive = true; // Block outside navigation tabs completely
+            // --- PROGRESSIVE SYSTEM SCALING LOGIC ---
+            launchCombatLoopEngine(battleCategory) {
+                this.isCombatCurrentlyActive = true;
                 this.switchView('view-combat');
-                const enemyScaleFactor = 1 + (this.state.level * 0.15);
-                
-                this.combat.enemyMaxHp = Math.round((isElite ? 38 : 16) * enemyScaleFactor);
+                this.combatTurnCount = 1;
+
+                // Scaling calculations using dynamic multi-map metrics
+                const territoryScaleMultiplier = 1 + ((this.state.mapId - 1) * 0.4) + (this.state.level * 0.1);
+                let pool = ENEMY_NPC_REGISTRY.BASIC;
+                if (battleCategory === 'ELITE_BATTLE') pool = ENEMY_NPC_REGISTRY.ELITE;
+                if (battleCategory === 'BOSS_BATTLE') pool = ENEMY_NPC_REGISTRY.BOSS;
+
+                const prototype = pool[Math.floor(Math.random() * pool.length)];
+                this.combat.enemyName = prototype.name;
+                this.combat.enemyMaxHp = Math.round(prototype.baseHp * territoryScaleMultiplier);
                 this.combat.enemyHp = this.combat.enemyMaxHp;
-                this.combat.playerArmor = this.activeBoxSpec.perk === 'SHIELD_START' ? 4 : 0;
                 
+                this.combat.playerArmor = this.activeBoxSpec.perk === 'SHIELD_START' ? 4 : 0;
                 this.combat.maxAp = this.activeBoxSpec.perk === 'BONUS_AP' ? 4 : 3;
                 this.combat.playerAp = this.combat.maxAp;
 
-                document.getElementById('cb-enemy-name').innerText = isElite ? '💀 Big Boss Scrap-Goliath' : '⚔️ Iron Rustler Rogue';
                 this.combat.draw = [...this.state.activeDeck].sort(() => Math.random() - 0.5);
-                this.combat.discard = []; this.combat.hand = [];
+                this.combat.hand = []; this.combat.discard = [];
 
-                this.generateEnemyIntentAction();
-                this.drawCardsToCombatHand(4); 
+                document.getElementById('cb-enemy-name').innerText = prototype.name;
+                this.evaluateEnemyTurnIntent(prototype);
+                this.drawCardsToCombatHand(4);
                 this.renderCombatArenaUi();
             }
 
+            evaluateEnemyTurnIntent(blueprint) {
+                const intent = blueprint.intentPattern(this.combatTurnCount);
+                // Damage math coefficient scale
+                const scaleDmg = 1 + ((this.state.mapId - 1) * 0.35) + (this.state.currentDepth * 0.05);
+                this.combat.enemyIntentDmg = Math.round(intent.dmg * scaleDmg);
+                document.getElementById('cb-enemy-intent').innerText = `Intent: ${intent.desc} (${this.combat.enemyIntentDmg} Dmg)`;
+            }
+
             drawCardsToCombatHand(count) {
-                for(let i = 0; i < count; i++) {
-                    if(this.combat.draw.length === 0) {
+                for (let i = 0; i < count; i++) {
+                    if (this.combat.draw.length === 0) {
                         this.combat.draw = [...this.combat.discard].sort(() => Math.random() - 0.5);
                         this.combat.discard = [];
                     }
-                    if(this.combat.draw.length > 0) this.combat.hand.push(this.combat.draw.pop());
-                }
-            }
-
-            generateEnemyIntentAction() {
-                this.combat.enemyIntentDmg = Math.round((Math.floor(Math.random() * 4) + 5) * (1 + this.state.currentDepth * 0.06));
-                document.getElementById('cb-enemy-intent').innerText = `Intent: Shooting Iron (${this.combat.enemyIntentDmg} Dmg)`;
-            }
-
-            renderActionPointSegments() {
-                const container = document.getElementById('cb-player-ap-bar');
-                container.innerHTML = '';
-                for (let i = 0; i < this.combat.maxAp; i++) {
-                    const segment = document.createElement('div');
-                    segment.className = `ap-segment ${i < this.combat.playerAp ? 'filled' : ''}`;
-                    container.appendChild(segment);
+                    if (this.combat.draw.length > 0) this.combat.hand.push(this.combat.draw.pop());
                 }
             }
 
@@ -827,80 +661,77 @@
                 document.getElementById('cb-player-hp').innerText = this.state.hp;
                 document.getElementById('cb-player-armor').innerText = this.combat.playerArmor;
                 document.getElementById('cb-enemy-hp').innerText = this.combat.enemyHp;
-
                 document.getElementById('bar-player-hp-pc').style.width = `${(this.state.hp / this.state.maxHp) * 100}%`;
                 document.getElementById('bar-enemy-hp-pc').style.width = `${(this.combat.enemyHp / this.combat.enemyMaxHp) * 100}%`;
 
-                this.renderActionPointSegments();
+                const apFrame = document.getElementById('cb-player-ap-bar');
+                apFrame.innerHTML = '';
+                for (let i = 0; i < this.combat.maxAp; i++) {
+                    const segment = document.createElement('div');
+                    segment.className = `ap-segment ${i < this.combat.playerAp ? 'filled' : ''}`;
+                    apFrame.appendChild(segment);
+                }
 
                 const arcContainer = document.getElementById('combat-hand-arc-frame');
                 arcContainer.innerHTML = '';
-                const totalCards = this.combat.hand.length;
-                
+                const total = this.combat.hand.length;
+
                 this.combat.hand.forEach((card, idx) => {
-                    const cardUi = this.generateMobileCardComponent(card);
-                    let angle = 0, rotateDeg = 0, yOffset = 0, xOffset = 0;
-
-                    if (totalCards > 1) {
-                        const mid = (totalCards - 1) / 2;
-                        angle = (idx - mid) * (34 / (totalCards - 1));
-                        rotateDeg = angle;
-                        yOffset = Math.abs(idx - mid) * 4;
-                        xOffset = (idx - mid) * 24;
+                    const el = this.generateMobileCardComponent(card);
+                    let angle = 0, xOff = 0, yOff = 0;
+                    if (total > 1) {
+                        const mid = (total - 1) / 2;
+                        angle = (idx - mid) * (30 / (total - 1));
+                        xOff = (idx - mid) * 22; yOff = Math.abs(idx - mid) * 4;
                     }
-                    cardUi.style.transform = `translateX(calc(-50% + ${xOffset}px)) translateY(${yOffset}px) rotate(${rotateDeg}deg)`;
-                    cardUi.style.zIndex = idx + 10;
+                    el.style.transform = `translateX(calc(-50% + ${xOff}px)) translateY(${yOff}px) rotate(${angle}deg)`;
+                    el.style.zIndex = idx + 10;
 
-                    this.attachInteractiveTouchListeners(cardUi, card, () => this.executeCardResolution(idx));
-                    arcContainer.appendChild(cardUi);
+                    this.attachCardTouchHooks(el, card, () => this.executeActiveCombatCardPlay(idx));
+                    arcContainer.appendChild(el);
                 });
             }
 
-            attachInteractiveTouchListeners(element, card, tapCallback) {
-                const clearHooks = () => { if (this.inspectTimeoutHook) clearTimeout(this.inspectTimeoutHook); };
-                
-                const startHook = (e) => {
-                    this.isInspectingTriggered = false; clearHooks();
+            attachCardTouchHooks(el, card, tapCallback) {
+                const clear = () => { if (this.inspectTimeoutHook) clearTimeout(this.inspectTimeoutHook); };
+                const start = () => {
+                    this.isInspectingTriggered = false; clear();
                     this.inspectTimeoutHook = setTimeout(() => {
                         this.isInspectingTriggered = true;
                         this.openInspectTelemetryModal(card);
-                    }, 400);
+                    }, 450);
                 };
-                const endHook = (e) => {
-                    clearHooks();
+                const end = () => {
+                    clear();
                     if (!this.isInspectingTriggered) tapCallback();
                     this.isInspectingTriggered = false;
                 };
-
-                element.addEventListener('touchstart', startHook, { passive: true });
-                element.addEventListener('touchend', endHook, { passive: true });
-                element.addEventListener('mousedown', startHook);
-                element.addEventListener('mouseup', endHook);
-                element.addEventListener('mouseleave', clearHooks);
+                el.addEventListener('touchstart', start, { passive: true });
+                el.addEventListener('touchend', end, { passive: true });
+                el.addEventListener('mousedown', start);
+                el.addEventListener('mouseup', end);
+                el.addEventListener('mouseleave', clear);
             }
 
             openInspectTelemetryModal(card) {
                 const overlay = document.getElementById('inspect-modal-overlay');
                 const box = document.getElementById('inspect-modal-content-box');
                 box.innerHTML = `
-                    <div style="font-size: 10px; font-weight: bold; color: var(--accent);">📖 INSIDE THE HOLSTER</div>
-                    <div style="font-size: 20px; margin: 6px 0; color: #fff;">${card.name}</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Action Points: ${card.cost} • Tier: ${card.rarity}</div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px;">
-                        ${card.effect}
-                    </div>
-                    <div style="font-size: 10px; margin-top: 14px; color: var(--accent); opacity: 0.7;">[ Lift finger to close window ]</div>
+                    <div style="font-size:9px; font-weight:bold; color:var(--accent);">COMPONENT OVERVIEW</div>
+                    <div style="font-size:18px; color:#fff; margin:4px 0;">${card.name}</div>
+                    <div style="font-size:10px; margin-bottom:10px; color:var(--text-muted);">Cost: ${card.cost} AP | Quality: ${card.rarity}</div>
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid var(--border); padding:8px; border-radius:4px; font-size:12px;">${card.effect}</div>
+                    <div style="font-size:9px; color:var(--accent); margin-top:10px; opacity:0.6;">[ Release touch input to close ]</div>
                 `;
                 overlay.style.display = 'flex';
             }
 
             closeInspectTelemetryModal() { document.getElementById('inspect-modal-overlay').style.display = 'none'; }
 
-            // --- COMPLETE SHOWDOWN EXIT REPAIR PIPELINE ---
-            executeCardResolution(idx) {
+            executeActiveCombatCardPlay(idx) {
                 const card = this.combat.hand[idx];
                 if (this.combat.playerAp < card.cost) {
-                    alert("Not enough action power left this turn!");
+                    alert("Insufficient Action Points!");
                     return;
                 }
 
@@ -908,128 +739,213 @@
                 this.combat.hand.splice(idx, 1);
                 this.combat.discard.push(card);
 
+                // Action parsing algorithms
                 const dmgMatch = card.effect.match(/Deal (\d+)/i);
-                const armMatch = card.effect.match(/Gain (\d+)/i);
-                const healMatch = card.effect.match(/Repair (\d+)/i);
+                const shieldMatch = card.effect.match(/Gain (\d+)/i);
+                const repairMatch = card.effect.match(/Repair (\d+)/i);
+                const oilMatch = card.effect.match(/Gain (\d+) Oil/i);
 
                 if (dmgMatch) this.combat.enemyHp = Math.max(0, this.combat.enemyHp - parseInt(dmgMatch[1]));
-                if (armMatch) this.combat.playerArmor += parseInt(armMatch[1]);
-                if (healMatch) this.state.hp = Math.min(this.state.maxHp, this.state.hp + parseInt(healMatch[1]));
+                if (shieldMatch) this.combat.playerArmor += parseInt(shieldMatch[1]);
+                if (repairMatch) this.state.hp = Math.min(this.state.maxHp, this.state.hp + parseInt(repairMatch[1]));
+                if (oilMatch) this.state.gold += parseInt(oilMatch[1]);
 
-                // Rigorous health verification check to instantly unlock the view panel
                 if (this.combat.enemyHp <= 0) {
-                    this.isCombatCurrentlyActive = false; // IMMEDIATELY FORCE CLEAR INTERLOCK FLAG
-                    
-                    alert("🤠 Showdown Won! Collected +25 barrel scraps.");
-                    this.state.gold += 25;
-                    
-                    const lootCard = { id: `loot_${Date.now()}`, name: 'Spike Expander', rarity: 'RARE', cost: 1, effect: 'Deal 9 Damage.' };
-                    if(this.state.activeDeck.length < this.activeBoxSpec.capacity) {
-                        this.state.activeDeck.push(lootCard);
-                        alert(`Slipped [${lootCard.name}] right into your ready Gun Belt.`);
-                    } else {
-                        this.state.safeStorage.push(lootCard);
-                        alert(`Belt full. Tossed [${lootCard.name}] into the backup Cargo Wagon.`);
-                    }
-
-                    if (this.state.currentDepth === 13) {
-                        alert("🌵 Territory Cleared! Moving to subsequent borders.");
-                        this.state.level++; this.state.mapId++;
-                        this.generateProceduralMobileMap();
-                        this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
-                    }
-                    
-                    this.exitNodeToTrails();
+                    this.processCombatVictoryAchievements();
                     return;
                 }
                 this.renderCombatArenaUi();
+                this.updateGlobalHudDisplay();
             }
 
             endCombatTurn() {
-                const diff = this.combat.enemyIntentDmg - this.combat.playerArmor;
-                if (diff > 0) { this.combat.playerArmor = 0; this.state.hp = Math.max(0, this.state.hp - diff); }
+                const breach = this.combat.enemyIntentDmg - this.combat.playerArmor;
+                if (breach > 0) { this.combat.playerArmor = 0; this.state.hp = Math.max(0, this.state.hp - breach); }
                 else { this.combat.playerArmor -= this.combat.enemyIntentDmg; }
 
                 if (this.state.hp <= 0) {
-                    alert("☠️ Your scrap hull gave out. The desert claims another drifter.");
-                    this.resetSystemDefault(); return;
+                    alert("☠️ Structural blowout. Your wreck is left behind on the trail.");
+                    this.resetSystemDefault();
+                    return;
                 }
 
                 this.combat.discard.push(...this.combat.hand); this.combat.hand = [];
-                this.combat.playerAp = this.combat.maxAp; this.drawCardsToCombatHand(4);
-                this.generateEnemyIntentAction(); this.renderCombatArenaUi(); this.updateGlobalHudDisplay();
+                this.combat.playerAp = this.combat.maxAp;
+                this.combatTurnCount++;
+                this.drawCardsToCombatHand(4);
+
+                const currentMapRows = Math.max(...this.state.mapNodes.map(n => n.depthIndex)) + 1;
+                const pool = this.state.currentDepth === currentMapRows - 1 ? ENEMY_NPC_REGISTRY.BOSS : (this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId).type === 'ELITE_BATTLE' ? ENEMY_NPC_REGISTRY.ELITE : ENEMY_NPC_REGISTRY.BASIC);
+                const blueprint = pool.find(e => e.name === this.combat.enemyName) || pool[0];
+
+                this.evaluateEnemyTurnIntent(blueprint);
+                this.renderCombatArenaUi();
+                this.updateGlobalHudDisplay();
             }
 
-            renderCampfireVaultPanels() {
-                document.getElementById('camp-active-count').innerText = `${this.state.activeDeck.length}/${this.activeBoxSpec.capacity}`;
+            processCombatVictoryAchievements() {
+                this.isCombatCurrentlyActive = false;
+                const earnedGold = Math.floor(Math.random() * 15) + 20;
+                const earnedXp = Math.floor(Math.random() * 10) + 25;
                 
-                const activeScroller = document.getElementById('camp-active-scroller');
-                activeScroller.innerHTML = '';
-                this.state.activeDeck.forEach((card, idx) => {
-                    const cardUi = this.generateMobileCardComponent(card);
-                    cardUi.onclick = () => {
-                        if (this.state.activeDeck.length <= 1) {
-                            alert("You need to keep at least 1 action card loaded in your gun belt!");
-                            return;
-                        }
-                        this.state.safeStorage.push(this.state.activeDeck.splice(idx, 1)[0]);
-                        this.renderCampfireVaultPanels();
-                        this.updateGlobalHudDisplay();
-                        this.saveCurrentSessionToDisk();
-                    };
-                    activeScroller.appendChild(cardUi);
-                });
+                alert(`Victory! Salvaged +${earnedGold} Oil scraps & extracted +${earnedXp} Experience Points.`);
+                this.state.gold += earnedGold;
+                this.awardExperiencePoints(earnedXp);
 
-                const safeScroller = document.getElementById('camp-safe-scroller');
-                safeScroller.innerHTML = '';
-                this.state.safeStorage.forEach((card, idx) => {
-                    const cardUi = this.generateMobileCardComponent(card);
-                    cardUi.onclick = () => {
-                        if (this.state.activeDeck.length >= this.activeBoxSpec.capacity) {
-                            alert("Your leather gun belt can't hold any more card sleeves. Upgrade your belt size at a store.");
-                            return;
+                // Draw random card component reward
+                const prize = GAME_ACTION_CARDS_POOL[Math.floor(Math.random() * GAME_ACTION_CARDS_POOL.length)];
+                if (this.state.activeDeck.length < this.activeBoxSpec.capacity) {
+                    this.state.activeDeck.push(prize);
+                    alert(`Added component [${prize.name}] directly to active belt.`);
+                } else {
+                    this.state.safeStorage.push(prize);
+                    alert(`Belt capacity reached. Transferred [${prize.name}] into storage storage.`);
+                }
+
+                const currentMapRows = Math.max(...this.state.mapNodes.map(n => n.depthIndex)) + 1;
+                if (this.state.currentDepth === currentMapRows - 1) {
+                    alert(`👑 Territory Commander Neutralized! Unlocking Gateway to Territory ${this.state.mapId + 1}.`);
+                    this.state.mapId++;
+                    this.state.currentMeepleNodeId = null;
+                    this.state.currentDepth = -1;
+                    this.generateProceduralMobileMap();
+                }
+                this.exitNodeToTrails();
+            }
+
+            awardExperiencePoints(amt) {
+                this.state.xp += amt;
+                if (this.state.xp >= 100) {
+                    this.state.xp -= 100; this.state.level++; this.state.maxHp += 8; this.state.hp = this.state.maxHp;
+                    alert(`💥 Level Up Framework! Core capacity optimized. Maximum Integrity increased to ${this.state.maxHp}.`);
+                }
+            }
+
+            // --- DEEP NODE EXCURSION SANDBOX ---
+            launchWildernessEncounterScreen(node) {
+                this.switchView('view-encounter');
+                const title = document.getElementById('enc-title');
+                const text = document.getElementById('enc-text');
+                const icon = document.getElementById('enc-icon');
+                const frame = document.getElementById('enc-choices-frame');
+                frame.innerHTML = '';
+
+                if (node.type === 'MINING_NODE') {
+                    title.innerText = '⛏️ Sub-Surface Outcrop'; icon.innerText = '⛏️';
+                    text.innerText = 'A cluster of hyper-dense mineral ore shards is exposed inside this cavern rock layer. Will you deploy structural drilling lasers?';
+                    
+                    this.injectEncounterOptionButton(frame, 'Drill Carefully (Safe approach)', () => {
+                        this.state.gold += 20; alert('Extracted +20 Oil scraps safely.'); this.exitNodeToTrails();
+                    });
+                    this.injectEncounterOptionButton(frame, 'Overclock Excavator Drills (Risky approach)', () => {
+                        if (Math.random() > 0.4) {
+                            this.state.gold += 55; alert('Jackpot! Excavated +55 Oil scraps from the vein.');
+                        } else {
+                            this.state.hp = Math.max(5, this.state.hp - 12); alert('Drill core blowout! Shrapnel compromised chassis shielding for -12 Hull integrity.');
                         }
-                        this.state.activeDeck.push(this.state.safeStorage.splice(idx, 1)[0]);
-                        this.renderCampfireVaultPanels();
-                        this.updateGlobalHudDisplay();
-                        this.saveCurrentSessionToDisk();
-                    };
-                    safeScroller.appendChild(cardUi);
-                });
+                        this.exitNodeToTrails();
+                    });
+                } else if (node.type === 'GAMBLE_NODE') {
+                    title.innerText = '🎲 Saloon Hazard Table'; icon.innerText = '🎲';
+                    text.innerText = 'A group of stationary network maintenance units are sitting around a table calculating micro-probabilities. Care to buy a seat?';
+
+                    this.injectEncounterOptionButton(frame, 'Wager 25 Oil Scraps on High Odds', () => {
+                        if (this.state.gold < 25) { alert('Insufficient oil resources.'); return; }
+                        this.state.gold -= 25;
+                        if (Math.random() > 0.5) { this.state.gold += 60; alert('Calculations accurate! Won +60 scraps.'); }
+                        else { alert('Lost the wager hand. Your fuel was claimed.'); }
+                        this.exitNodeToTrails();
+                    });
+                } else if (node.type === 'SALVAGE_NODE') {
+                    title.innerText = '⚙️ Wreckage Stripping Yard'; icon.innerText = '⚙️';
+                    text.innerText = 'A magnetic processing crane is operational here. Drop an active card down the conversion chute to refine it into raw structural oil barrels.';
+
+                    if (this.state.activeDeck.length <= 1) {
+                        text.innerText += ' [ALERT: Active Holster too low to break down cards]';
+                    }
+                    this.state.activeDeck.forEach((card, idx) => {
+                        this.injectEncounterOptionButton(frame, `Scrap [${card.name}] (+25 Oil)`, () => {
+                            if (this.state.activeDeck.length <= 1) { alert('You must maintain a baseline set of action nodes to operate.'); return; }
+                            this.state.activeDeck.splice(idx, 1); this.state.gold += 25;
+                            alert('Component recycled into clean oil resource.'); this.exitNodeToTrails();
+                        });
+                    });
+                }
+                this.injectEncounterOptionButton(frame, 'Leave Area', () => this.exitNodeToTrails());
+            }
+
+            injectEncounterOptionButton(frame, label, callback) {
+                const btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = label; btn.onclick = callback; frame.appendChild(btn);
             }
 
             setupShopNodeScreen() {
                 this.switchView('view-shop');
-                const list = document.getElementById('shop-catalog-list');
-                list.innerHTML = '';
+                const catalog = document.getElementById('shop-catalog-list');
+                catalog.innerHTML = '';
 
+                // Loadable Gear upgrades
                 BOX_UPGRADES_CATALOG.forEach(box => {
                     if (box.id === this.state.activeBoxId) return;
-                    const row = document.createElement('div');
-                    row.className = 'char-card'; row.style.borderColor = 'var(--border)'; row.style.minHeight = 'auto';
-                    row.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent); font-size:13px;">
-                            <span>💼 ${box.name}</span> <span style="color:#fff;">🪙 ${box.cost} Oil</span>
-                        </div>
-                        <div style="font-size:11px; margin-top:4px; color:var(--text-muted); line-height:1.3; font-style:italic;">Capacity: ${box.capacity} Cards.<br>${box.desc}</div>
-                        <button class="btn" style="margin-top:8px; padding:6px; font-size:10px; border-radius:4px; margin-bottom:0;">Weld Onto Belt</button>
-                    `;
-                    row.querySelector('button').onclick = () => {
+                    const el = document.createElement('div'); el.className = 'char-card';
+                    el.innerHTML = `<div><strong>💼 ${box.name}</strong> (${box.capacity} Cards)</div><div style="font-size:9px; color:var(--text-muted);">${box.desc}</div>`;
+                    const btn = document.createElement('button'); btn.className = 'btn'; btn.style.marginTop = '6px'; btn.innerText = `Buy: 🪙 ${box.cost} Oil`;
+                    btn.onclick = () => {
                         if (this.state.gold >= box.cost) {
-                            this.state.gold -= box.cost; this.state.activeBoxId = box.id;
-                            alert(`Hitched your gear setup up to the ${box.name}!`);
-                            this.exitNodeToTrails();
-                        } else { alert("You don't have enough scrap oil barrels for that gear."); }
+                            this.state.gold -= box.cost; this.state.activeBoxId = box.id; alert('Wded new structural belt successfully.'); this.setupShopNodeScreen(); this.updateGlobalHudDisplay();
+                        } else alert('Insufficient currency barrels.');
                     };
-                    list.appendChild(row);
+                    el.appendChild(btn); catalog.appendChild(el);
+                });
+
+                // Buyable Card components
+                const shopOffers = [GAME_ACTION_CARDS_POOL[4], GAME_ACTION_CARDS_POOL[6], GAME_ACTION_CARDS_POOL[8]];
+                shopOffers.forEach(card => {
+                    const el = document.createElement('div'); el.className = 'char-card';
+                    el.innerHTML = `<div><strong>🃏 Component: ${card.name}</strong> [${card.rarity}]</div><div style="font-size:9px; color:var(--text-muted);">${card.effect}</div>`;
+                    const btn = document.createElement('button'); btn.className = 'btn'; btn.style.marginTop = '6px'; btn.innerText = 'Buy: 🪙 40 Oil';
+                    btn.onclick = () => {
+                        if (this.state.gold >= 40) {
+                            this.state.gold -= 40;
+                            if (this.state.activeDeck.length < this.activeBoxSpec.capacity) this.state.activeDeck.push({...card});
+                            else this.state.safeStorage.push({...card});
+                            alert('Purchased card component.'); this.updateGlobalHudDisplay();
+                        } else alert('Insufficient currency barrels.');
+                    };
+                    el.appendChild(btn); catalog.appendChild(el);
+                });
+            }
+
+            renderCampfireVaultPanels() {
+                document.getElementById('camp-active-count').innerText = `${this.state.activeDeck.length}/${this.activeBoxSpec.capacity}`;
+                const actScroller = document.getElementById('camp-active-scroller'); actScroller.innerHTML = '';
+                
+                this.state.activeDeck.forEach((card, idx) => {
+                    const ui = this.generateMobileCardComponent(card);
+                    ui.onclick = () => {
+                        if (this.state.activeDeck.length <= 1) { alert('Active system requirements require at least 1 functional combat card.'); return; }
+                        this.state.safeStorage.push(this.state.activeDeck.splice(idx, 1)[0]);
+                        this.renderCampfireVaultPanels(); this.updateGlobalHudDisplay(); this.saveCurrentSessionToDisk();
+                    };
+                    actScroller.appendChild(ui);
+                });
+
+                const safeScroller = document.getElementById('camp-safe-scroller'); safeScroller.innerHTML = '';
+                this.state.safeStorage.forEach((card, idx) => {
+                    const ui = this.generateMobileCardComponent(card);
+                    ui.onclick = () => {
+                        if (this.state.activeDeck.length >= this.activeBoxSpec.capacity) { alert('Active belt at peak storage capacity thresholds.'); return; }
+                        this.state.activeDeck.push(this.state.safeStorage.splice(idx, 1)[0]);
+                        this.renderCampfireVaultPanels(); this.updateGlobalHudDisplay(); this.saveCurrentSessionToDisk();
+                    };
+                    safeScroller.appendChild(ui);
                 });
             }
 
             exitNodeToTrails() {
-                this.isCombatCurrentlyActive = false; // Total safety overwrite line
+                this.isCombatCurrentlyActive = false;
                 if (this.state.currentMeepleNodeId) {
-                    const node = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
-                    if (node) node.resolved = true;
+                    const currentActiveNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
+                    if (currentActiveNode) currentActiveNode.resolved = true;
                 }
                 this.saveCurrentSessionToDisk(); this.updateGlobalHudDisplay();
                 this.handleTabNavigation('view-map', 'tab-map');
@@ -1038,29 +954,31 @@
             saveCurrentSessionToDisk() { localStorage.setItem(this.saveKey, JSON.stringify(this.state)); this.checkSavedSessionAvailability(); }
             loadSavedSession() {
                 const raw = localStorage.getItem(this.saveKey);
-                if (raw) { 
-                    this.state = JSON.parse(raw); 
-                    this.isCombatCurrentlyActive = false;
-                    this.updateGlobalHudDisplay(); 
-                    this.handleTabNavigation('view-map', 'tab-map'); 
-                }
+                if (raw) { this.state = JSON.parse(raw); this.isCombatCurrentlyActive = false; this.updateGlobalHudDisplay(); this.handleTabNavigation('view-map', 'tab-map'); }
             }
-            saveAndQuitToMain() { this.saveCurrentSessionToDisk(); alert("Safely hitched the wagon and saved."); this.switchView('view-start'); }
-            resetSystemDefault() { localStorage.removeItem(this.saveKey); alert("Memory records completely wiped clean."); location.reload(); }
+            saveAndQuitToMain() { this.saveCurrentSessionToDisk(); alert('Data core safely synchronized to local storage.'); this.switchView('view-start'); }
+            resetSystemDefault() { localStorage.removeItem(this.saveKey); alert('System memory cleared.'); location.reload(); }
 
             generateMobileCardComponent(card) {
-                const el = document.createElement('div');
-                el.className = `mobile-card rarity-${card.rarity}`;
-                el.innerHTML = `
-                    <div class="c-header"><span>⚡ ${card.cost}</span><span style="font-size:8px; opacity:0.5;">AP</span></div>
-                    <div class="c-name">${card.name}</div>
-                    <div class="c-body">${card.effect}</div>
-                `;
+                const el = document.createElement('div'); el.className = `mobile-card rarity-${card.rarity}`;
+                el.innerHTML = `<div class="c-header"><span>⚡ ${card.cost}</span><span style="font-size:7px; opacity:0.4;">AP</span></div><div class="c-name">${card.name}</div><div class="c-body">${card.effect}</div>`;
                 return el;
             }
         }
 
-        const app = new WeirdWestEngine();
+        const WEST_BOT_CLASSES = [
+            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Overclocks target acquisition metrics to prioritize high structural combat damages.' },
+            { name: 'Prospector', icon: '⛏️', desc: 'Equipped with chassis terrain resonance sensors to isolate rich subsurface scrap deposits.' },
+            { name: 'Preacher', icon: '✝️', desc: 'Deploys low-frequency welding modules to maintain node integration mechanics mid-fight.' }
+        ];
+
+        const BOX_UPGRADES_CATALOG = [
+            { id: 'b1', name: 'Standard Leather Belt', capacity: 5, cost: 0, desc: 'Factory standard harness.' },
+            { id: 'b2', name: 'Strap-Iron Gun Pouch', capacity: 8, cost: 50, desc: 'Shield Start modification (+4 Shield automatically at battle start).' },
+            { id: 'b3', name: 'Cylinder Bandolier Rig', capacity: 11, cost: 100, desc: 'Bonus AP modification (+1 Action Point on combat turn 1).' }
+        ];
+
+        const app = new FrontierAdventureEngine();
         window.onload = () => app.init();
     </script>
 </body>
