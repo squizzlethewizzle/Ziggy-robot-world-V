@@ -5,48 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Weird West: Steam & Gears</title>
     <style>
-        /* --- THEMATIC AUTOMATON COLOR THEMES --- */
+        /* --- AUTOMATON DISPLAY CORES --- */
         :root {
-            --bg: #0f0b08;
-            --panel: #1a1410;
-            --border: #523b2a;
-            --accent: #f5b041;
-            --accent-rgb: 245, 176, 65;
-            --text: #fdf6f0;
-            --text-muted: #af9785;
-            --danger: #e74c3c;
-            --card-bg: linear-gradient(135deg, #2c1e16, #1f140e);
-            --glow: rgba(245, 176, 65, 0.25);
-            --window-radius: 24px;
+            --bg: #0d0907;
+            --panel: #17110d;
+            --border: #4d3626;
+            --accent: #f39c12;
+            --accent-rgb: 243, 156, 18;
+            --text: #f9f3ee;
+            --text-muted: #a38b7a;
+            --danger: #d63031;
+            --card-bg: linear-gradient(135deg, #2b1c14, #1a100b);
+            --glow: rgba(243, 156, 18, 0.25);
+            --window-radius: 20px;
         }
 
         [data-theme="neon-oil"] {
-            --bg: #060b0e;
-            --panel: #0d161d;
-            --border: #22445e;
-            --accent: #00ffcc;
-            --accent-rgb: 0, 255, 204;
-            --text: #e6f7ff;
-            --text-muted: #739bb5;
+            --bg: #04080b;
+            --panel: #0a1118;
+            --border: #1e3d54;
+            --accent: #00e6b8;
+            --accent-rgb: 0, 230, 184;
+            --text: #e1f5fe;
+            --text-muted: #6ba0c2;
             --danger: #ff4757;
-            --card-bg: linear-gradient(135deg, #112332, #0a151f);
-            --glow: rgba(0, 255, 204, 0.3);
+            --card-bg: linear-gradient(135deg, #0f202e, #07121c);
+            --glow: rgba(0, 230, 184, 0.25);
         }
 
         [data-theme="rust-belt"] {
-            --bg: #120909;
-            --panel: #221212;
-            --border: #5c2c2c;
-            --accent: #ff6b35;
-            --accent-rgb: 255, 107, 53;
-            --text: #fff0f0;
-            --text-muted: #b88686;
-            --danger: #ff3838;
-            --card-bg: linear-gradient(135deg, #3d1b1b, #241010);
-            --glow: rgba(255, 107, 53, 0.25);
+            --bg: #100707;
+            --panel: #1f0f0f;
+            --border: #522424;
+            --accent: #e65c00;
+            --accent-rgb: 230, 92, 0;
+            --text: #fff2f2;
+            --text-muted: #b37d7d;
+            --danger: #ea2027;
+            --card-bg: linear-gradient(135deg, #381616, #210d0d);
+            --glow: rgba(230, 92, 0, 0.25);
         }
 
-        /* --- MOBILE LAYOUT CORE CONFIGURATION --- */
         * { 
             box-sizing: border-box; 
             transition: background-color 0.25s, border-color 0.25s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
@@ -57,395 +56,210 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Monaco, monospace;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
+            margin: 0; padding: 0;
+            width: 100vw; height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: flex; justify-content: center;
         }
 
         #viewport {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
-            margin: 0 auto;
+            width: 100%; max-width: 480px; height: 100%;
             background-color: var(--panel);
-            border-left: 3px solid var(--border);
-            border-right: 3px solid var(--border);
-            display: flex;
-            flex-direction: column;
+            border-left: 2px solid var(--border);
+            border-right: 2px solid var(--border);
+            display: flex; flex-direction: column;
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.85);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
 
-        /* --- STYLISH UPPER DECK DASHBOARD HUD --- */
+        /* --- UPPER DASHBOARD HUD --- */
         #top-hud {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 16px 8px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0));
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            padding: 14px 8px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
             border-bottom: 2px dashed var(--border);
-            text-align: center;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            gap: 4px;
+            text-align: center; font-size: 8px; font-weight: 800; letter-spacing: 1px;
+            text-transform: uppercase; gap: 6px;
+            z-index: 10;
         }
         #top-hud div { 
-            background: rgba(0,0,0,0.3); 
-            padding: 6px 4px; 
-            border-radius: 12px; 
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.4); padding: 6px 4px; 
+            border-radius: 10px; border: 1px solid rgba(255,255,255,0.03);
         }
-        #top-hud span { color: var(--accent); font-size: 13px; text-shadow: 0 0 8px var(--glow); font-weight: bold; display: block; margin-top: 2px; }
+        #top-hud span { color: var(--accent); font-size: 12px; text-shadow: 0 0 6px var(--glow); font-weight: bold; display: block; margin-top: 2px; }
 
-        /* --- SCREEN CONTROLLER CONTAINER --- */
+        /* --- STAGE LAYER SCREEN CONTAINER --- */
         #screen-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 15px;
-            padding-bottom: 90px; 
+            flex-grow: 1; overflow-y: auto;
+            padding: 16px; padding-bottom: 84px; 
             position: relative;
         }
-
         .screen { display: none; height: 100%; flex-direction: column; }
         .screen.active { display: flex; }
 
-        /* --- GAMESPACE TYPOGRAPHY & BUTTONS --- */
-        h2 { font-size: 20px; text-transform: uppercase; letter-spacing: 2.5px; text-align: center; color: var(--accent); margin: 0 0 14px 0; text-shadow: 0 0 10px var(--glow); }
-        p { font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: center; margin: 0 0 18px 0; }
+        h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 2px; text-align: center; color: var(--accent); margin: 0 0 12px 0; text-shadow: 0 0 8px var(--glow); }
+        p { font-size: 12px; line-height: 1.4; color: var(--text-muted); text-align: center; margin: 0 0 16px 0; }
 
         .btn {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
-            color: var(--text);
-            border: 2px solid var(--border);
-            padding: 14px 20px;
-            border-radius: 16px;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.25));
+            color: var(--text); border: 2px solid var(--border);
+            padding: 12px 18px; border-radius: 14px;
+            font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; width: 100%; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .btn:active, .btn.selected {
-            background: var(--accent);
-            color: #111;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--glow);
-            transform: scale(0.97);
+            background: var(--accent); color: #0d0907; border-color: var(--accent);
+            box-shadow: 0 0 12px var(--glow); transform: scale(0.97);
         }
         .btn-danger { border-color: var(--danger); color: var(--danger); }
         .btn-danger:active { background: var(--danger); color: #fff; }
 
-        /* --- IMMERSIVE RETRO-FUTURISTIC START FRAME --- */
-        .start-frame {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 10px 0;
-        }
+        /* --- MAIN HUB VIEW --- */
+        .start-frame { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
         .menu-logo-container {
-            text-align: center;
-            margin-bottom: 35px;
-            position: relative;
-            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, rgba(0,0,0,0.4) 100%);
-            padding: 30px 20px;
-            border-radius: var(--window-radius);
-            border: 2px solid var(--border);
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
+            text-align: center; margin-bottom: 30px; width: 100%;
+            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, rgba(0,0,0,0.5) 100%);
+            padding: 26px 16px; border-radius: var(--window-radius);
+            border: 2px solid var(--border); box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
         }
-        .menu-logo { font-size: 34px; font-weight: 900; color: var(--accent); letter-spacing: 4px; margin: 0; text-shadow: 0 0 12px var(--glow); }
-        .menu-sub { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 3px; margin-top: 8px; font-weight: bold; }
-        
-        .main-menu-actions { width: 100%; margin-bottom: 25px; }
-        
+        .menu-logo { font-size: 30px; font-weight: 900; color: var(--accent); letter-spacing: 3px; margin: 0; text-shadow: 0 0 10px var(--glow); }
+        .menu-sub { font-size: 9px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 2px; margin-top: 6px; font-weight: bold; }
         .theme-selector-tray {
-            background: rgba(0,0,0,0.4);
-            border: 2px solid var(--border);
-            border-radius: var(--window-radius);
-            padding: 16px;
-            width: 100%;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3); border: 2px solid var(--border);
+            border-radius: var(--window-radius); padding: 14px; width: 100%;
         }
-        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
         .theme-dot-btn {
-            background: rgba(0,0,0,0.5);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 4px;
-            font-size: 9px;
-            color: var(--text);
-            cursor: pointer;
-            text-align: center;
-            text-transform: uppercase;
-            font-weight: bold;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 2px; font-size: 9px; color: var(--text); cursor: pointer; text-align: center;
         }
-        .theme-dot-btn:active { border-color: var(--accent); color: var(--accent); transform: scale(0.95); }
 
-        /* --- DYNAMIC GRID LAYOUT CHARACTER SELECTION --- */
+        /* --- CHARACTER ASSEMBLER SELECTION --- */
         .char-scroller-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            overflow-y: auto;
-            max-height: 360px;
-            padding: 4px;
-            margin-bottom: 15px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            overflow-y: auto; max-height: 340px; margin-bottom: 12px; padding: 2px;
         }
         .char-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 18px;
-            padding: 14px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 115px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px;
+            padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 105px;
         }
-        .char-card.selected { 
-            border-color: var(--accent); 
-            box-shadow: 0 0 16px var(--glow), inset 0 0 10px rgba(var(--accent-rgb), 0.15); 
-            transform: scale(0.98);
-        }
+        .char-card.selected { border-color: var(--accent); box-shadow: 0 0 12px var(--glow); transform: scale(0.98); }
 
-        /* --- ORGANISED MAP NAVIGATION NETWORK ENGINE --- */
+        /* --- INTUITIVE NAVIGATION MAP GRID LINKER --- */
         .map-info-banner {
-            background: rgba(0,0,0,0.4);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 10px 14px;
-            margin-bottom: 12px;
-            font-size: 11px;
-            text-align: center;
-            color: var(--text);
-            line-height: 1.4;
-            box-shadow: inset 0 0 10px #000;
+            background: rgba(0,0,0,0.5); border: 2px solid var(--border); border-radius: 14px;
+            padding: 10px 12px; margin-bottom: 10px; font-size: 11px; text-align: center;
+            color: var(--text); line-height: 1.4; box-shadow: inset 0 0 8px #000; min-height: 54px;
+            display: flex; flex-direction: column; justify-content: center;
         }
         .map-scroll-pane {
-            flex-grow: 1;
-            overflow-y: auto;
-            background: radial-gradient(circle at center, #140e0a 0%, #050302 100%);
-            border: 2px solid var(--border);
-            border-radius: var(--window-radius);
-            position: relative;
-            min-height: 380px;
-            box-shadow: inset 0 0 30px #000;
+            flex-grow: 1; overflow-y: auto;
+            background: radial-gradient(circle at center, #110c09 0%, #030202 100%);
+            border: 2px solid var(--border); border-radius: var(--window-radius);
+            position: relative; box-shadow: inset 0 0 25px #000;
         }
         .map-svg-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
         }
-        .map-nodes-container-div {
-            display: flex;
-            flex-direction: column-reverse;
-            padding: 40px 0;
-            position: relative;
-            z-index: 2;
-        }
-        .map-layer-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 75px; /* Fixed step distance allocation across all 14 segments */
-            position: relative;
-        }
+        .map-nodes-container-div { display: flex; flex-direction: column-reverse; padding: 30px 0; position: relative; z-index: 2; }
+        .map-layer-row { display: flex; justify-content: space-around; align-items: center; height: 75px; position: relative; }
         
         .node-circle {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            position: relative;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card-bg); border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer; position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
-        .node-circle.available { 
-            border-color: var(--accent); 
-            box-shadow: 0 0 16px var(--accent);
-            animation: nodePulse 1.8s infinite alternate;
-        }
+        .node-circle.available { border-color: var(--accent); animation: nodePulse 1.6s infinite alternate; }
         @keyframes nodePulse {
-            0% { transform: scale(1); box-shadow: 0 0 8px var(--accent); }
-            100% { transform: scale(1.08); box-shadow: 0 0 20px var(--accent); }
+            0% { transform: scale(1); box-shadow: 0 0 6px var(--accent); }
+            100% { transform: scale(1.06); box-shadow: 0 0 16px var(--accent); }
         }
-        .node-circle.resolved { opacity: 0.35; background: #000; border-color: #443322; }
+        .node-circle.resolved { opacity: 0.3; background: #000; border-color: #38251a; }
 
         .meeple-pawn {
-            position: absolute;
-            top: -20px; left: 50%;
-            transform: translateX(-50%);
-            background: #ff3333;
-            color: #fff;
-            font-size: 8px;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 20px;
-            border: 1px solid #fff;
-            box-shadow: 0 0 12px #ff3333;
-            z-index: 5;
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-            animation: bounce 0.5s infinite alternate;
-        }
-        @keyframes bounce {
-            0% { top: -20px; }
-            100% { top: -24px; }
+            position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+            background: var(--danger); color: #fff; font-size: 8px; font-weight: bold;
+            padding: 2px 6px; border-radius: 10px; border: 1px solid #fff;
+            box-shadow: 0 0 8px var(--danger); z-index: 5; white-space: nowrap;
         }
 
-        /* --- RADIAL HAND-ARCKING COMBAT INTERFACE --- */
-        .combat-arena-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
-        }
-        
-        /* Tactical HUD Modules */
-        .vital-readout-strip {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.5);
-            border: 2px solid var(--border);
-            border-radius: 18px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 12px;
-            box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
-        }
-        .vital-block { display: flex; flex-direction: column; gap: 3px; width: 48%; }
-        
-        .hp-bar-outer { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; margin-top: 3px; }
-        .hp-bar-inner { height: 100%; background: var(--accent); width: 100%; transition: width 0.3s ease; }
-        .hp-bar-inner.enemy { background: var(--danger); }
-
-        /* Arc Engine Display Frame Allocation */
-        .hand-arc-container {
-            position: relative;
-            height: 220px;
-            width: 100%;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            overflow: visible;
-        }
-        
+        /* --- CARD OBJECT MODULES --- */
         .mobile-card {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            width: 110px;
-            height: 160px;
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 11px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-            transform-origin: bottom center;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
+            width: 105px; height: 145px; background: var(--card-bg);
+            border: 2px solid var(--border); border-radius: 12px; padding: 10px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            font-size: 11px; box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            user-select: none; -webkit-user-select: none;
         }
         .mobile-card .c-header { display: flex; justify-content: space-between; font-weight: bold; color: var(--accent); }
-        .mobile-card .c-name { font-weight: bold; margin: 5px 0; font-size: 11px; line-height: 1.1; overflow: hidden; text-align: center; color: #fff; }
-        .mobile-card .c-body { font-size: 9px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.3; }
-        .mobile-card.rarity-RARE { border-color: #9b59b6; }
+        .mobile-card .c-name { font-weight: bold; margin: 4px 0; font-size: 10px; line-height: 1.1; text-align: center; color: #fff; }
+        .mobile-card .c-body { font-size: 9px; color: var(--text-muted); flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+        .mobile-card.rarity-RARE { border-color: #8e44ad; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.2); }
         .mobile-card.rarity-LEGENDARY { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
-        
-        /* Card Action Interactions feedback states */
-        .mobile-card:active {
-            transform: scale(1.1) translateY(-25px) !important;
-            z-index: 100 !important;
-            border-color: var(--accent);
-        }
 
-        /* --- DETAILED HOVER TELEMETRY PREVIEW OVERLAY FRAME --- */
+        /* --- ARCKED TACTICAL ENCOUNTER INTERFACE --- */
+        .combat-arena-wrapper { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
+        .vital-readout-strip {
+            display: flex; justify-content: space-between; background: rgba(0,0,0,0.4);
+            border: 2px solid var(--border); border-radius: 16px; padding: 10px; margin-bottom: 10px; font-size: 11px;
+        }
+        .vital-block { display: flex; flex-direction: column; gap: 2px; width: 48%; }
+        .hp-bar-outer { width: 100%; height: 5px; background: rgba(0,0,0,0.6); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+        .hp-bar-inner { height: 100%; background: var(--accent); width: 100%; }
+        .hp-bar-inner.enemy { background: var(--danger); }
+
+        .hand-arc-container { position: relative; height: 190px; width: 100%; margin-top: 15px; overflow: visible; }
+        .hand-arc-container .mobile-card { position: absolute; bottom: 15px; left: 50%; transform-origin: bottom center; cursor: pointer; }
+        .hand-arc-container .mobile-card:active { transform: scale(1.15) translateY(-20px) !important; z-index: 200 !important; border-color: var(--accent); }
+
+        /* --- CAMPFIRE PROTOCOL GRID FIXES --- */
+        .camp-scroll-dock {
+            background: rgba(0,0,0,0.3); border: 2px solid var(--border); border-radius: var(--window-radius);
+            padding: 12px; margin-bottom: 14px; box-shadow: inset 0 0 10px #000;
+        }
+        .card-flex-row-layout {
+            display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px;
+            scroll-snap-type: x mandatory; min-height: 165px; align-items: center;
+        }
+        .card-flex-row-layout .mobile-card { flex-shrink: 0; scroll-snap-align: start; cursor: pointer; }
+        .card-flex-row-layout .mobile-card:active { transform: scale(0.96); opacity: 0.8; }
+
+        /* --- HOVER TELEMETRY OVERLAY POPUPS --- */
         #inspect-modal-overlay {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 500;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+            z-index: 500; align-items: center; justify-content: center; padding: 20px;
         }
         .inspect-window-box {
-            background: var(--panel);
-            border: 3px solid var(--accent);
-            border-radius: var(--window-radius);
-            padding: 24px;
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px var(--glow);
-            animation: modalPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            background: var(--panel); border: 2px solid var(--accent); border-radius: var(--window-radius);
+            padding: 20px; width: 100%; max-width: 300px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px var(--glow);
         }
-        @keyframes modalPop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* --- BOTTOM PERSISTENT NAVIGATION TABS --- */
+        /* --- PERSISTENT CONTROLLER TAB FOOTER --- */
         #bottom-navigation-bar {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            height: 68px;
-            background: linear-gradient(to top, #090605 80%, rgba(0,0,0,0));
-            border-top: 2px dashed var(--border);
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            z-index: 100;
-            padding-bottom: 6px;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 64px;
+            background: linear-gradient(to top, #060403 85%, rgba(0,0,0,0));
+            border-top: 2px dashed var(--border); display: grid; grid-template-columns: repeat(5, 1fr); z-index: 100;
         }
         .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            color: var(--text-muted);
-            cursor: pointer;
-            gap: 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: bold;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 8px; color: var(--text-muted); cursor: pointer; text-transform: uppercase; font-weight: bold;
         }
-        .nav-tab-item span { font-size: 20px; transition: transform 0.2s; }
-        .nav-tab-item:active span { transform: scale(1.2); }
-        .nav-tab-item.active { color: var(--accent); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, rgba(0,0,0,0) 70%); text-shadow: 0 0 8px var(--glow); }
+        .nav-tab-item span { font-size: 18px; margin-bottom: 2px; }
+        .nav-tab-item.active { color: var(--accent); text-shadow: 0 0 6px var(--glow); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, rgba(0,0,0,0) 70%); }
 
-        .settings-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
-        .rules-card { background: rgba(0,0,0,0.25); border: 2px solid var(--border); padding: 14px; border-radius: 18px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
+        .rules-card { background: rgba(0,0,0,0.2); border: 2px solid var(--border); padding: 12px; border-radius: 16px; font-size: 11px; line-height: 1.4; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div id="viewport">
-        <!-- TOP PERSISTENT HUD OVERLAY -->
         <div id="top-hud">
             <div>CORE INTEGRITY <span id="hud-hp">50/50</span></div>
             <div>OIL RESERVES <span id="hud-gold">100</span></div>
@@ -453,25 +267,20 @@
             <div>SECTOR <span id="hud-map-index">1-1</span></div>
         </div>
 
-        <!-- MAIN VIEWSCREEN VIEWPORT LAYERS -->
         <div id="screen-container">
-            
-            <!-- VIEW 1: PRETTIER START SYSTEM SCREEN WITH INTEGRATED ACTIONS -->
             <div id="view-start" class="screen active">
                 <div class="start-frame">
                     <div class="menu-logo-container">
                         <div class="menu-logo">WEIRD WEST</div>
                         <div class="menu-sub">🦾 AUTOMATON FRONTIER ⚙️</div>
                     </div>
-                    
-                    <div class="main-menu-actions">
+                    <div style="width: 100%; margin-bottom: 20px;">
                         <button class="btn" style="border-color: var(--accent);" onclick="app.switchView('view-charselect')">⚙️ Boot New Chassis Run</button>
-                        <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; background: rgba(var(--accent-rgb), 0.12); border-color: var(--accent);">💾 Reconnect Safe Session</button>
+                        <button class="btn" id="btn-continue-run" onclick="app.loadSavedSession()" style="display:none; background: rgba(var(--accent-rgb), 0.08); border-color: var(--accent);">💾 Reconnect Safe Session</button>
                         <button class="btn btn-danger" onclick="app.resetSystemDefault()">Wipe Storage Cache</button>
                     </div>
-
                     <div class="theme-selector-tray">
-                        <div style="font-size: 10px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 1.2px;">Terminal Visual Core Scheme</div>
+                        <div style="font-size: 9px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 1px;">Visual Driver Core Scheme</div>
                         <div class="theme-grid">
                             <button class="theme-dot-btn" onclick="app.setThemePalette('default')">🍂 Brass</button>
                             <button class="theme-dot-btn" onclick="app.setThemePalette('neon-oil')">🧪 Bio-Oil</button>
@@ -481,26 +290,20 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: AUTOMATON CHARACTER SELECT SCREEN -->
             <div id="view-charselect" class="screen">
                 <h2>Select Frame Type</h2>
-                <p>Your hardware assembly program determines starting combat subroutines.</p>
-                
-                <div class="char-scroller-grid" id="character-injection-grid">
-                    <!-- 16 Specialized classes injected via code module safely -->
-                </div>
-
+                <p>Hardware presets define initial tactical subroutine structures.</p>
+                <div class="char-scroller-grid" id="character-injection-grid"></div>
                 <div style="margin-top:auto;">
                     <button class="btn" style="border-color: var(--accent);" onclick="app.confirmCharacterSelection()">Initialize System</button>
                     <button class="btn btn-danger" onclick="app.switchView('view-start')">Back</button>
                 </div>
             </div>
 
-            <!-- VIEW 3: CAMPAIGN TRAILS NODE MAP MAP VIEW -->
             <div id="view-map" class="screen">
                 <h2>Sector Map Routing</h2>
                 <div class="map-info-banner" id="map-target-node-descriptor">
-                    🎯 Scan Feed: Select an adjacent pulsing node linkage terminal to route system propulsion components.
+                    🎯 System Feed: Scan or tap a tactical vector junction node to route automaton locomotion assemblies.
                 </div>
                 <div class="map-scroll-pane" id="map-scroll-view">
                     <svg class="map-svg-canvas" id="map-connections-svg"></svg>
@@ -508,121 +311,96 @@
                 </div>
             </div>
 
-            <!-- VIEW 4: COMBAT ENGINE VIEW SCREEN -->
             <div id="view-combat" class="screen">
                 <div class="combat-arena-wrapper">
-                    
                     <div class="vital-readout-strip">
                         <div class="vital-block">
                             <div style="display:flex; justify-content:space-between; font-weight:bold;">
                                 <span id="cb-player-frame-title" style="color:var(--accent);">Chassis</span>
                                 <span>⚡ <strong id="cb-player-ap" style="color:var(--accent);">3</strong> AP</span>
                             </div>
-                            <div style="font-size:10px; margin-top:2px; color:var(--text-muted);">
+                            <div style="font-size:9px; margin-top:2px; color:var(--text-muted);">
                                 HP: <span id="cb-player-hp">50</span> | PLT: <span id="cb-player-armor">0</span>
                             </div>
                             <div class="hp-bar-outer"><div class="hp-bar-inner" id="bar-player-hp-pc"></div></div>
                         </div>
                         <div class="vital-block" style="text-align: right;">
                             <div style="font-weight:bold; color:var(--danger);" id="cb-enemy-name">Rogue Unit</div>
-                            <div style="font-size:10px; margin-top:2px;">
-                                HP: <span id="cb-enemy-hp">25</span>
-                            </div>
+                            <div style="font-size:9px; margin-top:2px;">HP: <span id="cb-enemy-hp">25</span></div>
                             <div class="hp-bar-outer"><div class="hp-bar-inner enemy" id="bar-enemy-hp-pc"></div></div>
-                            <div id="cb-enemy-intent" style="font-weight:800; color:#ffb300; font-size:10px; margin-top:2px; letter-spacing:0.3px;">Intent: STRK 6</div>
+                            <div id="cb-enemy-intent" style="font-weight:800; color:#ffb300; font-size:9px; margin-top:2px; letter-spacing:0.3px;">Intent: STRK 6</div>
                         </div>
                     </div>
-
-                    <div style="font-size:10px; font-weight:bold; text-transform: uppercase; text-align:center; letter-spacing:1px; color:var(--text-muted);">
-                        Tap to deploy • Hold down to inspect data
+                    <div style="font-size:9px; font-weight:bold; text-transform: uppercase; text-align:center; color:var(--text-muted);">
+                        Tap Card to Fire • Hold Down to Inspect
                     </div>
-
-                    <!-- ARCKED CARDS GRAPHICS CONTAINER FRAME -->
                     <div class="hand-arc-container" id="combat-hand-arc-frame"></div>
-
                     <button class="btn" onclick="app.endCombatTurn()" style="border-color:var(--accent); margin-bottom: 0;">Cycle Engine Turn</button>
                 </div>
             </div>
 
-            <!-- VIEW 5: CAMPFIRE VAULT ARRANGEMENT MODULE -->
             <div id="view-campfire" class="screen">
                 <h2>🔥 Maintenance Scrap Fire</h2>
-                <p>Transfer system cards between your Active Deck Box Holster configuration storage arrays and your Safe Vault.</p>
+                <p>Tap memory blocks to shift files between your active holster pouch and storage safe vaults.</p>
                 
-                <div style="font-size:11px; font-weight:bold; margin-bottom:5px; text-transform: uppercase;">Active Deck Box Holster (<span id="camp-active-count">0/5</span>):</div>
-                <div class="card-scroller" id="camp-active-scroller"></div>
+                <div class="camp-scroll-dock">
+                    <div style="font-size:10px; font-weight:bold; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">Active Holster Deck (<span id="camp-active-count">0/5</span>)</div>
+                    <div class="card-flex-row-layout" id="camp-active-scroller"></div>
+                </div>
 
-                <div style="font-size:11px; font-weight:bold; margin-top:15px; margin-bottom:5px; text-transform: uppercase;">Secure Vault Cargo Safe:</div>
-                <div class="card-scroller" id="camp-safe-scroller"></div>
+                <div class="camp-scroll-dock">
+                    <div style="font-size:10px; font-weight:bold; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Secure Vault Cargo Safe</div>
+                    <div class="card-flex-row-layout" id="camp-safe-scroller"></div>
+                </div>
 
                 <button class="btn" onclick="app.exitNodeToTrails()" style="margin-top:auto; border-color: var(--accent);">Close Panels & Roll Out</button>
             </div>
 
-            <!-- VIEW 6: GENERAL RETAIL GENERAL STORE -->
             <div id="view-shop" class="screen">
                 <h2>🏪 Fueling Port Scrap Shop</h2>
-                <p>Trade raw scrap oil assets to augment your tactical active loadout storage options.</p>
-                <div id="shop-catalog-list"></div>
+                <p>Spend raw fuel scrap to weld heavy mechanical expansions onto your active data storage matrix.</p>
+                <div id="shop-catalog-list" style="display:flex; flex-direction:column; gap:12px;"></div>
                 <button class="btn btn-danger" onclick="app.exitNodeToTrails()" style="margin-top:auto;">Leave Port</button>
             </div>
 
-            <!-- VIEW 7: CHARACTER TAB SHEETS OVERLAY VIEW -->
             <div id="view-character" class="screen">
                 <h2>Chassis Engineering Data</h2>
-                <div class="char-card" style="text-align:center; min-height: auto; border-radius: 24px;">
+                <div class="char-card" style="text-align:center; min-height: auto; border-radius: 20px; padding: 20px 10px;">
                     <div style="font-size:32px;" id="sheet-avatar">🤖</div>
-                    <div style="font-size:18px; font-weight:bold; margin-top:5px; text-transform: uppercase;" id="sheet-class-title">Unit</div>
-                    <div style="font-size:11px; color:var(--accent); margin-top:2px;">Software Adaptation Level <span id="sheet-level">1</span></div>
+                    <div style="font-size:16px; font-weight:bold; margin-top:4px; text-transform: uppercase;" id="sheet-class-title">Unit</div>
+                    <div style="font-size:11px; color:var(--accent); margin-top:2px;">Software Version Level <span id="sheet-level">1</span></div>
                 </div>
-
-                <div class="rules-card" style="margin-top:14px; border-radius: 24px;">
-                    <strong style="color:var(--accent)">Mounted Deck Box Model:</strong><br>
+                <div class="rules-card" style="margin-top:12px; border-radius: 20px;">
+                    <strong style="color:var(--accent)">Mounted Holster Box Model:</strong><br>
                     <span id="sheet-box-name">Standard Frame Pouch</span><br>
                     Safety Limit Threshold: <span id="sheet-box-cap">5 Cards</span><br>
                     <small id="sheet-box-perk" style="color:var(--text-muted); display:block; margin-top:4px;">No modifications detected.</small>
                 </div>
-
                 <div style="margin-top:auto;">
                     <button class="btn btn-danger" onclick="app.saveAndQuitToMain()">💾 Secure Memory & Disconnect</button>
                 </div>
             </div>
 
-            <!-- VIEW 8: GAME RULES DOCUMENT TAB -->
             <div id="view-rules" class="screen">
                 <h2>Frontier Systems Codex</h2>
-                <div class="rules-card">
-                    <strong>1. Chassis Deck Hardware Space</strong><br>
-                    Your active subroutine sequence is hard-capped by your equipped Deck Box capacity (Starts at 5 max).
-                </div>
-                <div class="rules-card">
-                    <strong>2. Safe Storage Routing Protocols</strong><br>
-                    New scrap program modules earned beyond storage limits auto-route directly to your deep vault storage safe. Restructure them securely at <strong>Scrap Fire Maintenance</strong> points.
-                </div>
-                <div class="rules-card">
-                    <strong>3. Junction Navigation Networks</strong><br>
-                    Map your physical meeple locator token down interconnected network lanes through 14 depth tiers.
-                </div>
+                <div class="rules-card"><strong>1. Chassis Deck Hardware Space</strong><br>Your compilation stream is restricted by your active Holster limit box. Excess code blocks shard straight to cargo storage safe vaults automatically.</div>
+                <div class="rules-card"><strong>2. Maintenance Points</strong><br>Docking onto Scrap Fires allows your operating systems to clear caches, safely moving blocks between active files and storage safely without data fragmentation.</div>
+                <div class="rules-card"><strong>3. Trailing Network Nodes</strong><br>Trace down 14 high-risk structural vertical tiers. Completing layer 14 advances the machine suite directly to subsequent frontier grids.</div>
             </div>
 
-            <!-- VIEW 9: CUSTOM COLORS THEMES MANAGER TAB -->
             <div id="view-themes" class="screen">
                 <h2>Terminal Display Drivers</h2>
-                <p>Shift operating interface themes immediately to fit ambient optic requirements.</p>
+                <p>Adjust visual frequency patterns to tune optic tracking performance across hazardous operations.</p>
                 <button class="btn" onclick="app.setThemePalette('default')">🍂 Brass Finish (Classic)</button>
                 <button class="btn" onclick="app.setThemePalette('neon-oil')">🧪 Bio-Electric Oil (Cyan Glow)</button>
                 <button class="btn" onclick="app.setThemePalette('rust-belt')">🔴 Iron Corrosion (Rust Red)</button>
             </div>
-
         </div>
 
-        <!-- TELEMETRY REVEAL MODAL FRAME -->
         <div id="inspect-modal-overlay" onclick="app.closeInspectTelemetryModal()">
-            <div class="inspect-window-box" id="inspect-modal-content-box">
-                <!-- Data populated dynamically via long-press hook -->
-            </div>
+            <div class="inspect-window-box" id="inspect-modal-content-box"></div>
         </div>
 
-        <!-- BOTTOM NAVIGATION GLOBAL FOOTER CONTROLLER TABS BAR -->
         <div id="bottom-navigation-bar" style="display:none;">
             <div class="nav-tab-item active" id="tab-map" onclick="app.handleTabNavigation('view-map', 'tab-map')"><span>🗺️</span>Trail</div>
             <div class="nav-tab-item" id="tab-char" onclick="app.handleTabNavigation('view-character', 'tab-char')"><span>🤖</span>Chassis</div>
@@ -632,47 +410,42 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTROLLER SCRIPT IMPLEMENTATION -->
     <script>
-        // --- 16 MECHANICAL ROBOTIC CLASSES ASSET CATALOG ---
         const WEST_BOT_CLASSES = [
-            { name: 'Gambler', icon: '🎲', desc: 'Reroutes micro-processors to recalculate luck probabilities and critical output fields.' },
-            { name: 'Bartender', icon: '🍺', desc: 'Dispenses high-grade industrial lubricants to smooth programmatic performance arrays.' },
-            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Siphons system resources from defense networks to overcharge offensive output arrays.' },
-            { name: 'Drunk', icon: '🍾', desc: 'Operates on unstable, leaking fuel reservoirs to trigger high-impact chaotic behavior profiles.' },
-            { name: 'Bar Fighter', icon: '👊', desc: 'Reinforced hydraulic heavy chassis optimized for brutal, close-quarters metal impact.' },
-            { name: 'Undertaker', icon: '⚰️', desc: 'Recycles scrap plating components from deactivated units to patch internal hulls.' },
-            { name: 'Rangler', icon: '🤠', desc: 'Deploys localized electro-magnetic tethers to lock down rogue machines.' },
-            { name: 'Sheriff', icon: '⭐', desc: 'Hosts global targeting drivers to compute defensive lockdowns and protocols.' },
-            { name: 'Harlot', icon: '💋', desc: 'Emits disruptive visual sensor frequencies to spoof target automation hardware.' },
-            { name: 'Snake Oil Salesman', icon: '🧪', desc: 'Injects sub-optimal coolant additives to corrosive enemy logic blocks.' },
-            { name: 'Preacher', icon: '✝️', desc: 'Broadcasts wide-band carrier waves that harmonize ally network synchronization metrics.' },
-            { name: 'Bank Robber', icon: '💰', desc: 'Overclocks servo-speeds to harvest optimization assets from encrypted banks.' },
-            { name: 'Prospector', icon: '⛏️', desc: 'Equipped with heavy acoustic sensors to extract premium raw minerals and scraps.' },
-            { name: 'Inventor', icon: '⚙️', desc: 'Deploys localized micro-drones to hotwire and patch up damage registers dynamically.' }
+            { name: 'Gambler', icon: '🎲', desc: 'Recalculates calculation matrix logs to force high-risk logic crit registers.' },
+            { name: 'Bartender', icon: '🍺', desc: 'Vents high-pressure lubrication fluid lines to accelerate motor reaction rates.' },
+            { name: 'Outlaw', icon: '🏴‍☠️', desc: 'Over-clocks offensive weapon subroutines by stripping down armor shield allocations.' },
+            { name: 'Drunk', icon: '🍾', desc: 'Exhibits highly sporadic movement vectors derived from leaking corrosive coolant loops.' },
+            { name: 'Bar Fighter', icon: '👊', desc: 'Heavy cast-alloy hydraulic load frame built to absorb massive kinetic impacts.' },
+            { name: 'Undertaker', icon: '⚰️', desc: 'Processes scrap fragments directly from spent machines to rebuild structural hulls.' }
         ];
 
         const BOX_UPGRADES_CATALOG = [
-            { id: 'b1', name: 'Scrap Frame Holster', capacity: 5, cost: 0, perk: 'NONE', desc: 'Factory default structural alignment. Holds 5 programs.' },
-            { id: 'b2', name: 'Reinforced Alloy Case', capacity: 8, cost: 50, perk: 'SHIELD_START', desc: 'Initializes dynamic battle sequence with +4 Plating shielding.' },
-            { id: 'b3', name: 'Gatling Expansion Bank', capacity: 12, cost: 110, perk: 'BONUS_AP', desc: 'Expands operational memory to 12 slots. Yields +1 Turn 1 AP.' }
+            { id: 'b1', name: 'Scrap Frame Holster', capacity: 5, cost: 0, perk: 'NONE', desc: 'Standard issue frame architecture. Runs 5 active blocks.' },
+            { id: 'b2', name: 'Reinforced Alloy Case', capacity: 8, cost: 50, perk: 'SHIELD_START', desc: 'Deploys combat telemetry arrays with an automatic +4 Plating.' },
+            { id: 'b3', name: 'Gatling Expansion Bank', capacity: 12, cost: 110, perk: 'BONUS_AP', desc: 'Expands execution memory buffer slots to 12. Adds +1 Action Point on initial turn cycles.' }
         ];
+
+        // --- ENHANCED NODE SYSTEM ENCYCLOPEDIA ---
+        const NODE_DICTIONARY = {
+            'CAMPFIRE': { label: '🔥 MAINTENANCE DIAGNOSTIC NODE', definition: 'A secure automation workbench terminal. Allows complete structural sorting of your subroutines between your active card holster pouch and cargo vault. Prevents software corruption.' },
+            'GENERAL_STORE': { label: '🏪 MECHANICAL TRADING PORT', definition: 'A black-market trading port hosted by neutral machine scrap merchants. Exchange raw fuel oil barrels here to install upgraded card holster frameworks to boost your max hand memory.' },
+            'BASIC_BATTLE': { label: '⚔️ ROGUE MECH ENCOUNTER DETECTED', definition: 'A lane blockage containing a minor, deregistered scrap drone gone feral. Engaging allows you to battle and siphon off basic fuel tokens alongside potential code blocks.' },
+            'ELITE_BATTLE': { label: '💀 BEHEMOTH CORE TERMINAL SIGNAL', definition: 'High threat matrix detection. Houses a reinforced defensive military sentinel. Defeating this unit yields high-density scrap payouts and hyper-advanced module arrays.' }
+        };
 
         class WeirdWestEngine {
             constructor() {
                 this.selectedClass = 'Gambler';
-                this.saveKey = 'WeirdWestMobile_SaveSession_v3';
+                this.saveKey = 'WeirdWestMobile_SaveSession_v4';
                 this.inspectTimeoutHook = null;
                 this.isInspectingTriggered = false;
                 
                 this.state = {
-                    level: 1, gold: 60, hp: 50, maxHp: 50,
-                    activeBoxId: 'b1',
-                    activeDeck: [], safeStorage: [],
-                    mapNodes: [], currentMeepleNodeId: null, currentDepth: -1,
-                    mapId: 1, characterClass: 'Gambler'
+                    level: 1, gold: 60, hp: 50, maxHp: 50, activeBoxId: 'b1',
+                    activeDeck: [], safeStorage: [], mapNodes: [],
+                    currentMeepleNodeId: null, currentDepth: -1, mapId: 1, characterClass: 'Gambler'
                 };
-
                 this.combat = { enemyHp: 0, enemyMaxHp: 0, enemyIntentDmg: 0, playerArmor: 0, playerAp: 3, hand: [], draw: [], discard: [] };
             }
 
@@ -680,22 +453,28 @@
                 this.injectCharacterClassesUi();
                 this.checkSavedSessionAvailability();
                 this.setThemePalette('default');
+                
+                // Add event listener to redraw paths if orientation/resize shifts maps
+                window.addEventListener('resize', () => {
+                    if (document.getElementById('view-map').classList.contains('active')) {
+                        this.drawVectorConnectionLinesMap();
+                    }
+                });
             }
 
             injectCharacterClassesUi() {
-                const targetGrid = document.getElementById('character-injection-grid');
-                targetGrid.innerHTML = '';
-                
+                const grid = document.getElementById('character-injection-grid');
+                grid.innerHTML = '';
                 WEST_BOT_CLASSES.forEach((c, idx) => {
                     const card = document.createElement('div');
                     card.className = `char-card ${idx === 0 ? 'selected' : ''}`;
                     card.id = `char_unit_type_${c.name.replace(/\s+/g, '')}`;
                     card.innerHTML = `
                         <div style="font-weight:bold; color:var(--accent); font-size:12px;">${c.icon} ${c.name} Unit</div>
-                        <div style="font-size:10px; margin-top:4px; line-height:1.3; color:var(--text-muted);">${c.desc}</div>
+                        <div style="font-size:10px; margin-top:4px; line-height:1.2; color:var(--text-muted);">${c.desc}</div>
                     `;
                     card.onclick = () => this.selectCharacterClass(c.name);
-                    targetGrid.appendChild(card);
+                    grid.appendChild(card);
                 });
             }
 
@@ -709,23 +488,25 @@
                 document.getElementById(viewId).classList.add('active');
                 document.getElementById('bottom-navigation-bar').style.display = 
                     (viewId === 'view-start' || viewId === 'view-charselect') ? 'none' : 'grid';
+                
+                if (viewId === 'view-map') {
+                    setTimeout(() => { this.drawVectorConnectionLinesMap(); }, 50);
+                }
             }
 
             handleTabNavigation(viewId, tabId) {
                 if (document.getElementById('view-combat').classList.contains('active') && viewId !== 'view-combat') {
-                    alert("Emergency Warning: System cannot decouple from live combat encounter fields!");
+                    alert("Emergency Core Lock: Systems cannot break engagement away from active tracking targets!");
                     return;
                 }
-                
                 if (viewId === 'view-campfire') {
                     const node = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
                     if (!node || node.type !== 'CAMPFIRE') {
-                        alert("Navigation Blocked: Maintenance fire interface protocols require physical node docking.");
+                        alert("Access Denied: Camp modification arrays require physical link to a Maintenance node.");
                         return;
                     }
                     this.renderCampfireVaultPanels();
                 }
-
                 document.querySelectorAll('.nav-tab-item').forEach(t => t.classList.remove('active'));
                 document.getElementById(tabId).classList.add('active');
                 this.switchView(viewId);
@@ -745,9 +526,7 @@
             }
 
             confirmCharacterSelection() {
-                this.state.level = 1; this.state.gold = 75; this.state.hp = 50; this.state.maxHp = 50;
-                this.state.activeBoxId = 'b1';
-                
+                this.state.level = 1; this.state.gold = 75; this.state.hp = 50; this.state.maxHp = 50; this.state.activeBoxId = 'b1';
                 this.state.activeDeck = [
                     { id: 'str_1', name: 'Laser Beam Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
                     { id: 'str_2', name: 'Laser Beam Strike', rarity: 'BASIC', cost: 1, effect: 'Deal 6 DMG.' },
@@ -755,24 +534,18 @@
                     { id: 'str_4', name: 'Deploy Iron Plating', rarity: 'BASIC', cost: 1, effect: 'Gain 5 PLATING.' },
                     { id: 'str_5', name: 'Coolant Purge', rarity: 'BASIC', cost: 1, effect: 'Heal 4 HP.' }
                 ];
-                
                 this.state.safeStorage = [
                     { id: 'safe_1', name: 'Overcharge Blast', rarity: 'RARE', cost: 2, effect: 'Deal 14 DMG.' },
                     { id: 'safe_2', name: 'Heavy Titanium Wall', rarity: 'RARE', cost: 2, effect: 'Gain 12 PLATING.' }
                 ];
-
-                this.state.currentMeepleNodeId = null;
-                this.state.currentDepth = -1;
+                this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
                 this.generateProceduralMobileMap();
-
                 this.saveCurrentSessionToDisk();
                 this.updateGlobalHudDisplay();
                 this.handleTabNavigation('view-map', 'tab-map');
             }
 
-            get activeBoxSpec() {
-                return BOX_UPGRADES_CATALOG.find(b => b.id === this.state.activeBoxId) || BOX_UPGRADES_CATALOG[0];
-            }
+            get activeBoxSpec() { return BOX_UPGRADES_CATALOG.find(b => b.id === this.state.activeBoxId) || BOX_UPGRADES_CATALOG[0]; }
 
             updateGlobalHudDisplay() {
                 document.getElementById('hud-hp').innerText = `${this.state.hp}/${this.state.maxHp}`;
@@ -791,7 +564,6 @@
                 document.getElementById('cb-player-frame-title').innerText = `${matchedClass.name} Bot`;
             }
 
-            // --- 14 DEPTH LAYER FULL PROCEDURAL MAP DATA ARRAYS GENERATOR ---
             generateProceduralMobileMap() {
                 this.state.mapNodes = [];
                 const depthTarget = 14; 
@@ -799,49 +571,27 @@
 
                 for (let d = 0; d < depthTarget; d++) {
                     const nodesInThisRow = (d === 0 || d === depthTarget - 1) ? 1 : Math.floor(Math.random() * 2) + 2; 
-                    
                     for (let l = 0; l < nodesInThisRow; l++) {
                         let type = 'BASIC_BATTLE';
-                        let summary = 'A hostile rogue machine blocks transport infrastructure corridors.';
-                        
-                        if (d === 0) {
-                            type = 'CAMPFIRE';
-                            summary = 'Safe-zone diagnostic engine maintenance terminal. Restructure memory files safely here.';
-                        } else if (d === depthTarget - 1) {
-                            type = 'ELITE_BATTLE';
-                            summary = 'Warning: Over-clocked Mech-Behemoth guarding exit gateway interface protocols.';
-                        } else {
+                        if (d === 0) type = 'CAMPFIRE';
+                        else if (d === depthTarget - 1) type = 'ELITE_BATTLE';
+                        else {
                             const r = Math.random();
-                            if (r < 0.22) {
-                                type = 'CAMPFIRE';
-                                summary = 'Safe-zone diagnostic engine maintenance terminal. Restructure memory files safely here.';
-                            } else if (r < 0.40) {
-                                type = 'GENERAL_STORE';
-                                summary = 'Fueling Port Retail Vendor. Exchange scrap assets for advanced storage modules.';
-                            } else if (r < 0.55) {
-                                type = 'ELITE_BATTLE';
-                                summary = 'High concentration of weaponised data nodes detected. Threat metrics: Severe.';
-                            }
+                            if (r < 0.25) type = 'CAMPFIRE';
+                            else if (r < 0.45) type = 'GENERAL_STORE';
+                            else if (r < 0.60) type = 'ELITE_BATTLE';
                         }
-
                         this.state.mapNodes.push({
-                            id: `n_global_${nodeGlobalId++}`,
-                            depthIndex: d,
-                            laneIndex: l,
-                            totalLanes: nodesInThisRow,
-                            type: type,
-                            desc: summary,
-                            resolved: false,
-                            connections: []
+                            id: `n_global_${nodeGlobalId++}`, depthIndex: d, laneIndex: l,
+                            totalLanes: nodesInThisRow, type: type, resolved: false, connections: []
                         });
                     }
                 }
 
-                // UNIFIED LAYER PATH-LINK ENGINE ACROSS ALL 14 TIERS FIXED
+                // SECURE PATH CONNECT ENGINE ACROSS TIERS
                 for (let d = 0; d < depthTarget - 1; d++) {
                     const currentRows = this.state.mapNodes.filter(n => n.depthIndex === d);
                     const nextRows = this.state.mapNodes.filter(n => n.depthIndex === d + 1);
-
                     currentRows.forEach(curr => {
                         nextRows.forEach(nxt => {
                             if (currentRows.length === 1 || nextRows.length === 1 || Math.abs(curr.laneIndex - nxt.laneIndex) <= 1) {
@@ -850,7 +600,6 @@
                         });
                     });
                 }
-
                 this.renderMobileNetworkMap();
             }
 
@@ -858,7 +607,6 @@
                 const layerGroupTarget = document.getElementById('map-nodes-render-layer');
                 layerGroupTarget.innerHTML = '';
 
-                // Build mapping arrays using structured column layouts
                 for (let d = 0; d < 14; d++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'map-layer-row';
@@ -892,15 +640,11 @@
                             isLinkable = true;
                         }
 
-                        // Attach hover logs updating structural scanning readout banners
                         circle.onmouseenter = () => this.displayNodeContextFeed(node);
-                        
                         circle.onclick = () => {
                             this.displayNodeContextFeed(node);
                             if (isLinkable || this.state.currentMeepleNodeId === node.id) {
                                 this.processMeepleMovementRouting(node);
-                            } else {
-                                document.getElementById('map-target-node-descriptor').innerText = `⚠️ Link Unavailable: ${node.desc}`;
                             }
                         };
 
@@ -910,39 +654,39 @@
                             meepleToken.innerText = '🤖 MECH';
                             circle.appendChild(meepleToken);
                         }
-
                         rowDiv.appendChild(circle);
                     });
-
                     layerGroupTarget.appendChild(rowDiv);
                 }
-
-                // Recalculate SVG vectors after dimensions scale
-                setTimeout(() => this.drawVectorConnectionLinesMap(), 150);
+                setTimeout(() => this.drawVectorConnectionLinesMap(), 60);
             }
 
             displayNodeContextFeed(node) {
-                const typesMapLabels = { 'CAMPFIRE': '🔥 MAINTENANCE POINT', 'GENERAL_STORE': '🏪 RETAIL VENDOR PORT', 'BASIC_BATTLE': '⚔️ ROGUE MACHINE OUTPOST', 'ELITE_BATTLE': '💀 BEHEMOTH CORE' };
-                const label = typesMapLabels[node.type] || 'NODE TERMINAL';
-                document.getElementById('map-target-node-descriptor').innerHTML = `<strong>${label} (Sector Layer ${node.depthIndex + 1})</strong><br>${node.desc}`;
+                const config = NODE_DICTIONARY[node.type] || { label: '📡 UNKNOWN INTERFACE', definition: 'Encrypted network sector matrix trace.' };
+                document.getElementById('map-target-node-descriptor').innerHTML = `
+                    <strong>${config.label} (LAYER ${node.depthIndex + 1})</strong><br>
+                    <span style="color: var(--text-muted); font-size:10px;">${config.definition}</span>
+                `;
             }
 
+            // --- FULLY TRACED RELIABLE VECTOR SVG PATH ENGINE ---
             drawVectorConnectionLinesMap() {
                 const svg = document.getElementById('map-connections-svg');
                 if(!svg) return;
                 svg.innerHTML = '';
+                
                 const scrollPane = document.getElementById('map-scroll-view');
-                const paneRect = scrollPane.getBoundingClientRect();
-
-                svg.setAttribute('width', paneRect.width);
+                svg.setAttribute('width', scrollPane.clientWidth);
                 svg.setAttribute('height', scrollPane.scrollHeight);
 
-                // Run tracing sweeps spanning all 14 programmatic levels
+                const paneRect = scrollPane.getBoundingClientRect();
+
                 this.state.mapNodes.forEach(currNode => {
                     const currEl = document.getElementById(`ui_node_id_${currNode.id}`);
                     if (!currEl) return;
                     const currRect = currEl.getBoundingClientRect();
 
+                    // Map coordinates calculating scrolling panel layout shifts accurately
                     const x1 = (currRect.left + currRect.width / 2) - paneRect.left;
                     const y1 = (currRect.top + currRect.height / 2) - paneRect.top + scrollPane.scrollTop;
 
@@ -958,16 +702,14 @@
                         line.setAttribute('x1', x1); line.setAttribute('y1', y1);
                         line.setAttribute('x2', x2); line.setAttribute('y2', y2);
                         
-                        // Style traces based on completion metrics
                         if (currNode.resolved) {
                             line.setAttribute('stroke', 'var(--accent)');
-                            line.setAttribute('stroke-width', '2.5');
+                            line.setAttribute('stroke-width', '3');
                         } else {
                             line.setAttribute('stroke', 'var(--border)');
-                            line.setAttribute('stroke-width', '1.5');
-                            line.setAttribute('stroke-dasharray', '5,5');
+                            line.setAttribute('stroke-width', '2');
+                            line.setAttribute('stroke-dasharray', '6,4');
                         }
-
                         svg.appendChild(line);
                     });
                 });
@@ -976,14 +718,12 @@
             processMeepleMovementRouting(targetNode) {
                 let checkValid = false;
                 if (this.state.currentDepth === -1 && targetNode.depthIndex === 0) checkValid = true;
-                
                 if (this.state.currentMeepleNodeId) {
                     const currentActiveNode = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
                     if (currentActiveNode && currentActiveNode.connections.includes(targetNode.id) && targetNode.depthIndex === this.state.currentDepth + 1) {
                         checkValid = true;
                     }
                 }
-
                 if (!checkValid) return;
 
                 if (this.state.currentMeepleNodeId) {
@@ -1006,27 +746,24 @@
                     } else if (targetNode.type === 'GENERAL_STORE') {
                         this.setupShopNodeScreen();
                     }
-                }, 250);
+                }, 200);
             }
 
-            // --- RADIAL COMBAT HAND ARC ENGINE & TOUCH TELEMETRY INTERFACES ---
             launchCombatLoopEngine(isElite) {
                 this.switchView('view-combat');
-                const enemyScaleFactor = 1 + (this.state.level * 0.2);
+                const enemyScaleFactor = 1 + (this.state.level * 0.15);
                 
-                this.combat.enemyMaxHp = Math.round((isElite ? 45 : 20) * enemyScaleFactor);
+                this.combat.enemyMaxHp = Math.round((isElite ? 40 : 18) * enemyScaleFactor);
                 this.combat.enemyHp = this.combat.enemyMaxHp;
                 this.combat.playerArmor = this.activeBoxSpec.perk === 'SHIELD_START' ? 4 : 0;
                 this.combat.playerAp = this.activeBoxSpec.perk === 'BONUS_AP' ? 4 : 3;
 
                 document.getElementById('cb-enemy-name').innerText = isElite ? '💀 Elite Mech-Behemoth' : '⚙️ Scrap Vagrant Drone';
-                
                 this.combat.draw = [...this.state.activeDeck].sort(() => Math.random() - 0.5);
-                this.combat.discard = [];
-                this.combat.hand = [];
+                this.combat.discard = []; this.combat.hand = [];
 
                 this.generateEnemyIntentAction();
-                this.drawCardsToCombatHand(4); // Draw expanded deck pool to amplify visual layout arcs
+                this.drawCardsToCombatHand(4); 
                 this.renderCombatArenaUi();
             }
 
@@ -1041,85 +778,60 @@
             }
 
             generateEnemyIntentAction() {
-                this.combat.enemyIntentDmg = Math.round((Math.floor(Math.random() * 5) + 5) * (1 + this.state.currentDepth * 0.1));
-                document.getElementById('cb-enemy-intent').innerText = `Intent: Shock ${this.combat.enemyIntentDmg}`;
+                this.combat.enemyIntentDmg = Math.round((Math.floor(Math.random() * 4) + 5) * (1 + this.state.currentDepth * 0.08));
+                document.getElementById('cb-enemy-intent').innerText = `Intent: Strike ${this.combat.enemyIntentDmg}`;
             }
 
             renderCombatArenaUi() {
-                // Handle stat displays
                 document.getElementById('cb-player-hp').innerText = this.state.hp;
                 document.getElementById('cb-player-armor').innerText = this.combat.playerArmor;
                 document.getElementById('cb-player-ap').innerText = this.combat.playerAp;
                 document.getElementById('cb-enemy-hp').innerText = this.combat.enemyHp;
 
-                // Render matching HUD graphic components
-                const pPc = (this.state.hp / this.state.maxHp) * 100;
-                const ePc = (this.combat.enemyHp / this.combat.enemyMaxHp) * 100;
-                document.getElementById('bar-player-hp-pc').style.width = `${pPc}%`;
-                document.getElementById('bar-enemy-hp-pc').style.width = `${ePc}%`;
+                document.getElementById('bar-player-hp-pc').style.width = `${(this.state.hp / this.state.maxHp) * 100}%`;
+                document.getElementById('bar-enemy-hp-pc').style.width = `${(this.combat.enemyHp / this.combat.enemyMaxHp) * 100}%`;
 
                 const arcContainer = document.getElementById('combat-hand-arc-frame');
                 arcContainer.innerHTML = '';
-
                 const totalCards = this.combat.hand.length;
                 
-                // Math conversion variables mapping cards along radial fan trajectories
                 this.combat.hand.forEach((card, idx) => {
                     const cardUi = this.generateMobileCardComponent(card);
-                    
-                    // Arc math parameters for mobile viewports
-                    let angle = 0;
-                    let rotateDeg = 0;
-                    let yOffset = 0;
-                    let xOffset = 0;
+                    let angle = 0, rotateDeg = 0, yOffset = 0, xOffset = 0;
 
                     if (totalCards > 1) {
                         const mid = (totalCards - 1) / 2;
-                        angle = (idx - mid) * (40 / (totalCards - 1)); // Bounds arc rotation sweep
+                        angle = (idx - mid) * (36 / (totalCards - 1));
                         rotateDeg = angle;
-                        yOffset = Math.abs(idx - mid) * 6; // Sagittal depth displacement mapping
-                        xOffset = (idx - mid) * 28; // Spread distribution across screen coordinates
+                        yOffset = Math.abs(idx - mid) * 5;
+                        xOffset = (idx - mid) * 26;
                     }
-
                     cardUi.style.transform = `translateX(calc(-50% + ${xOffset}px)) translateY(${yOffset}px) rotate(${rotateDeg}deg)`;
                     cardUi.style.zIndex = idx + 10;
 
-                    // Bind interactive touch listeners to manage previews and taps
-                    this.attachInteractiveTouchListeners(cardUi, card, idx);
-                    
+                    this.attachInteractiveTouchListeners(cardUi, card, () => this.executeCardResolution(idx));
                     arcContainer.appendChild(cardUi);
                 });
             }
 
-            attachInteractiveTouchListeners(element, card, idx) {
-                // Clear any leftover interaction variables
-                const clearHooks = () => {
-                    if (this.inspectTimeoutHook) clearTimeout(this.inspectTimeoutHook);
-                };
-
-                // Trigger item modal if user maintains touch down parameters for 450ms
+            attachInteractiveTouchListeners(element, card, tapCallback) {
+                const clearHooks = () => { if (this.inspectTimeoutHook) clearTimeout(this.inspectTimeoutHook); };
+                
                 const startHook = (e) => {
-                    this.isInspectingTriggered = false;
-                    clearHooks();
+                    this.isInspectingTriggered = false; clearHooks();
                     this.inspectTimeoutHook = setTimeout(() => {
                         this.isInspectingTriggered = true;
                         this.openInspectTelemetryModal(card);
-                    }, 450);
+                    }, 400);
                 };
-
                 const endHook = (e) => {
                     clearHooks();
-                    if (!this.isInspectingTriggered) {
-                        // Treat as tap if no long press was registered
-                        this.executeCardResolution(idx);
-                    }
+                    if (!this.isInspectingTriggered) tapCallback();
                     this.isInspectingTriggered = false;
                 };
 
                 element.addEventListener('touchstart', startHook, { passive: true });
                 element.addEventListener('touchend', endHook, { passive: true });
-                
-                // Mirror mouse hooks to allow desktop browser processing fallback
                 element.addEventListener('mousedown', startHook);
                 element.addEventListener('mouseup', endHook);
                 element.addEventListener('mouseleave', clearHooks);
@@ -1128,27 +840,24 @@
             openInspectTelemetryModal(card) {
                 const overlay = document.getElementById('inspect-modal-overlay');
                 const box = document.getElementById('inspect-modal-content-box');
-                
                 box.innerHTML = `
-                    <div style="font-size: 11px; font-weight: bold; color: var(--accent); letter-spacing: 1px; text-transform: uppercase;">📡 SUBROUTINE INSPECT FEED</div>
-                    <div style="font-size: 20px; font-weight: bold; margin: 12px 0 6px 0; color: #fff;">${card.name}</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px;">Memory Bandwidth: ${card.cost} AP • Tier: ${card.rarity}</div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid var(--border); font-size: 13px; line-height: 1.4;">
+                    <div style="font-size: 9px; font-weight: bold; color: var(--accent); letter-spacing: 1px;">📡 HARDWARE SUBROUTINE INSPECT</div>
+                    <div style="font-size: 18px; font-weight: bold; margin: 8px 0 4px 0; color: #fff;">${card.name}</div>
+                    <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Memory Draw: ${card.cost} AP • Rarity: ${card.rarity}</div>
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; line-height: 1.4;">
                         ${card.effect}
                     </div>
-                    <div style="font-size: 10px; margin-top: 16px; color: var(--accent); opacity: 0.8;">[ Tap anywhere to return to field ]</div>
+                    <div style="font-size: 9px; margin-top: 14px; color: var(--accent); opacity: 0.7;">[ Disengage touch to return ]</div>
                 `;
                 overlay.style.display = 'flex';
             }
 
-            closeInspectTelemetryModal() {
-                document.getElementById('inspect-modal-overlay').style.display = 'none';
-            }
+            closeInspectTelemetryModal() { document.getElementById('inspect-modal-overlay').style.display = 'none'; }
 
             executeCardResolution(idx) {
                 const card = this.combat.hand[idx];
                 if (this.combat.playerAp < card.cost) {
-                    alert("Error: Operational processing limits reached for this cycle.");
+                    alert("Error: Insufficient action processing currency allocation!");
                     return;
                 }
 
@@ -1165,58 +874,46 @@
                 if (healMatch) this.state.hp = Math.min(this.state.maxHp, this.state.hp + parseInt(healMatch[1]));
 
                 if (this.combat.enemyHp <= 0) {
-                    alert("🎉 Target Terminated! Extracted 25 high-grade oil tokens.");
+                    alert("🎉 Target Destroyed! Reclaimed +25 scrap fuel oil.");
                     this.state.gold += 25;
                     
                     const lootCard = { id: `loot_${Date.now()}`, name: 'Spike Expander', rarity: 'RARE', cost: 1, effect: 'Deal 9 DMG.' };
                     if(this.state.activeDeck.length < this.activeBoxSpec.capacity) {
                         this.state.activeDeck.push(lootCard);
-                        alert(`Compiled [${lootCard.name}] directly to Holster.`);
+                        alert(`Wolded [${lootCard.name}] straight to active Holster Holster.`);
                     } else {
                         this.state.safeStorage.push(lootCard);
-                        alert(`Holster Storage full. Shunted [${lootCard.name}] to deep cargo safe.`);
+                        alert(`Holster full. Shunted [${lootCard.name}] to Secure Vault cargo spaces.`);
                     }
 
                     if (this.state.currentDepth === 13) {
-                        alert("🏆 Sector Node Network Cleared! Moving to deeper grid arrays.");
-                        this.state.level++;
-                        this.state.mapId++;
+                        alert("🏆 Grid Layer Sector Fully Cleared!");
+                        this.state.level++; this.state.mapId++;
                         this.generateProceduralMobileMap();
-                        this.state.currentMeepleNodeId = null;
-                        this.state.currentDepth = -1;
+                        this.state.currentMeepleNodeId = null; this.state.currentDepth = -1;
                     }
-
                     this.exitNodeToTrails();
                     return;
                 }
-
                 this.renderCombatArenaUi();
             }
 
             endCombatTurn() {
                 const diff = this.combat.enemyIntentDmg - this.combat.playerArmor;
-                if (diff > 0) {
-                    this.combat.playerArmor = 0;
-                    this.state.hp = Math.max(0, this.state.hp - diff);
-                } else {
-                    this.combat.playerArmor -= this.combat.enemyIntentDmg;
-                }
+                if (diff > 0) { this.combat.playerArmor = 0; this.state.hp = Math.max(0, this.state.hp - diff); }
+                else { this.combat.playerArmor -= this.combat.enemyIntentDmg; }
 
                 if (this.state.hp <= 0) {
-                    alert("☠️ Structural Failure: Chassis core exploded. Resetting system parameters.");
-                    this.resetSystemDefault();
-                    return;
+                    alert("☠️ Critical Core Integrity Failure. Run Terminated.");
+                    this.resetSystemDefault(); return;
                 }
 
-                this.combat.discard.push(...this.combat.hand);
-                this.combat.hand = [];
-                this.combat.playerAp = 3;
-                this.drawCardsToCombatHand(4);
-                this.generateEnemyIntentAction();
-                this.renderCombatArenaUi();
-                this.updateGlobalHudDisplay();
+                this.combat.discard.push(...this.combat.hand); this.combat.hand = [];
+                this.combat.playerAp = 3; this.drawCardsToCombatHand(4);
+                this.generateEnemyIntentAction(); this.renderCombatArenaUi(); this.updateGlobalHudDisplay();
             }
 
+            // --- RECONFIGURED MAINTENANCE ZONE FLEX ROW HANDLERS ---
             renderCampfireVaultPanels() {
                 document.getElementById('camp-active-count').innerText = `${this.state.activeDeck.length}/${this.activeBoxSpec.capacity}`;
                 
@@ -1226,7 +923,7 @@
                     const cardUi = this.generateMobileCardComponent(card);
                     cardUi.onclick = () => {
                         if (this.state.activeDeck.length <= 1) {
-                            alert("Storage Alert: Cannot operate with an empty active bank.");
+                            alert("Transfer Blocked: Automated systems require at least 1 active code block matrix.");
                             return;
                         }
                         this.state.safeStorage.push(this.state.activeDeck.splice(idx, 1)[0]);
@@ -1243,7 +940,7 @@
                     const cardUi = this.generateMobileCardComponent(card);
                     cardUi.onclick = () => {
                         if (this.state.activeDeck.length >= this.activeBoxSpec.capacity) {
-                            alert("Storage Allocation Failed: Active Holster bank is filled to capacity.");
+                            alert("Allocation Exception: Equipped card holster has reached hardware space limits.");
                             return;
                         }
                         this.state.activeDeck.push(this.state.safeStorage.splice(idx, 1)[0]);
@@ -1257,38 +954,28 @@
 
             setupShopNodeScreen() {
                 this.switchView('view-shop');
-                const targetList = document.getElementById('shop-catalog-list');
-                targetList.innerHTML = '';
+                const list = document.getElementById('shop-catalog-list');
+                list.innerHTML = '';
 
                 BOX_UPGRADES_CATALOG.forEach(box => {
                     if (box.id === this.state.activeBoxId) return;
-
                     const row = document.createElement('div');
-                    row.className = 'char-card';
-                    row.style.borderColor = 'var(--accent)';
-                    row.style.minHeight = 'auto';
-                    row.style.borderRadius = '20px';
+                    row.className = 'char-card'; row.style.borderColor = 'var(--border)'; row.style.minHeight = 'auto';
                     row.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent);">
-                            <span>💼 ${box.name}</span>
-                            <span style="color:#fff;">🪙 ${box.cost} Oil</span>
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent); font-size:11px;">
+                            <span>💼 ${box.name}</span> <span style="color:#fff;">🪙 ${box.cost} Oil</span>
                         </div>
-                        <div style="font-size:10px; margin-top:5px; color:var(--text-muted);">Allocates ${box.capacity} compilation files. <br><strong>Mod:</strong> ${box.desc}</div>
-                        <button class="btn" style="margin-top:10px; padding:8px; font-size:10px; border-radius:12px;">Buy Integration</button>
+                        <div style="font-size:9px; margin-top:4px; color:var(--text-muted); line-height:1.3;">Capacity: ${box.capacity} Cards.<br>${box.desc}</div>
+                        <button class="btn" style="margin-top:8px; padding:6px; font-size:9px; border-radius:8px; margin-bottom:0;">Integrate Hardware Upgrade</button>
                     `;
-
                     row.querySelector('button').onclick = () => {
                         if (this.state.gold >= box.cost) {
-                            this.state.gold -= box.cost;
-                            this.state.activeBoxId = box.id;
-                            alert(`Hardware Upgraded: Mount set to ${box.name}`);
+                            this.state.gold -= box.cost; this.state.activeBoxId = box.id;
+                            alert(`Upgrade complete: Holster architecture set to ${box.name}`);
                             this.exitNodeToTrails();
-                        } else {
-                            alert("Transaction Blocked: Insufficient oil reserves.");
-                        }
+                        } else { alert("Error: Insufficient fuel currencies."); }
                     };
-
-                    targetList.appendChild(row);
+                    list.appendChild(row);
                 });
             }
 
@@ -1297,45 +984,23 @@
                     const node = this.state.mapNodes.find(n => n.id === this.state.currentMeepleNodeId);
                     if (node) node.resolved = true;
                 }
-                this.saveCurrentSessionToDisk();
-                this.updateGlobalHudDisplay();
+                this.saveCurrentSessionToDisk(); this.updateGlobalHudDisplay();
                 this.handleTabNavigation('view-map', 'tab-map');
             }
 
-            saveCurrentSessionToDisk() {
-                localStorage.setItem(this.saveKey, JSON.stringify(this.state));
-                this.checkSavedSessionAvailability();
-            }
-
+            saveCurrentSessionToDisk() { localStorage.setItem(this.saveKey, JSON.stringify(this.state)); this.checkSavedSessionAvailability(); }
             loadSavedSession() {
                 const raw = localStorage.getItem(this.saveKey);
-                if (raw) {
-                    this.state = JSON.parse(raw);
-                    this.updateGlobalHudDisplay();
-                    this.handleTabNavigation('view-map', 'tab-map');
-                }
+                if (raw) { this.state = JSON.parse(raw); this.updateGlobalHudDisplay(); this.handleTabNavigation('view-map', 'tab-map'); }
             }
-
-            saveAndQuitToMain() {
-                this.saveCurrentSessionToDisk();
-                alert("Sector metrics safely archived to persistent firmware arrays.");
-                this.switchView('view-start');
-            }
-
-            resetSystemDefault() {
-                localStorage.removeItem(this.saveKey);
-                alert("Local system caches thoroughly expunged.");
-                location.reload();
-            }
+            saveAndQuitToMain() { this.saveCurrentSessionToDisk(); alert("Archived Memory matrices safely."); this.switchView('view-start'); }
+            resetSystemDefault() { localStorage.removeItem(this.saveKey); alert("System hard cleared."); location.reload(); }
 
             generateMobileCardComponent(card) {
                 const el = document.createElement('div');
                 el.className = `mobile-card rarity-${card.rarity}`;
                 el.innerHTML = `
-                    <div class="c-header">
-                        <span>⚡ ${card.cost}</span>
-                        <span style="font-size:7px; opacity:0.5; letter-spacing: 0.5px;">SUBR</span>
-                    </div>
+                    <div class="c-header"><span>⚡ ${card.cost}</span><span style="font-size:7px; opacity:0.4;">SUBR</span></div>
                     <div class="c-name">${card.name}</div>
                     <div class="c-body">${card.effect}</div>
                 `;
